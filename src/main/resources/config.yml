@@ -1,0 +1,61 @@
+#  ------------------------------
+# |        HuskChat Config       |
+# |    Developed by William278   |
+#  ------------------------------
+# Configuration guide: https://github.com/WiIIiam278/HuskChat/wiki
+# To modify individual plugin messages, see the messages file.
+
+# General options. Default channel should match one of the channels below.
+language: 'en-gb'
+default_channel: global
+
+# Chat channel configuration.
+# - You can edit the default channels and make your own if you would like.
+# - Channels that have permissions set require them to send and receive messages respectively.
+channels:
+  local:
+    format: '%fullname%&r&f: '
+    broadcast_scope: LOCAL
+    censor: true
+    log_to_console: true
+    shortcut_commands:
+      - /local
+      - /l
+  global:
+    format: '&#00fb9a&[G]&r&f %fullname%&r&f: '
+    broadcast_scope: GLOBAL
+    censor: true
+    log_to_console: true
+    shortcut_commands:
+      - /global
+      - /g
+  staff:
+    format: '&e[Staff] %name%: &7'
+    broadcast_scope: GLOBAL
+    censor: false
+    log_to_console: true
+    permissions:
+      send: 'huskchat.channel.staff.send'
+      receive: 'huskchat.channel.staff.receive'
+    shortcut_commands:
+      - /staff
+      - /sc
+  helpop:
+    format: '&#00fb9a&[HelpOp] %name%: &7'
+    broadcast_scope: GLOBAL
+    censor: false
+    log_to_console: true
+    permissions:
+      receive: 'huskchat.channel.helpop.receive'
+    shortcut_commands:
+      - /helpop
+      - /helpme
+
+# Options for the /msg and /r commands
+message_command:
+  enabled: true
+  censor: false
+  log_to_console: true
+  format:
+    inbound: '&#00fb9a&%name% &8→ &#00fb9a&You&8: &f'
+    outbound: '&#00fb9a&You &8→ &#00fb9a&%name%&8: &f'
