@@ -2,7 +2,6 @@ package me.william278.huskchat.listeners;
 
 import me.william278.huskchat.HuskChat;
 import me.william278.huskchat.MessageManager;
-import me.william278.huskchat.censor.CensorUtil;
 import me.william278.huskchat.channels.Channel;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -36,11 +35,7 @@ public class PlayerListener implements Listener {
                 }
 
                 String messageToSend;
-                if (channel.isCensor()) {
-                    messageToSend = CensorUtil.censor(message);
-                } else {
-                    messageToSend = message;
-                }
+                messageToSend = message; //CensorUtil.censor(message);
 
                 // Get players who will receive the message
                 Channel.Scope scope = channel.getBroadcastType();

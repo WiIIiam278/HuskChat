@@ -2,7 +2,6 @@ package me.william278.huskchat.commands;
 
 import me.william278.huskchat.HuskChat;
 import me.william278.huskchat.MessageManager;
-import me.william278.huskchat.censor.CensorUtil;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -49,11 +48,7 @@ public class MessageCommand extends Command implements TabExecutor {
             return;
         }
         String messageToSend;
-        if (HuskChat.getConfig().isCensorPrivateMessages()) {
-            messageToSend = CensorUtil.censor(message);
-        } else {
-            messageToSend = message;
-        }
+        messageToSend = message; //CensorUtil.censor(message);
         for (ProxiedPlayer target : ProxyServer.getInstance().getPlayers()) {
             if (target.getName().equalsIgnoreCase(targetUsername)) {
                 // Show that the message has been sent
