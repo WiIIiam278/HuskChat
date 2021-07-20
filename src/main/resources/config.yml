@@ -16,7 +16,6 @@ channels:
   local:
     format: '%fullname%&r&f: '
     broadcast_scope: LOCAL
-    censor: true
     log_to_console: true
     shortcut_commands:
       - /local
@@ -24,7 +23,6 @@ channels:
   global:
     format: '&#00fb9a&[G]&r&f %fullname%&r&f: '
     broadcast_scope: GLOBAL
-    censor: true
     log_to_console: true
     shortcut_commands:
       - /global
@@ -32,7 +30,6 @@ channels:
   staff:
     format: '&e[Staff] %name%: &7'
     broadcast_scope: GLOBAL
-    censor: false
     log_to_console: true
     permissions:
       send: 'huskchat.channel.staff.send'
@@ -43,7 +40,6 @@ channels:
   helpop:
     format: '&#00fb9a&[HelpOp] %name%: &7'
     broadcast_scope: GLOBAL
-    censor: false
     log_to_console: true
     permissions:
       receive: 'huskchat.channel.helpop.receive'
@@ -54,7 +50,6 @@ channels:
 # Options for the /msg and /r commands
 message_command:
   enabled: true
-  censor: false
   log_to_console: true
   format:
     inbound: '&#00fb9a&%name% &8→ &#00fb9a&You&8: &f'
