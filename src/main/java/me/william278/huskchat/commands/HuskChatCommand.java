@@ -38,6 +38,7 @@ public class HuskChatCommand extends Command implements TabExecutor {
                         MessageManager.reloadMessages();
                         player.sendMessage(new MineDown("[HuskChat](#00fb9a bold) &#00fb9a&| Reloaded config & message files.").toComponent());
                     }
+                    default -> MessageManager.sendMessage(player, "error_invalid_syntax", "/husktowns <about/reload>");
                 }
             } else {
                 sendAboutInformation(player);

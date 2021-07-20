@@ -1,9 +1,6 @@
 package me.william278.huskchat.commands;
 
 import me.william278.huskchat.HuskChat;
-import me.william278.huskchat.MessageManager;
-import me.william278.huskchat.channels.Channel;
-import me.william278.huskchat.listeners.PlayerListener;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -31,7 +28,10 @@ public class ChannelShortcutCommand extends Command {
                 }
                 final String messageToSend = message.toString();
                 ChatEvent event = new ChatEvent(player, player.getServer(), messageToSend);
+                final String oldChannelId = HuskChat.getPlayerChannel(player.getUniqueId());
+                HuskChat.setPlayerChannel(player.getUniqueId(), channelId);
                 ProxyServer.getInstance().getPluginManager().callEvent(event);
+                HuskChat.setPlayerChannel(player.getUniqueId(), oldChannelId);
             }
         }
     }
