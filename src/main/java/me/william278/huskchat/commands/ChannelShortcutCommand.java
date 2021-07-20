@@ -29,7 +29,10 @@ public class ChannelShortcutCommand extends Command {
                     message.append(arg).append(" ");
                 }
                 final String messageToSend = message.toString();
-                PlayerListener.sendChatMessage(channelId, player, messageToSend);
+                final String oldChannelID = HuskChat.getPlayerChannel(player.getUniqueId());
+                HuskChat.setPlayerChannel(player.getUniqueId(), channelId);
+                player.chat(messageToSend);
+                HuskChat.setPlayerChannel(player.getUniqueId(), oldChannelID);
             }
         }
     }

@@ -8,13 +8,14 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 
 import java.util.HashSet;
 import java.util.Locale;
 
 public class PlayerListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerChat(ChatEvent e) {
         if (e.isCommand() || e.isProxyCommand()) {
             return;
