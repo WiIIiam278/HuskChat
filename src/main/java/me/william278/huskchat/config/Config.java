@@ -55,8 +55,9 @@ public class Config {
             final String receivePermission = config.getString("channels." + channelID + ".permissions.receive", null);
             final boolean logToConsole = config.getBoolean("channels." + channelID + ".log_to_console", true);
             final boolean censor = config.getBoolean("channels." + channelID + ".censor", false);
+            final boolean passthrough = config.getBoolean("channels." + channelID + ".passthrough", false);
 
-            Channel channel = new Channel(channelID.toLowerCase(Locale.ROOT), format, broadcastScope, logToConsole, censor);
+            Channel channel = new Channel(channelID.toLowerCase(Locale.ROOT), format, broadcastScope, logToConsole, censor, passthrough);
             if (sendPermission != null) {
                 channel.setSendPermission(sendPermission);
             }

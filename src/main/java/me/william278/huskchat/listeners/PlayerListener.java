@@ -17,7 +17,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerChat(ChatEvent e) {
-        if (e.isCommand() || e.isProxyCommand()) {
+        if (e.isCommand() || e.isProxyCommand() || e.isCancelled()) {
             return;
         }
         e.setCancelled(true);
@@ -37,6 +37,12 @@ public class PlayerListener implements Listener {
 
                 String messageToSend;
                 messageToSend = message; //CensorUtil.censor(message);
+
+                // If the message is to be passed through, run that
+                if (channel.isPassThrough()) {
+                    sender.chat(message);
+                    return;
+                }
 
                 // Get players who will receive the message
                 Channel.Scope scope = channel.getBroadcastType();

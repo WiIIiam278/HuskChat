@@ -7,6 +7,7 @@ import me.william278.huskchat.listeners.PlayerListener;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.plugin.Command;
 
 public class ChannelShortcutCommand extends Command {
@@ -29,10 +30,8 @@ public class ChannelShortcutCommand extends Command {
                     message.append(arg).append(" ");
                 }
                 final String messageToSend = message.toString();
-                final String oldChannelID = HuskChat.getPlayerChannel(player.getUniqueId());
-                HuskChat.setPlayerChannel(player.getUniqueId(), channelId);
-                player.chat(messageToSend);
-                HuskChat.setPlayerChannel(player.getUniqueId(), oldChannelID);
+                ChatEvent event = new ChatEvent(player, player.getServer(), messageToSend);
+                ProxyServer.getInstance().getPluginManager().callEvent(event);
             }
         }
     }

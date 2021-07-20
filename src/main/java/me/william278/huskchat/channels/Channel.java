@@ -19,13 +19,15 @@ public class Channel {
     private String receivePermission;
     private final boolean logToConsole;
     private final boolean censor;
+    private final boolean passThrough;
 
-    public Channel(String channelId, String chatFormat, String broadcastType, boolean logToConsole, boolean censor) {
+    public Channel(String channelId, String chatFormat, String broadcastType, boolean logToConsole, boolean censor, boolean passThrough) {
         this.channelId = channelId;
         this.chatFormat = chatFormat;
         this.scope = Scope.valueOf(broadcastType);
         this.logToConsole = logToConsole;
         this.censor = censor;
+        this.passThrough = passThrough;
     }
 
     public BaseComponent[] getFormattedMessage(ProxiedPlayer sender, String message) {
@@ -82,6 +84,10 @@ public class Channel {
 
     public boolean isCensor() {
         return censor;
+    }
+
+    public boolean isPassThrough() {
+        return passThrough;
     }
 
     public enum Scope {
