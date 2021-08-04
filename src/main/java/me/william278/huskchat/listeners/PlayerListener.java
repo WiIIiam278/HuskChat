@@ -41,7 +41,9 @@ public class PlayerListener implements Listener {
                 // If the message is to be passed through, run that
                 if (channel.isPassThrough()) {
                     sender.chat(message);
-                    return;
+                    if (!channel.isContinuousPassThrough()) {
+                        return;
+                    }
                 }
 
                 // Get players who will receive the message
