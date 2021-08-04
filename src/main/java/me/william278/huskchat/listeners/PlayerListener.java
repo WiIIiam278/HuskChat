@@ -36,7 +36,7 @@ public class PlayerListener implements Listener {
                 }
 
                 String messageToSend;
-                messageToSend = message; //CensorUtil.censor(message);
+                messageToSend = message;
 
                 // If the message is to be passed through, run that
                 if (channel.isPassThrough()) {
