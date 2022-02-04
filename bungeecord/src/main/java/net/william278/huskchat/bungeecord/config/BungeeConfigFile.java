@@ -19,17 +19,17 @@ public class BungeeConfigFile extends ConfigFile {
 
     private Configuration config;
 
-    public BungeeConfigFile(String configFileName) {
+    public BungeeConfigFile(String sourceFile, String targetFile) {
         try {
-            File configFile = new File(plugin.getDataFolder(), configFileName);
+            File configFile = new File(plugin.getDataFolder(), targetFile);
             if (!configFile.exists()) {
                 try {
                     if (plugin.getDataFolder().mkdir()) {
                         plugin.getLogger().log(Level.CONFIG, "Created config directory");
                     }
-                    File newConfig = new File(plugin.getDataFolder(), configFileName);
+                    File newConfig = new File(plugin.getDataFolder(), targetFile);
                     if (!newConfig.exists()) {
-                        Files.copy(plugin.getResourceAsStream(configFileName), newConfig.toPath());
+                        Files.copy(plugin.getResourceAsStream(sourceFile), newConfig.toPath());
                     }
                 } catch (Exception e) {
                     plugin.getLogger().log(Level.CONFIG, "An exception occurred loading the configuration file", e);

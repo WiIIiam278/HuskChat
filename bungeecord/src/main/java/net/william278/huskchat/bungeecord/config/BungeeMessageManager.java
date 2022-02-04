@@ -13,12 +13,15 @@ import net.william278.huskchat.message.MessageManager;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.util.PlaceholderReplacer;
 
+import java.io.File;
+
 public class BungeeMessageManager extends MessageManager {
 
     private static final HuskChatBungee plugin = HuskChatBungee.getInstance();
 
     public BungeeMessageManager() {
-        super(new BungeeConfigFile("messages-" + Settings.language + ".yml"));
+        super(new BungeeConfigFile("languages" + File.separator + Settings.language + ".yml",
+                "messages-" + Settings.language + ".yml"));
     }
 
     @Override

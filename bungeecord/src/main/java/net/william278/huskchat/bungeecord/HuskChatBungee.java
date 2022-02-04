@@ -106,7 +106,7 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
 
     @Override
     public void reloadSettings() {
-        Settings.load(new BungeeConfigFile("config.yml"));
+        Settings.load(new BungeeConfigFile("config.yml","config.yml"));
     }
 
     @Override
