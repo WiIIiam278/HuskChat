@@ -1,0 +1,8 @@
+dependencies {
+    compileOnly 'commons-io:commons-io:2.11.0'
+    compileOnly 'net.luckperms:api:5.3'
+}
+
+shadowJar {
+    relocate 'commons-io.commons-io', 'net.william278.huskchat.libraries.commons-io'
+}

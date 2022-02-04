@@ -1,0 +1,22 @@
+dependencies {
+    implementation project(path: ':common', configuration: 'shadow')
+
+    implementation 'org.bstats:bstats-bungeecord:3.0.0'
+    implementation 'de.themoep:minedown:1.7.1-SNAPSHOT'
+    implementation 'commons-io:commons-io:2.11.0'
+
+    compileOnly 'net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT'
+    compileOnly 'net.luckperms:api:5.3'
+}
+
+shadowJar {
+    relocate 'de.themoep', 'net.william278.huskchat.libraries'
+    relocate 'org.bstats', 'net.william278.huskchat.libraries.bstats'
+    relocate 'org.apache', 'net.william278.huskchat.libraries'
+    relocate 'commons-io.commons-io', 'net.william278.huskchat.libraries.commons-io'
+
+    dependencies {
+        //noinspection GroovyAssignabilityCheck
+        exclude dependency(':slf4j-api')
+    }
+}

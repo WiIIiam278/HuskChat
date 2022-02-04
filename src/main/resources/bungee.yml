@@ -1,6 +1,0 @@
-name: HuskChat
-version: ${project.version}
-author: William278
-main: me.william278.huskchat.HuskChat
-description: ${project.description}
-softdepends: [LuckPerms]

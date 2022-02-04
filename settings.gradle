@@ -1,0 +1,12 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = 'HuskChat'
+
+include 'common'
+include 'bungeecord'
+include 'velocity'
+include 'plugin'

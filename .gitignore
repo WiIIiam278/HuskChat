@@ -79,7 +79,7 @@ ehthumbs_vista.db
 # Dump file
 *.stackdump
 
-# Folder config file
+# Folder configFile file
 [Dd]esktop.ini
 
 # Recycle Bin used on file shares
@@ -111,3 +111,8 @@ buildNumber.properties
 
 # Common working directory
 run/
+/.gradle/
+/velocity/build/
+/bungeecord/build/
+/plugin/build/
+/common/build/
