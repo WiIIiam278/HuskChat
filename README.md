@@ -4,7 +4,7 @@
 
 **HuskChat** is a no-frills, simple and customisable cross-server chat system for Minecraft networks running BungeeCord and Velocity frontend servers. 
 
-HuskChat is easy to configure with an elegant out-of-box setup, but is highly configurable to suit a variety of needs, allowing you to define channels and manage who can send and receive messages within them.
+HuskChat is easy to configure with an elegant out-of-box setup, while also being highly configurable, suiting a variety of use cases by allowing you to define channels and manage who can send and receive messages within them.
 
 ## Features
 * Works great out of the box, install on your Velocity or BungeeCord-based proxy and use right away
