@@ -3,25 +3,25 @@ package net.william278.huskchat.config;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class ConfigFile {
+public interface ConfigFile {
 
-    public abstract String getString(String path);
+    String getString(String path);
 
-    public abstract String getString(String path, String defaultValue);
+    String getString(String path, String defaultValue);
 
-    public abstract List<String> getStringList(String path);
+    List<String> getStringList(String path);
 
-    public abstract Integer getInteger(String path);
+    Integer getInteger(String path);
 
-    public abstract Integer getInteger(String path, int defaultValue);
+    Integer getInteger(String path, int defaultValue);
 
-    public abstract Boolean getBoolean(String path);
+    Boolean getBoolean(String path);
 
-    public abstract Boolean getBoolean(String path, boolean defaultValue);
+    Boolean getBoolean(String path, boolean defaultValue);
 
-    public abstract Boolean contains(String path);
+    Boolean contains(String path);
 
-    public abstract Collection<String> getConfigKeys(String path);
+    Collection<String> getConfigKeys(String path);
 
-    public abstract Collection<String> getConfigKeys();
+    Collection<String> getConfigKeys();
 }

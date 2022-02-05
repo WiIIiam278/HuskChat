@@ -7,7 +7,7 @@ import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.bungeecord.command.*;
 import net.william278.huskchat.bungeecord.config.BungeeConfigFile;
 import net.william278.huskchat.bungeecord.config.BungeeMessageManager;
-import net.william278.huskchat.bungeecord.listener.PlayerListener;
+import net.william278.huskchat.bungeecord.listener.BungeeListener;
 import net.william278.huskchat.bungeecord.player.BungeePlayer;
 import net.william278.huskchat.bungeecord.util.BungeeLogger;
 import net.william278.huskchat.channel.Channel;
@@ -63,7 +63,7 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
         }
 
         // Register events
-        getProxy().getPluginManager().registerListener(this, new PlayerListener());
+        getProxy().getPluginManager().registerListener(this, new BungeeListener());
 
         // Register commands
         new BungeeCommand(new HuskChatCommand(this));

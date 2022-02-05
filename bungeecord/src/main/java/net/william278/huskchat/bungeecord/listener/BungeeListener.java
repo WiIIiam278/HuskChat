@@ -10,7 +10,7 @@ import net.william278.huskchat.bungeecord.player.BungeePlayer;
 import net.william278.huskchat.message.ChatMessage;
 import net.william278.huskchat.player.PlayerCache;
 
-public class PlayerListener implements Listener {
+public class BungeeListener implements Listener {
 
     private static final HuskChatBungee plugin = HuskChatBungee.getInstance();
 

@@ -1,6 +1,6 @@
 name: HuskChat
 version: ${project.version}
 author: William278
-main: me.william278.huskchat.bungeecord.HuskChatBungee
+main: net.william278.huskchat.bungeecord.HuskChatBungee
 description: ${project.description}
 softdepends: [ LuckPerms ]

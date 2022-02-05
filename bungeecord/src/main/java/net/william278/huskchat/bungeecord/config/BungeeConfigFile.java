@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 
-public class BungeeConfigFile extends ConfigFile {
+public class BungeeConfigFile implements ConfigFile {
 
     private static final HuskChatBungee plugin = HuskChatBungee.getInstance();
 

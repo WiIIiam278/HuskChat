@@ -1,0 +1,12 @@
+{
+  "id": "huskchat",
+  "name": "HuskChat",
+  "version": "${version}",
+  "description": "${project.description}",
+  "url": "https://william278.net",
+  "authors": [
+    "William278"
+  ],
+  "dependencies": [],
+  "main": "net.william278.huskchat.velocity.HuskChatVelocity"
+}

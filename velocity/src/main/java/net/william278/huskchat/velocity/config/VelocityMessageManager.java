@@ -1,22 +1,23 @@
-package net.william278.huskchat.bungeecord.config;
+package net.william278.huskchat.velocity.config;
 
-import de.themoep.minedown.MineDown;
-import de.themoep.minedown.MineDownParser;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.william278.huskchat.bungeecord.HuskChatBungee;
-import net.william278.huskchat.bungeecord.player.BungeePlayer;
+import de.themoep.minedown.adventure.MineDown;
+import de.themoep.minedown.adventure.MineDownParser;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.message.MessageManager;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.util.PlaceholderReplacer;
+import net.william278.huskchat.velocity.HuskChatVelocity;
+import net.william278.huskchat.velocity.player.VelocityPlayer;
 
-public class BungeeMessageManager extends MessageManager {
+public class VelocityMessageManager extends MessageManager {
 
-    private static final HuskChatBungee plugin = HuskChatBungee.getInstance();
+    private static final HuskChatVelocity plugin = HuskChatVelocity.getInstance();
 
-    public BungeeMessageManager() {
-        super(new BungeeConfigFile("languages/" + Settings.language + ".yml",
+    public VelocityMessageManager() {
+        super(new VelocityConfigFile("languages/" + Settings.language + ".yml",
                 "messages-" + Settings.language + ".yml"));
     }
 
@@ -42,7 +43,7 @@ public class BungeeMessageManager extends MessageManager {
         }
 
         // Convert to baseComponents[] via MineDown formatting and send
-        BungeePlayer.adaptBungee(player).sendMessage(new MineDown(message).replace().toComponent());
+        VelocityPlayer.adaptVelocity(player).sendMessage(new MineDown(message).toComponent());
     }
 
     @Override
@@ -58,47 +59,47 @@ public class BungeeMessageManager extends MessageManager {
         }
 
         // Convert to baseComponents[] via MineDown formatting and send
-        BungeePlayer.adaptBungee(player).sendMessage(new MineDown(message).replace().toComponent());
+        VelocityPlayer.adaptVelocity(player).sendMessage(new MineDown(message).toComponent());
     }
 
     @Override
     public void sendCustomMessage(Player player, String message) {
-        BungeePlayer.adaptBungee(player).sendMessage(new MineDown(message).toComponent());
+        VelocityPlayer.adaptVelocity(player).sendMessage(new MineDown(message).toComponent());
     }
 
     @Override
     public void sendFormattedChannelMessage(Player target, Player sender, Channel channel, String message) {
-        final ComponentBuilder componentBuilder = new ComponentBuilder();
-        componentBuilder.append(new MineDown(PlaceholderReplacer.replace(sender, channel.format, plugin)).toComponent());
+        final TextComponent.Builder componentBuilder = Component.text()
+                .append(new MineDown(PlaceholderReplacer.replace(sender, channel.format, plugin)).toComponent());
         if (sender.hasPermission("huskchat.formatted_chat")) {
             componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
         } else {
-            componentBuilder.append(message);
+            componentBuilder.append(Component.text(message));
         }
-        BungeePlayer.adaptBungee(target).sendMessage(componentBuilder.create());
+        VelocityPlayer.adaptVelocity(target).sendMessage(componentBuilder);
     }
 
     @Override
     public void sendFormattedOutboundPrivateMessage(Player recipient, Player sender, String message) {
-        final ComponentBuilder componentBuilder = new ComponentBuilder();
-        componentBuilder.append(new MineDown(PlaceholderReplacer.replace(recipient, Settings.outboundMessageFormat, plugin)).toComponent());
+        final TextComponent.Builder componentBuilder = Component.text()
+                .append(new MineDown(PlaceholderReplacer.replace(recipient, Settings.outboundMessageFormat, plugin)).toComponent());
         if (sender.hasPermission("huskchat.formatted_chat")) {
             componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
         } else {
-            componentBuilder.append(message);
+            componentBuilder.append(Component.text(message));
         }
-        BungeePlayer.adaptBungee(recipient).sendMessage(componentBuilder.create());
+        VelocityPlayer.adaptVelocity(recipient).sendMessage(componentBuilder);
     }
 
     @Override
     public void sendFormattedInboundPrivateMessage(Player recipient, Player sender, String message) {
-        final ComponentBuilder componentBuilder = new ComponentBuilder();
-        componentBuilder.append(new MineDown(PlaceholderReplacer.replace(sender, Settings.inboundMessageFormat, plugin)).toComponent());
+        final TextComponent.Builder componentBuilder = Component.text()
+                .append(new MineDown(PlaceholderReplacer.replace(sender, Settings.inboundMessageFormat, plugin)).toComponent());
         if (sender.hasPermission("huskchat.formatted_chat")) {
             componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
         } else {
-            componentBuilder.append(message);
+            componentBuilder.append(Component.text(message));
         }
-        BungeePlayer.adaptBungee(recipient).sendMessage(componentBuilder.create());
+        VelocityPlayer.adaptVelocity(recipient).sendMessage(componentBuilder);
     }
 }
