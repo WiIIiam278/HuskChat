@@ -41,9 +41,9 @@ channels:
       broadcast_scope: GLOBAL # Broadcast scope of the channel - See below
       log_to_console: true # Whether messages sent to this channel should be logged to the proxy console
       permissions:
-        send: 'huskchat.channel.staff.send' # Permission required to see messages sent to this channel
-        receive: 'huskchat.channel.staff.receive' # Permission required to switch to and send messages in this channel
-      shortcut_commands: # A list of shortcut commands that users can use as well as the full /channel staff accessor
+        send: 'huskchat.channel.staff.send' # Permission required to see channel messages
+        receive: 'huskchat.channel.staff.receive' # Permission required to switch to & send messages
+      shortcut_commands: # List of shortcut commands that users can use to quickly use the channel
         - /staff
         - /sc
   ...
