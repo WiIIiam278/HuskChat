@@ -22,7 +22,9 @@ public class VelocityCommand implements SimpleCommand {
 
     @Override
     public void execute(Invocation invocation) {
-
+        if (invocation.source() instanceof Player player) {
+            implementer.onExecute(VelocityPlayer.adaptCrossPlatform(player), invocation.arguments());
+        }
     }
 
     @Override
