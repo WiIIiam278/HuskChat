@@ -2,7 +2,7 @@ dependencies {
     implementation project(path: ':common', configuration: 'shadow')
 
     implementation 'org.bstats:bstats-bungeecord:3.0.0'
-    implementation 'de.themoep:minedown:1.7.2-SNAPSHOT'
+    implementation 'de.themoep:minedown:1.7.1-SNAPSHOT'
     implementation 'commons-io:commons-io:2.11.0'
 
     compileOnly 'net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT'
