@@ -21,9 +21,7 @@ import net.william278.huskchat.player.Player;
 import net.william278.huskchat.util.Logger;
 import org.bstats.bungeecord.Metrics;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
 
 public final class HuskChatBungee extends Plugin implements HuskChat {
 
@@ -160,6 +158,24 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
     @Override
     public Logger getLoggingAdapter() {
         return BungeeLogger.get();
+    }
+
+    @Override
+    public Optional<Player> matchPlayer(String username) {
+        final Optional<Player> optionalPlayer;
+        if (ProxyServer.getInstance().getPlayer(username) != null) {
+            final ProxiedPlayer player = ProxyServer.getInstance().getPlayer(username);
+            optionalPlayer = Optional.of(BungeePlayer.adaptCrossPlatform(player));
+        } else {
+            final List<ProxiedPlayer> matchedPlayers = ProxyServer.getInstance().matchPlayer(username)
+                    .stream().filter(val -> val.getName().startsWith(username)).sorted().toList();
+            if (matchedPlayers.size() > 0) {
+                optionalPlayer = Optional.of(BungeePlayer.adaptCrossPlatform(matchedPlayers.get(0)));
+            } else {
+                optionalPlayer = Optional.empty();
+            }
+        }
+        return optionalPlayer;
     }
 
 }

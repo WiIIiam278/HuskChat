@@ -26,6 +26,11 @@ public class Channel {
     public List<String> shortcutCommands = new ArrayList<>();
 
     /**
+     * A {@link ArrayList} of servers where this channel cannot be used
+     */
+    public List<String> restrictedServers = new ArrayList<>();
+
+    /**
      * Permission node required to switch to and send messages to this channel
      */
     public String sendPermission;

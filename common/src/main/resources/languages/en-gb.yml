@@ -17,3 +17,6 @@ error_player_not_found: '[Error:](#ff3300) [Could not find the specified player;
 error_cannot_message_self: '[Error:](#ff3300) [You can''t message yourself!](#ff7e5e)'
 error_reply_no_messages: '[Error:](#ff3300) [There is nobody who has sent you a message to reply to!](#ff7e5e)'
 error_reply_not_online: '[Error:](#ff3300) [The last person you messaged is no longer online.](#ff7e5e)'
+error_message_restricted_server: '[Error:](#ff3300) [You cannot message players from this server.](#ff7e5e)'
+error_message_recipient_restricted_server: '[Error:](#ff3300) [That player is on a server where messages cannot be received.](#ff7e5e)'
+error_channel_restricted_server: '[Error:](#ff3300) [You cannot talk in %1% chat from this server.](#ff7e5e)'

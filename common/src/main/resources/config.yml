@@ -8,6 +8,7 @@
 # General options. Default channel should match one of the channels below.
 language: 'en-gb'
 default_channel: global
+channel_log_format: '[CHAT] [%channel%] %sender%: %message%'
 
 # Chat channel configuration.
 # - You can edit the default channels and make your own if you would like.
@@ -27,6 +28,8 @@ channels:
     shortcut_commands:
       - /global
       - /g
+    #restricted_servers: # Set where it is not possible to use this channel
+    #  - minigame
   staff:
     format: '&e[Staff] %name%: &7'
     broadcast_scope: GLOBAL
@@ -47,10 +50,19 @@ channels:
       - /helpop
       - /helpme
 
+# Server Default Channel Configuration
+# - Set a channel that the player will automatically be set to when changing servers
+# - Players will still be able to switch channels and use /msg and /r unless you add servers to the restricted_servers list
+#server_default_channels:
+#  minigame: local
+
 # Options for the /msg and /r commands
 message_command:
   enabled: true
   log_to_console: true
+  log_format: '[MSG] [%sender% -> %receiver%]: %message%'
   format:
     inbound: '&#00fb9a&%name% &8→ &#00fb9a&You&8: &f'
     outbound: '&#00fb9a&You &8→ &#00fb9a&%name%&8: &f'
+  #restricted_servers: # Set where /msg and /r cannot be used
+  #  - hub

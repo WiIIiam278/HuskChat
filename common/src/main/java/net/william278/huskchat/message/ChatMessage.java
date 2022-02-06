@@ -8,23 +8,19 @@ import net.william278.huskchat.player.Player;
 import java.util.HashSet;
 import java.util.logging.Level;
 
-public class ChatMessage {
+/**
+ * Represents a message to be sent in a chat channel
+ */
+public record ChatMessage(String targetChannelId, Player sender,
+                          String message, HuskChat implementor) {
 
-    public final String targetChannelId;
-    public final Player sender;
-    public final String message;
-    private final HuskChat implementor;
-
-    public ChatMessage(String targetChannelId, Player sender, String message, HuskChat implementor) {
-        this.targetChannelId = targetChannelId;
-        this.sender = sender;
-        this.message = message;
-        this.implementor = implementor;
-    }
-
-    public final void dispatch() {
+    /**
+     * Dispatch the message to be sent
+     */
+    public void dispatch() {
         for (Channel channel : Settings.channels) {
             if (channel.id.equalsIgnoreCase(targetChannelId)) {
+                // Verify that the player has permission to send in the channel
                 if (channel.sendPermission != null) {
                     if (!sender.hasPermission(channel.sendPermission)) {
                         implementor.getMessageManager().sendMessage(sender, "error_no_permission_send", channel.id);
@@ -32,10 +28,18 @@ public class ChatMessage {
                     }
                 }
 
+                // Verify that the player is not sending a message from a server where channel access is restricted
+                for (String restrictedServer : channel.restrictedServers) {
+                    if (restrictedServer.equalsIgnoreCase(sender.getServerName())) {
+                        implementor.getMessageManager().sendMessage(sender, "error_channel_restricted_server", channel.id);
+                        return;
+                    }
+                }
+
                 // Determine the players who will receive the message;
                 Channel.BroadcastScope broadcastScope = channel.broadcastScope;
 
-                // If the message is to be passed through, run that
+                // If the message is to be passed through, then do so
                 if (broadcastScope.isPassThrough) {
                     sender.passthroughChat(message);
                 }
@@ -45,23 +49,32 @@ public class ChatMessage {
                     case GLOBAL, GLOBAL_PASSTHROUGH -> messageRecipients.addAll(implementor.getOnlinePlayers());
                     case LOCAL, LOCAL_PASSTHROUGH -> messageRecipients.addAll(implementor.getOnlinePlayersOnServer(sender));
                     default -> {
+                        // PASSTHROUGH chat mode should be left to backend servers to handle
                         return;
                     }
                 }
 
-                // Dispatch message to all applicable users in the scope with permission
+                // Dispatch message to all applicable users in the scope with permission who are not on a restricted server
+                MESSAGE_DISPATCH:
                 for (Player recipient : messageRecipients) {
                     if (channel.receivePermission != null) {
                         if (!recipient.hasPermission(channel.receivePermission) && !(recipient.getUuid().equals(sender.getUuid()))) {
                             continue;
                         }
                     }
+
+                    for (String restrictedServer : channel.restrictedServers) {
+                        if (restrictedServer.equalsIgnoreCase(recipient.getServerName())) {
+                            continue MESSAGE_DISPATCH;
+                        }
+                    }
+
                     implementor.getMessageManager().sendFormattedChannelMessage(recipient, sender, channel, message);
                 }
 
                 // Log message to console if enabled on the channel
                 if (channel.logMessages) {
-                    String logMessage = Settings.messageLogFormat;
+                    String logMessage = Settings.channelLogFormat;
                     logMessage = logMessage.replaceAll("%channel%", channel.id.toUpperCase());
                     logMessage = logMessage.replaceAll("%sender%", sender.getName());
                     logMessage = logMessage.replaceAll("%message%", message);

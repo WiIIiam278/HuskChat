@@ -1,11 +1,12 @@
 package net.william278.huskchat;
 
 import net.william278.huskchat.getter.DataGetter;
-import net.william278.huskchat.util.Logger;
 import net.william278.huskchat.message.MessageManager;
 import net.william278.huskchat.player.Player;
+import net.william278.huskchat.util.Logger;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface HuskChat {
@@ -31,5 +32,7 @@ public interface HuskChat {
     Collection<Player> getOnlinePlayersOnServer(Player player);
 
     Logger getLoggingAdapter();
+
+    Optional<Player> matchPlayer(String username);
 
 }

@@ -27,10 +27,7 @@ import org.bstats.velocity.Metrics;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Plugin(id = "huskchat")
@@ -190,5 +187,23 @@ public class HuskChatVelocity implements HuskChat {
     @Override
     public Logger getLoggingAdapter() {
         return VelocityLogger.get(logger);
+    }
+
+    @Override
+    public Optional<Player> matchPlayer(String username) {
+        final Optional<Player> optionalPlayer;
+        if (getProxyServer().getPlayer(username).isPresent()) {
+            final com.velocitypowered.api.proxy.Player player = getProxyServer().getPlayer(username).get();
+            optionalPlayer = Optional.of(VelocityPlayer.adaptCrossPlatform(player));
+        } else {
+            final List<com.velocitypowered.api.proxy.Player> matchedPlayers = getProxyServer().matchPlayer(username)
+                    .stream().filter(val -> val.getUsername().startsWith(username)).sorted().toList();
+            if (matchedPlayers.size() > 0) {
+                optionalPlayer = Optional.of(VelocityPlayer.adaptCrossPlatform(matchedPlayers.get(0)));
+            } else {
+                optionalPlayer = Optional.empty();
+            }
+        }
+        return optionalPlayer;
     }
 }
