@@ -1,6 +1,7 @@
 package net.william278.huskchat.velocity.config;
 
 import com.google.common.reflect.TypeToken;
+import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.config.ConfigFile;
 import net.william278.huskchat.velocity.HuskChatVelocity;
 import ninja.leaping.configurate.ConfigurationNode;
@@ -24,13 +25,13 @@ public class VelocityConfigFile implements ConfigFile {
         // Ensure config is present to read; copy default file otherwise
         File targetFile = new File(plugin.getDataFolder(), target);
         if (!targetFile.exists()) {
-            if (targetFile.mkdirs()) {
+            if (targetFile.toPath().getParent().toFile().mkdirs()) {
                 plugin.getLoggingAdapter().log(Level.CONFIG, "Created HuskSync data folder");
             }
             try {
-                Files.copy(Objects.requireNonNull(HuskChatVelocity.class.getClassLoader().getResourceAsStream(origin)), targetFile.toPath());
+                Files.copy(Objects.requireNonNull(HuskChat.class.getClassLoader().getResourceAsStream(origin)), targetFile.toPath());
             } catch (IOException e) {
-                plugin.getLoggingAdapter().log(Level.SEVERE, "An IOException occurred copying the default config");
+                plugin.getLoggingAdapter().log(Level.SEVERE, "An IOException occurred copying the default config", e);
                 return;
             }
         }
