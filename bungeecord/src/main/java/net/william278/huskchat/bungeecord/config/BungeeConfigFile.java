@@ -78,7 +78,7 @@ public class BungeeConfigFile implements ConfigFile {
 
     @Override
     public Boolean contains(String s) {
-        return config.getBoolean(s);
+        return config.contains(s);
     }
 
     @Override

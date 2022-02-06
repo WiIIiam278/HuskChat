@@ -2,9 +2,7 @@ package net.william278.huskchat.config;
 
 import net.william278.huskchat.channel.Channel;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 /**
  * Stores plugin settings and {@link Channel} data
@@ -64,29 +62,24 @@ public class Settings {
     private static HashSet<Channel> fetchChannels(ConfigFile configFile) throws IllegalArgumentException {
         final HashSet<Channel> channels = new HashSet<>();
         for (String channelID : configFile.getConfigKeys("channels")) {
-            // Get channel format and scope (required)
+
+            // Get channel format and scope and create channel object
             final String format = configFile.getString("channels." + channelID + ".format", "%fullname%&r: %message%");
             final String broadcastScope = configFile.getString("channels." + channelID + ".broadcast_scope", "GLOBAL").toUpperCase();
+            Channel channel = new Channel(channelID.toLowerCase(), format, Channel.BroadcastScope.valueOf(broadcastScope));
 
             // Read shortcut commands
-            List<String> shortcutCommands = new ArrayList<>();
             if (configFile.contains("channels." + channelID + ".shortcut_commands")) {
-                shortcutCommands = configFile.getStringList("channels." + channelID + ".shortcut_commands");
+                channel.shortcutCommands = configFile.getStringList("channels." + channelID + ".shortcut_commands");
             }
 
             // Read optional parameters
-            final String sendPermission = configFile.getString("channels." + channelID + ".permissions.send", null);
-            final String receivePermission = configFile.getString("channels." + channelID + ".permissions.receive", null);
-            Channel channel = new Channel(channelID.toLowerCase(), format, Channel.BroadcastScope.valueOf(broadcastScope));
-            channel.shortcutCommands.addAll(shortcutCommands);
+            channel.sendPermission = configFile.getString("channels." + channelID + ".permissions.send", null);
+            channel.receivePermission = configFile.getString("channels." + channelID + ".permissions.receive", null);
             channel.logMessages = configFile.getBoolean("channels." + channelID + ".log_to_console", true);
             channel.censor = configFile.getBoolean("channels." + channelID + ".censor", false);
-            if (sendPermission != null) {
-                channel.sendPermission = (sendPermission);
-            }
-            if (receivePermission != null) {
-                channel.receivePermission = (receivePermission);
-            }
+
+
 
             channels.add(channel);
         }
