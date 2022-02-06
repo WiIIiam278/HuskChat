@@ -8,11 +8,11 @@ import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 import net.william278.huskchat.bungeecord.HuskChatBungee;
 import net.william278.huskchat.bungeecord.player.BungeePlayer;
-import net.william278.huskchat.config.Settings;
+import net.william278.huskchat.listener.PlayerListener;
 import net.william278.huskchat.message.ChatMessage;
 import net.william278.huskchat.player.PlayerCache;
 
-public class BungeeListener implements Listener {
+public class BungeeListener extends PlayerListener implements Listener {
 
     private static final HuskChatBungee plugin = HuskChatBungee.getInstance();
 
@@ -30,10 +30,8 @@ public class BungeeListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerChangeServer(ServerConnectedEvent e) {
         final String server = e.getServer().getInfo().getName();
-        if (Settings.serverDefaultChannels.containsKey(server)) {
-            PlayerCache.switchPlayerChannel(BungeePlayer.adaptCrossPlatform(e.getPlayer()),
-                    Settings.serverDefaultChannels.get(server), plugin.getMessageManager());
-        }
+        final BungeePlayer player = BungeePlayer.adaptCrossPlatform(e.getPlayer());
+        handlePlayerSwitchServer(player, server, plugin);
     }
 
 }
