@@ -1,5 +1,6 @@
 [![HuskChat Banner](images/banner-graphic.png)](https://github.com/WiIIiam278/HuskChat)
 # HuskChat
+[![Maven CI](https://github.com/WiIIiam278/HuskChat/actions/workflows/gradle.yml/badge.svg)](https://github.com/WiIIiam278/HuskHomes2/actions/workflows/maven.yml)
 [![Discord](https://img.shields.io/discord/818135932103557162?color=7289da&logo=discord)](https://discord.gg/tVYhJfyDWG)
 
 **HuskChat** is a no-frills, simple and customisable cross-server chat system for Minecraft networks running BungeeCord and Velocity frontend servers. 
