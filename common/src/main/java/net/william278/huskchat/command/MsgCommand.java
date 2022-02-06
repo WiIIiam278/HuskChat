@@ -45,7 +45,7 @@ public class MsgCommand extends CommandBase {
         if (args.length == 1) {
             final ArrayList<String> userNames = new ArrayList<>();
             for (Player connectedPlayer : implementor.getOnlinePlayers()) {
-                if (!connectedPlayer.getName().equalsIgnoreCase(connectedPlayer.getName())) {
+                if (!player.getUuid().equals(connectedPlayer.getUuid())) {
                     userNames.add(connectedPlayer.getName());
                 }
             }
