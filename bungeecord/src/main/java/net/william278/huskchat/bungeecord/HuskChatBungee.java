@@ -27,6 +27,9 @@ import java.util.UUID;
 
 public final class HuskChatBungee extends Plugin implements HuskChat {
 
+    // Metrics ID
+    private static final int METRICS_ID = 11882;
+
     // Instance provider
     private static HuskChatBungee instance;
 
@@ -82,7 +85,7 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
         }
 
         // Initialise metrics
-        new Metrics(this, 11882);
+        new Metrics(this, METRICS_ID);
 
         // Plugin startup logic
         getLogger().info("Enabled HuskChat version " + getDescription().getVersion());
