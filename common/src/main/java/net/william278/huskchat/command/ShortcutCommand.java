@@ -1,8 +1,7 @@
 package net.william278.huskchat.command;
 
 import net.william278.huskchat.HuskChat;
-import net.william278.huskchat.channel.Channel;
-import net.william278.huskchat.config.Settings;
+import net.william278.huskchat.message.ChatMessage;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 
@@ -30,10 +29,7 @@ public class ShortcutCommand extends CommandBase {
             for (String arg : args) {
                 message.add(arg);
             }
-            final String oldChannelId = PlayerCache.getPlayerChannel(player.getUuid());
-            PlayerCache.setPlayerChannel(player.getUuid(), channelId);
-            player.proxyChat(message.toString());
-            PlayerCache.setPlayerChannel(player.getUuid(), oldChannelId);
+            new ChatMessage(channelId, player, message.toString(), implementor).dispatch();
         }
     }
 
@@ -42,20 +38,4 @@ public class ShortcutCommand extends CommandBase {
         return Collections.emptyList();
     }
 
-    public void switchChannels(Player player, String channelID) {
-        for (Channel channel : Settings.channels) {
-            if (channel.id.equalsIgnoreCase(channelID)) {
-                if (channel.sendPermission != null) {
-                    if (!player.hasPermission(channel.sendPermission)) {
-                        implementor.getMessageManager().sendMessage(player, "error_no_permission_send", channel.id);
-                        return;
-                    }
-                }
-                PlayerCache.setPlayerChannel(player.getUuid(), channel.id);
-                implementor.getMessageManager().sendMessage(player, "channel_switched", channel.id);
-                return;
-            }
-        }
-        implementor.getMessageManager().sendMessage(player, "error_invalid_channel");
-    }
 }

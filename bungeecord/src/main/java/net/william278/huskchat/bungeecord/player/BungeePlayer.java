@@ -2,7 +2,6 @@ package net.william278.huskchat.bungeecord.player;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.event.ChatEvent;
 import net.william278.huskchat.player.Player;
 
 import java.util.UUID;
@@ -50,12 +49,6 @@ public class BungeePlayer implements Player {
     @Override
     public void passthroughChat(String s) {
         player.chat(s);
-    }
-
-    @Override
-    public void proxyChat(String message) {
-        final ChatEvent event = new ChatEvent(player, player.getServer(), message);
-        ProxyServer.getInstance().getPluginManager().callEvent(event);
     }
 
     /**

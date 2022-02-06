@@ -1,6 +1,5 @@
 package net.william278.huskchat.velocity.player;
 
-import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.proxy.ServerConnection;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.velocity.HuskChatVelocity;
@@ -63,11 +62,6 @@ public class VelocityPlayer implements Player {
     @Override
     public void passthroughChat(String message) {
         player.spoofChatInput(message);
-    }
-
-    @Override
-    public void proxyChat(String message) {
-        plugin.getProxyServer().getEventManager().fire(new PlayerChatEvent(player, message));
     }
 
     /**

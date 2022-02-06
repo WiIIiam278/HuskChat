@@ -14,7 +14,7 @@ public class VelocityListener {
 
     @Subscribe
     public void onPlayerChat(PlayerChatEvent e) {
-        if (e.getMessage().startsWith("/") || e.getResult().isAllowed()) {
+        if (e.getMessage().startsWith("/") || !e.getResult().isAllowed()) {
             return;
         }
         e.setResult(PlayerChatEvent.ChatResult.denied());

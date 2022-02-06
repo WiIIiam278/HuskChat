@@ -8,7 +8,9 @@
     "William278"
   ],
   "dependencies": [
-    "luckperms"
+    {
+      "id": "luckperms"
+    }
   ],
   "main": "net.william278.huskchat.velocity.HuskChatVelocity"
 }
