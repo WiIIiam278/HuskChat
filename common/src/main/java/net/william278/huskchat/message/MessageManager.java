@@ -3,6 +3,7 @@ package net.william278.huskchat.message;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.config.ConfigFile;
 import net.william278.huskchat.player.Player;
+import net.william278.huskchat.player.PlayerCache;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,5 +52,9 @@ public abstract class MessageManager {
     public abstract void sendFormattedOutboundPrivateMessage(Player recipient, Player sender, String message);
 
     public abstract void sendFormattedInboundPrivateMessage(Player recipient, Player sender, String message);
+
+    public abstract void sendFormattedLocalSpyMessage(Player spy, PlayerCache.SpyColor spyColor, Player sender, Channel channel, String message);
+
+    public abstract void sendFormattedSocialSpyMessage(Player spy, PlayerCache.SpyColor spyColor, Player sender, Player receiver, String message);
 
 }

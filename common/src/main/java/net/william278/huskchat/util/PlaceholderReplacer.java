@@ -15,8 +15,8 @@ public class PlaceholderReplacer {
         // Player related placeholders
         placeholders.put("%name%", implementingPlugin.getDataGetter().getPlayerName(player));
         placeholders.put("%fullname%", implementingPlugin.getDataGetter().getPlayerFullName(player));
-        placeholders.put("%prefix%", implementingPlugin.getDataGetter().getPlayerPrefix(player));
-        placeholders.put("%suffix%", implementingPlugin.getDataGetter().getPlayerSuffix(player));
+        placeholders.put("%prefix%", implementingPlugin.getDataGetter().getPlayerPrefix(player).isPresent() ? implementingPlugin.getDataGetter().getPlayerPrefix(player).get() : "");
+        placeholders.put("%suffix%", implementingPlugin.getDataGetter().getPlayerSuffix(player).isPresent() ? implementingPlugin.getDataGetter().getPlayerSuffix(player).get() : "");
         placeholders.put("%ping%", Integer.toString(player.getPing()));
         placeholders.put("%uuid%", player.getUuid().toString());
         placeholders.put("%servername%", player.getServerName());

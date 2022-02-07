@@ -2,6 +2,8 @@ package net.william278.huskchat.getter;
 
 import net.william278.huskchat.player.Player;
 
+import java.util.Optional;
+
 /**
  * The default Data Getter if LuckPerms is not installed
  */
@@ -22,13 +24,13 @@ public class DefaultDataGetter extends DataGetter {
     }
 
     @Override
-    public String getPlayerPrefix(Player player) {
-        return "";
+    public Optional<String> getPlayerPrefix(Player player) {
+        return Optional.empty();
     }
 
     @Override
-    public String getPlayerSuffix(Player player) {
-        return "";
+    public Optional<String> getPlayerSuffix(Player player) {
+        return Optional.empty();
     }
 
 }

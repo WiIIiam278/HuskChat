@@ -13,6 +13,7 @@ import net.william278.huskchat.bungeecord.util.BungeeLogger;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.command.*;
 import net.william278.huskchat.config.Settings;
+import net.william278.huskchat.getter.BungeePermsDataGetter;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.getter.DefaultDataGetter;
 import net.william278.huskchat.getter.LuckPermsDataGetter;
@@ -60,7 +61,12 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
         if (luckPerms != null) {
             playerDataGetter = new LuckPermsDataGetter();
         } else {
-            playerDataGetter = new DefaultDataGetter();
+            Plugin bungeePerms = ProxyServer.getInstance().getPluginManager().getPlugin("BungeePerms");
+            if (bungeePerms != null) {
+                playerDataGetter = new BungeePermsDataGetter();
+            } else {
+                playerDataGetter = new DefaultDataGetter();
+            }
         }
 
         // Register events

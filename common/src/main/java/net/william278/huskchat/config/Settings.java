@@ -30,6 +30,15 @@ public class Settings {
     public static String messageLogFormat;
     public static List<String> messageCommandRestrictedServers = new ArrayList<>();
 
+    // Social spy
+    public static boolean doSocialSpyCommand;
+    public static String socialSpyFormat;
+
+    // Local spy
+    public static boolean doLocalSpyCommand;
+    public static String localSpyFormat;
+    public static List<String> excludedLocalSpyChannels = new ArrayList<>();
+
     /**
      * Use {@link Settings#load(ConfigFile)}
      */
@@ -60,6 +69,17 @@ public class Settings {
         messageLogFormat = configFile.getString("messages_command.log_format", "[MSG] [%sender% -> %receiver%]: %message%");
         if (configFile.contains("channels.messages_command.restricted_servers")) {
             messageCommandRestrictedServers = configFile.getStringList("channels.messages_command.restricted_servers");
+        }
+
+        // Social spy
+        doSocialSpyCommand = configFile.getBoolean("social_spy.enabled", true);
+        socialSpyFormat = configFile.getString("social_spy.format", "&e[Spy] &7%sender% &8→ &7%receiever%:%spy_color% ");
+
+        // Local spy
+        doLocalSpyCommand = configFile.getBoolean("local_spy.enabled", true);
+        localSpyFormat = configFile.getString("local_spy.format", "&e[Spy] &7[%channel%] %name%&8:%spy_color% ");
+        if (configFile.contains("local_spy.excluded_local_channels")) {
+            excludedLocalSpyChannels = configFile.getStringList("local_spy.excluded_local_channels");
         }
     }
 
@@ -115,5 +135,20 @@ public class Settings {
             }
         }
         return serverDefaults;
+    }
+
+    /**
+     * Returns if a channel is excluded from local spy messages
+     *
+     * @param channel {@link Channel} to check
+     * @return {@code true} if the channel should be excluded from /localspy; {@code false} otherwise
+     */
+    public static boolean isLocalSpyChannelExcluded(Channel channel) {
+        for (String excludedChannel : excludedLocalSpyChannels) {
+            if (excludedChannel.equals(channel.id)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

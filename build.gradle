@@ -28,6 +28,7 @@ allprojects {
         maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
         maven { url 'https://repo.velocitypowered.com/snapshots/' }
         maven { url 'https://repo.minebench.de/' }
+        maven { url 'https://repo.wea-ondara.net/repository/public/' }
         maven { url 'https://jitpack.io' }
     }
 

@@ -66,3 +66,15 @@ message_command:
     outbound: '&#00fb9a&You &8→ &#00fb9a&%name%&8: &f'
   #restricted_servers: # Set where /msg and /r cannot be used
   #  - hub
+
+# Options for the /socialspy command
+social_spy:
+  enabled: true
+  format: '&e[Spy] &7%sender_name% &8→ &7%receiever_name%:%spy_color% '
+
+# Options for the /localspy command
+local_spy:
+  enabled: true
+  format: '&e[Spy] &7[%channel%] %name%&8:%spy_color% '
+  #excluded_local_channels: # Channels to exclude from local spying
+  #  - local

@@ -6,6 +6,7 @@ import net.luckperms.api.cacheddata.CachedDataManager;
 import net.luckperms.api.model.user.User;
 import net.william278.huskchat.player.Player;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -46,27 +47,27 @@ public class LuckPermsDataGetter extends DataGetter {
     }
 
     @Override
-    public String getPlayerPrefix(Player player) {
+    public Optional<String> getPlayerPrefix(Player player) {
         User user = getUser(player.getUuid());
-        if (user == null) return "";
+        if (user == null) return Optional.empty();
 
         final String prefix = user.getCachedData().getMetaData().getPrefix();
         if (prefix != null) {
-            return prefix;
+            return Optional.of(prefix);
         }
-        return "";
+        return Optional.empty();
     }
 
     @Override
-    public String getPlayerSuffix(Player player) {
+    public Optional<String> getPlayerSuffix(Player player) {
         User user = getUser(player.getUuid());
-        if (user == null) return "";
+        if (user == null) return Optional.empty();
 
         final String suffix = user.getCachedData().getMetaData().getSuffix();
         if (suffix != null) {
-            return suffix;
+            return Optional.of(suffix);
         }
-        return "";
+        return Optional.empty();
     }
 
     private User getUser(UUID uuid) {

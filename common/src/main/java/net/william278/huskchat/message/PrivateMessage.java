@@ -5,6 +5,7 @@ import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 
+import java.util.HashMap;
 import java.util.logging.Level;
 
 /**
@@ -38,6 +39,14 @@ public record PrivateMessage(Player sender, String targetUsername,
             // Show the received message
             PlayerCache.setLastMessenger(target.getUuid(), sender.getUuid());
             implementor.getMessageManager().sendFormattedInboundPrivateMessage(target, sender, message);
+
+            if (Settings.doSocialSpyCommand) {
+                final HashMap<Player, PlayerCache.SpyColor> spies = PlayerCache.getSocialSpyMessageReceivers(target.getUuid(), implementor);
+                for (Player spy : spies.keySet()) {
+                    final PlayerCache.SpyColor color = spies.get(spy);
+                    implementor.getMessageManager().sendFormattedSocialSpyMessage(spy, color, sender, target, message);
+                }
+            }
 
             // Log to console if enabled
             if (Settings.logPrivateMessages) {

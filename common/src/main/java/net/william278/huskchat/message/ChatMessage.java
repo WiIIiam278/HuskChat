@@ -4,7 +4,9 @@ import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.player.Player;
+import net.william278.huskchat.player.PlayerCache;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Level;
 
@@ -49,9 +51,7 @@ public record ChatMessage(String targetChannelId, Player sender,
                     case GLOBAL, GLOBAL_PASSTHROUGH -> messageRecipients.addAll(implementor.getOnlinePlayers());
                     case LOCAL, LOCAL_PASSTHROUGH -> messageRecipients.addAll(implementor.getOnlinePlayersOnServer(sender));
                     default -> {
-                        // PASSTHROUGH chat mode should be left to backend servers to handle
-                        return;
-                    }
+                    } // No message recipients if the channel is exclusively passed through; let bukkit handle it
                 }
 
                 // Dispatch message to all applicable users in the scope with permission who are not on a restricted server
@@ -70,6 +70,19 @@ public record ChatMessage(String targetChannelId, Player sender,
                     }
 
                     implementor.getMessageManager().sendFormattedChannelMessage(recipient, sender, channel, message);
+                }
+
+                // If the message is on a local channel, dispatch local spy messages to appropriate spies.
+                if (broadcastScope == Channel.BroadcastScope.LOCAL || broadcastScope == Channel.BroadcastScope.LOCAL_PASSTHROUGH) {
+                    if (Settings.doLocalSpyCommand) {
+                        if (!Settings.isLocalSpyChannelExcluded(channel)) {
+                            final HashMap<Player, PlayerCache.SpyColor> spies = PlayerCache.getLocalSpyMessageReceivers(messageRecipients, sender.getServerName(), implementor);
+                            for (Player spy : spies.keySet()) {
+                                final PlayerCache.SpyColor color = spies.get(spy);
+                                implementor.getMessageManager().sendFormattedLocalSpyMessage(spy, color, sender, channel, message);
+                            }
+                        }
+                    }
                 }
 
                 // Log message to console if enabled on the channel
