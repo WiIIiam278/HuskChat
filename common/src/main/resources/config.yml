@@ -86,6 +86,9 @@ chat_filters:
   # Filters against IP and links
   advertising_filter:
     enabled: true
+  caps_filter:
+    enabled: true
+    max_caps_percentage: 0.4
   # Filters against profanity using machine learning. Requires Python 3.8+ on the server with jep and alt-profanity-check installed.
   profanity_filter:
     enabled: false

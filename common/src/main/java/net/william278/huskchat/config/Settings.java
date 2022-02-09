@@ -2,6 +2,7 @@ package net.william278.huskchat.config;
 
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.filter.AdvertisingFilterer;
+import net.william278.huskchat.filter.CapsFilter;
 import net.william278.huskchat.filter.ChatFilter;
 import net.william278.huskchat.filter.ProfanityFilterer;
 
@@ -92,6 +93,9 @@ public class Settings {
         clearChatFilters(); // Clear and dispose of any existing ProfanityChecker instances
         if (configFile.getBoolean("chat_filters.advertising_filter.enabled", true)) {
             chatFilters.add(new AdvertisingFilterer());
+        }
+        if (configFile.getBoolean("chat_filters.caps_filter.enabled", true)) {
+            chatFilters.add(new CapsFilter(configFile.getDouble("chat_filters.caps_filter.max_caps_percentage", 0.4)));
         }
         if (configFile.getBoolean("chat_filters.profanity_filter.enabled", false)) {
             chatFilters.add(new ProfanityFilterer(ProfanityFilterer.ProfanityFilterMode.valueOf(

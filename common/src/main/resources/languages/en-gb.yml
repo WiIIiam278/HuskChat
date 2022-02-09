@@ -28,3 +28,4 @@ local_spy_toggled_on_color: '[You are now spying on local chat in](#00fb9a) %1%%
 local_spy_toggled_off: '[You are no longer spying on other servers'' local chat channels.](#00fb9a)'
 error_chat_filter_advertising: '[You cannot advertise or post links in chat.(#ff7e5e)'
 error_chat_filter_profanity: '[You cannot use profanity in chat.](#ff7e5e)'
+error_chat_filter_caps: '[Please watch your caps in chat.](#ff7e5e)'
