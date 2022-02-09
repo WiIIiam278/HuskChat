@@ -15,7 +15,7 @@ public class AdvertisingFilterer extends ChatFilter {
             "^" +
                     // protocol identifier (optional)
                     // short syntax // still required
-                    "(?:(?:(?:https?|ftp):)?//)" +
+                    "(?:(?:(?:https?|ftp):)?//)?" +
                     // user:pass BasicAuth (optional)
                     "(?:\\S+(?::\\S*)?@)?" +
                     "(?:" +
