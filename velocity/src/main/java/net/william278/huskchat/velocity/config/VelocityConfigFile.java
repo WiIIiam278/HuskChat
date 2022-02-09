@@ -86,6 +86,16 @@ public class VelocityConfigFile implements ConfigFile {
     }
 
     @Override
+    public Double getDouble(String path) {
+        return navigateTo(path).getDouble();
+    }
+
+    @Override
+    public Double getDouble(String path, double defaultValue) {
+        return navigateTo(path).getDouble(defaultValue);
+    }
+
+    @Override
     public Boolean getBoolean(String path) {
         return navigateTo(path).getBoolean();
     }

@@ -15,6 +15,10 @@ public interface ConfigFile {
 
     Integer getInteger(String path, int defaultValue);
 
+    Double getDouble(String path);
+
+    Double getDouble(String path, double defaultValue);
+
     Boolean getBoolean(String path);
 
     Boolean getBoolean(String path, boolean defaultValue);

@@ -46,9 +46,9 @@ public class Channel {
     public boolean logMessages;
 
     /**
-     * todo Whether this channel should automatically censor its messages
+     * Whether this channel should automatically apply filters to messages
      */
-    public boolean censor;
+    public boolean filter;
 
     /**
      * Creates a channel with the specified ID and basic format

@@ -3,6 +3,7 @@ package net.william278.huskchat.message;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.config.Settings;
+import net.william278.huskchat.filter.ChatFilter;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 
@@ -40,6 +41,16 @@ public record ChatMessage(String targetChannelId, Player sender,
 
                 // Determine the players who will receive the message;
                 Channel.BroadcastScope broadcastScope = channel.broadcastScope;
+
+                // If the message is to be filtered, then perform filter checks
+                if (channel.filter && !sender.hasPermission("huskchat.bypass_filters")) {
+                    for (ChatFilter filter : Settings.chatFilters) {
+                        if (!filter.isAllowed(message)) {
+                            implementor.getMessageManager().sendMessage(sender, filter.getFailureErrorMessageId());
+                            return;
+                        }
+                    }
+                }
 
                 // If the message is to be passed through, then do so
                 if (broadcastScope.isPassThrough) {

@@ -67,6 +67,16 @@ public class BungeeConfigFile implements ConfigFile {
     }
 
     @Override
+    public Double getDouble(String s) {
+        return config.getDouble(s);
+    }
+
+    @Override
+    public Double getDouble(String s, double v) {
+        return config.getDouble(s, v);
+    }
+
+    @Override
     public Boolean getBoolean(String s) {
         return config.getBoolean(s);
     }

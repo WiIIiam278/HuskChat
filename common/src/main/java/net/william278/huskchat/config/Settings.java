@@ -1,6 +1,9 @@
 package net.william278.huskchat.config;
 
 import net.william278.huskchat.channel.Channel;
+import net.william278.huskchat.filter.AdvertisingFilterer;
+import net.william278.huskchat.filter.ChatFilter;
+import net.william278.huskchat.filter.ProfanityFilterer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +41,9 @@ public class Settings {
     public static boolean doLocalSpyCommand;
     public static String localSpyFormat;
     public static List<String> excludedLocalSpyChannels = new ArrayList<>();
+
+    // Chat filters
+    public static List<ChatFilter> chatFilters = new ArrayList<>();
 
     /**
      * Use {@link Settings#load(ConfigFile)}
@@ -81,6 +87,17 @@ public class Settings {
         if (configFile.contains("local_spy.excluded_local_channels")) {
             excludedLocalSpyChannels = configFile.getStringList("local_spy.excluded_local_channels");
         }
+
+        // Chat filters
+        clearChatFilters(); // Clear and dispose of any existing ProfanityChecker instances
+        if (configFile.getBoolean("chat_filters.advertising_filter.enabled", true)) {
+            chatFilters.add(new AdvertisingFilterer());
+        }
+        if (configFile.getBoolean("chat_filters.profanity_filter.enabled", false)) {
+            chatFilters.add(new ProfanityFilterer(ProfanityFilterer.ProfanityFilterMode.valueOf(
+                    configFile.getString("chat_filters.profanity_filter.mode", "TOLERANCE").toUpperCase()),
+                    configFile.getDouble("chat_filters.profanity_filter.tolerance", 0.78d)));
+        }
     }
 
     /**
@@ -113,7 +130,7 @@ public class Settings {
             channel.sendPermission = configFile.getString("channels." + channelID + ".permissions.send", null);
             channel.receivePermission = configFile.getString("channels." + channelID + ".permissions.receive", null);
             channel.logMessages = configFile.getBoolean("channels." + channelID + ".log_to_console", true);
-            channel.censor = configFile.getBoolean("channels." + channelID + ".censor", false);
+            channel.filter = configFile.getBoolean("channels." + channelID + ".filtered", true);
 
             channels.add(channel);
         }
@@ -150,5 +167,18 @@ public class Settings {
             }
         }
         return false;
+    }
+
+    /**
+     * Clears the chat filters and disposes of the existing ProfanityFilter
+     */
+    private static void clearChatFilters() {
+        for (ChatFilter chatFilter : chatFilters) {
+            if (chatFilter instanceof ProfanityFilterer p) {
+                p.dispose();
+                break;
+            }
+        }
+        chatFilters = new ArrayList<>();
     }
 }
