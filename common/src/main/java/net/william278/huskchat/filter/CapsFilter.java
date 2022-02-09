@@ -23,7 +23,7 @@ public class CapsFilter extends ChatFilter {
                 capsLetters++;
             }
         }
-        double capsProportion = messageLength / (double) capsLetters;
+        double capsProportion = (double) capsLetters / messageLength;
         return !(capsProportion > capsPercentage);
     }
 
