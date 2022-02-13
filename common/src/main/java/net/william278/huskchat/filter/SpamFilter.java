@@ -34,7 +34,7 @@ public class SpamFilter extends ChatFilter {
         }
         final long currentTimestamp = Instant.now().getEpochSecond();
         if (!userMessageQueues.get(player.getUuid()).isEmpty()) {
-            if (userMessageQueues.get(player.getUuid()).getLast() > currentTimestamp + periodLength) {
+            if (userMessageQueues.get(player.getUuid()).getLast() < currentTimestamp + periodLength) {
                 userMessageQueues.get(player.getUuid()).removeLast();
             }
             if (userMessageQueues.get(player.getUuid()).size() >= maxMessagesPerPeriod) {
