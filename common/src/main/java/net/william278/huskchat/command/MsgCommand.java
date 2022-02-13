@@ -1,6 +1,7 @@
 package net.william278.huskchat.command;
 
 import net.william278.huskchat.HuskChat;
+import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.message.PrivateMessage;
 import net.william278.huskchat.player.Player;
 
@@ -15,7 +16,7 @@ public class MsgCommand extends CommandBase {
     private final static String PERMISSION = "huskchat.command.msg";
 
     public MsgCommand(HuskChat implementor) {
-        super("msg", PERMISSION, implementor, "m", "message", "w", "whisper", "t", "tell", "pm");
+        super(Settings.messageCommandAliases.get(0), PERMISSION, implementor, Settings.getAliases(Settings.messageCommandAliases));
     }
 
     @Override

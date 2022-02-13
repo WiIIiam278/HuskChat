@@ -1,15 +1,10 @@
 package net.william278.huskchat.config;
 
 import net.william278.huskchat.channel.Channel;
-import net.william278.huskchat.filter.AdvertisingFilterer;
-import net.william278.huskchat.filter.CapsFilter;
-import net.william278.huskchat.filter.ChatFilter;
-import net.william278.huskchat.filter.ProfanityFilterer;
+import net.william278.huskchat.filter.*;
+import net.william278.huskchat.filter.replacer.EmojiReplacer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * Stores plugin settings and {@link Channel} data
@@ -24,9 +19,12 @@ public class Settings {
     public static HashMap<String, String> serverDefaultChannels = new HashMap<>();
     public static HashSet<Channel> channels = new HashSet<>();
     public static String channelLogFormat;
+    public static List<String> channelCommandAliases = new ArrayList<>();
 
     // Message command config
     public static boolean doMessageCommand;
+    public static List<String> messageCommandAliases = new ArrayList<>();
+    public static List<String> replyCommandAliases = new ArrayList<>();
     public static String inboundMessageFormat;
     public static String outboundMessageFormat;
     public static boolean logPrivateMessages;
@@ -37,11 +35,13 @@ public class Settings {
     // Social spy
     public static boolean doSocialSpyCommand;
     public static String socialSpyFormat;
+    public static List<String> socialSpyCommandAliases = new ArrayList<>();
 
     // Local spy
     public static boolean doLocalSpyCommand;
     public static String localSpyFormat;
     public static List<String> excludedLocalSpyChannels = new ArrayList<>();
+    public static List<String> localSpyCommandAliases = new ArrayList<>();
 
     // Chat filters
     public static List<ChatFilter> chatFilters = new ArrayList<>();
@@ -66,6 +66,7 @@ public class Settings {
         channelLogFormat = configFile.getString("channel_log_format", "[CHAT] [%channel%] %sender%: %message%");
         channels.addAll(fetchChannels(configFile));
         serverDefaultChannels = getServerDefaultChannels(configFile);
+        channelCommandAliases = (configFile.contains("channel_command_aliases")) ? new ArrayList<>(configFile.getStringList("channel_command_aliases")) : Collections.singletonList("/channel");
 
         // Other options
         doMessageCommand = configFile.getBoolean("message_command.enabled", true);
@@ -74,34 +75,23 @@ public class Settings {
         logPrivateMessages = configFile.getBoolean("messages_command.log_to_console", true);
         censorPrivateMessages = configFile.getBoolean("messages_command.censor", false);
         messageLogFormat = configFile.getString("messages_command.log_format", "[MSG] [%sender% -> %receiver%]: %message%");
-        if (configFile.contains("channels.messages_command.restricted_servers")) {
-            messageCommandRestrictedServers = configFile.getStringList("channels.messages_command.restricted_servers");
-        }
+        messageCommandRestrictedServers = configFile.getStringList("channels.messages_command.restricted_servers");
+        messageCommandAliases = (configFile.contains("messages_command.msg_aliases")) ? new ArrayList<>(configFile.getStringList("messages_command.msg_aliases")) : Collections.singletonList("/msg");
+        replyCommandAliases = (configFile.contains("messages_command.reply_aliases")) ? new ArrayList<>(configFile.getStringList("messages_command.reply_aliases")) : Collections.singletonList("/reply");
 
         // Social spy
         doSocialSpyCommand = configFile.getBoolean("social_spy.enabled", true);
         socialSpyFormat = configFile.getString("social_spy.format", "&e[Spy] &7%sender% &8→ &7%receiever%:%spy_color% ");
+        socialSpyCommandAliases = (configFile.contains("social_spy.socialspy_aliases")) ? new ArrayList<>(configFile.getStringList("social_spy.socialspy_aliases")) : Collections.singletonList("/socialspy");
 
         // Local spy
         doLocalSpyCommand = configFile.getBoolean("local_spy.enabled", true);
         localSpyFormat = configFile.getString("local_spy.format", "&e[Spy] &7[%channel%] %name%&8:%spy_color% ");
-        if (configFile.contains("local_spy.excluded_local_channels")) {
-            excludedLocalSpyChannels = configFile.getStringList("local_spy.excluded_local_channels");
-        }
+        excludedLocalSpyChannels = (configFile.contains("local_spy.excluded_local_channels")) ? configFile.getStringList("local_spy.excluded_local_channels") : new ArrayList<>();
+        localSpyCommandAliases = (configFile.contains("local_spy.localspy_aliases")) ? new ArrayList<>(configFile.getStringList("local_spy.localspy_aliases")) : Collections.singletonList("/localspy");
 
         // Chat filters
-        clearChatFilters(); // Clear and dispose of any existing ProfanityChecker instances
-        if (configFile.getBoolean("chat_filters.advertising_filter.enabled", true)) {
-            chatFilters.add(new AdvertisingFilterer());
-        }
-        if (configFile.getBoolean("chat_filters.caps_filter.enabled", true)) {
-            chatFilters.add(new CapsFilter(configFile.getDouble("chat_filters.caps_filter.max_caps_percentage", 0.4)));
-        }
-        if (configFile.getBoolean("chat_filters.profanity_filter.enabled", false)) {
-            chatFilters.add(new ProfanityFilterer(ProfanityFilterer.ProfanityFilterMode.valueOf(
-                    configFile.getString("chat_filters.profanity_filter.mode", "TOLERANCE").toUpperCase()),
-                    configFile.getDouble("chat_filters.profanity_filter.tolerance", 0.78d)));
-        }
+        chatFilters = fetchChatFilters(configFile);
     }
 
     /**
@@ -122,7 +112,7 @@ public class Settings {
 
             // Read shortcut commands
             if (configFile.contains("channels." + channelID + ".shortcut_commands")) {
-                channel.shortcutCommands = configFile.getStringList("channels." + channelID + ".shortcut_commands");
+                channel.shortcutCommands = getCommandsFromList(configFile.getStringList("channels." + channelID + ".shortcut_commands"));
             }
 
             // Read shortcut commands
@@ -142,6 +132,48 @@ public class Settings {
     }
 
     /**
+     * Returns a {@link Set} of {@link ChatFilter}s to use for filtering chat messages
+     *
+     * @param configFile The proxy {@link ConfigFile}
+     * @return {@link ChatFilter}s to use
+     */
+    private static List<ChatFilter> fetchChatFilters(ConfigFile configFile) {
+        ArrayList<ChatFilter> filters = new ArrayList<>();
+        clearChatFilters(); // Clear and dispose of any existing ProfanityChecker instances
+
+        // Filters
+        if (configFile.getBoolean("chat_filters.advertising_filter.enabled", true)) {
+            filters.add(new AdvertisingFilterer());
+        }
+        if (configFile.getBoolean("chat_filters.caps_filter.enabled", true)) {
+            filters.add(new CapsFilter(configFile.getDouble("chat_filters.caps_filter.max_caps_percentage", 0.4)));
+        }
+        if (configFile.getBoolean("chat_filters.spam_filter.enabled", true)) {
+            filters.add(new SpamFilter(configFile.getInteger("chat_filters.spam_filter.period_seconds", 4),
+                    configFile.getInteger("chat_filters.spam_filter.messages_per_period", 3)));
+        }
+        if (configFile.getBoolean("chat_filters.profanity_filter.enabled", false)) {
+            filters.add(new ProfanityFilterer(ProfanityFilterer.ProfanityFilterMode.valueOf(
+                    configFile.getString("chat_filters.profanity_filter.mode", "TOLERANCE").toUpperCase()),
+                    configFile.getDouble("chat_filters.profanity_filter.tolerance", 0.78d)));
+        }
+        if (configFile.getBoolean("chat_filters.ascii_filter.enabled", false)) {
+            filters.add(new AsciiFilter());
+        }
+
+        // Replacers
+        if (configFile.getBoolean("message_replacers.emoji_replacer.enabled", true)) {
+            HashMap<String, String> emojiSequences = new HashMap<>();
+            for (String characters : configFile.getConfigKeys("message_replacers.emoji_replacer.emoji")) {
+                emojiSequences.put(characters, configFile.getString("message_replacers.emoji_replacer.emoji." + characters));
+            }
+            filters.add(new EmojiReplacer(emojiSequences));
+        }
+
+        return filters;
+    }
+
+    /**
      * Returns a {@link java.util.Map} of servers to the default channel to enforce on that server
      *
      * @param configFile The proxy {@link ConfigFile}
@@ -156,6 +188,20 @@ public class Settings {
             }
         }
         return serverDefaults;
+    }
+
+    /**
+     * Returns a {@link Set} of formatted command strings from a list
+     *
+     * @param rawCommands Raw commands prepended with {@code /}
+     * @return formatted set of command strings
+     */
+    private static Set<String> getCommandsFromList(List<String> rawCommands) {
+        Set<String> commands = new HashSet<>();
+        for (String command : rawCommands) {
+            commands.add(command.substring(1));
+        }
+        return commands;
     }
 
     /**
@@ -184,5 +230,19 @@ public class Settings {
             }
         }
         chatFilters = new ArrayList<>();
+    }
+
+    /**
+     * Returns the aliases from a list of aliases
+     *
+     * @param aliases The alias list
+     * @return The actual command aliases
+     */
+    public static String[] getAliases(List<String> aliases) {
+        String[] aliasList = new String[aliases.size() - 1];
+        for (int i = 1; i < aliases.size(); i++) {
+            aliasList[i - 1] = aliases.get(i);
+        }
+        return aliasList;
     }
 }

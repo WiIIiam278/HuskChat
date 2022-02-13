@@ -30,13 +30,15 @@ of use cases by allowing you to define channels and manage who can send and rece
 
 ## Commands
 
-| Command           | Usage                             | Aliases                                           | Description                                           | Permission                                                  |
-|-------------------|-----------------------------------|---------------------------------------------------|-------------------------------------------------------|-------------------------------------------------------------|
-| `/channel`        | `/channel <channel_id> [message]` | `/c`                                              | Send a message or switch to a chat channel            | `huskchat.command.channel`                                  |
-| `/huskchat`       | `/huskchat <about/reload>`        | N/A                                               | View plugin information and reload                    | `huskchat.command.huskchat`                                 |
-| `/msg`            | `/msg <player> <message>`         | `/m`, `/tell`, `/w`, `/whisper`, `/message`, `/t` | Send a private message to a player                    | `huskchat.command.msg`                                      |
-| `/reply`          | `/reply <message>`                | `/r`                                              | Quickly reply to a private message                    | `huskchat.command.msg.reply`                                |
-| Shortcut commands | `/<shortcut_command> <message>`   | N/A                                               | Quickly send a message in or switch to a chat channel | Channel send permission, e.g. `huskchat.channel.staff.send` |
+| Command           | Usage                             | Aliases                                            | Description                                              | Permission                                                  |
+|-------------------|-----------------------------------|----------------------------------------------------|----------------------------------------------------------|-------------------------------------------------------------|
+| `/channel`        | `/channel <channel_id> [message]` | `/c`                                               | Send a message or switch to a chat channel               | `huskchat.command.channel`                                  |
+| `/huskchat`       | `/huskchat <about/reload>`        | N/A                                                | View plugin information and reload                       | `huskchat.command.huskchat`                                 |
+| `/msg`            | `/msg <player> <message>`         | `/m`, `/tell`, `/w`, `/whisper`, `/message`, `/pm` | Send a private message to a player                       | `huskchat.command.msg`                                      |
+| `/reply`          | `/reply <message>`                | `/r`                                               | Quickly reply to a private message                       | `huskchat.command.msg.reply`                                |
+| `/socialspy`      | `/socialspy`                      | `/ss`                                              | Lets you view other users' private messages              | `huskchat.command.socialspy`                                |
+| `/localspy`       | `/localspy`                       | `/ls`                                              | Lets you view messages sent in other local chat channels | `huskchat.command.localspy`                                 |
+| Shortcut commands | `/<shortcut_command> <message>`   | N/A                                                | Quickly send a message in or switch to a chat channel    | Channel send permission, e.g. `huskchat.channel.staff.send` |
 
 ## Channels & Out-of-box experience
 

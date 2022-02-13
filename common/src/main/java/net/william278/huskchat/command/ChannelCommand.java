@@ -16,7 +16,7 @@ public class ChannelCommand extends CommandBase {
     private final static String PERMISSION = "huskchat.command.channel";
 
     public ChannelCommand(HuskChat implementor) {
-        super("channel", PERMISSION, implementor, "c");
+        super(Settings.channelCommandAliases.get(0), PERMISSION, implementor, Settings.getAliases(Settings.channelCommandAliases));
     }
 
     @Override

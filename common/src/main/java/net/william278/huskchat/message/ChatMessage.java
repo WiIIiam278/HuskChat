@@ -4,6 +4,7 @@ import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.filter.ChatFilter;
+import net.william278.huskchat.filter.replacer.ReplacerFilter;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 
@@ -14,8 +15,20 @@ import java.util.logging.Level;
 /**
  * Represents a message to be sent in a chat channel
  */
-public record ChatMessage(String targetChannelId, Player sender,
-                          String message, HuskChat implementor) {
+public class ChatMessage {
+
+    public final String targetChannelId;
+    public final Player sender;
+    public final HuskChat implementor;
+
+    public String message;
+
+    public ChatMessage(String targetChannelId, Player sender, String message, HuskChat implementor) {
+        this.targetChannelId = targetChannelId;
+        this.sender = sender;
+        this.message = message;
+        this.implementor = implementor;
+    }
 
     /**
      * Dispatch the message to be sent
@@ -42,12 +55,18 @@ public record ChatMessage(String targetChannelId, Player sender,
                 // Determine the players who will receive the message;
                 Channel.BroadcastScope broadcastScope = channel.broadcastScope;
 
-                // If the message is to be filtered, then perform filter checks
+                // If the message is to be filtered, then perform filter checks (unless they have the bypass permission)
                 if (channel.filter && !sender.hasPermission("huskchat.bypass_filters")) {
                     for (ChatFilter filter : Settings.chatFilters) {
-                        if (!filter.isAllowed(message)) {
+                        if (sender.hasPermission(filter.getFilterIgnorePermission())) {
+                            continue;
+                        }
+                        if (!filter.isAllowed(sender, message)) {
                             implementor.getMessageManager().sendMessage(sender, filter.getFailureErrorMessageId());
                             return;
+                        }
+                        if (filter instanceof ReplacerFilter replacer) {
+                            message = replacer.replace(message);
                         }
                     }
                 }
@@ -62,7 +81,7 @@ public record ChatMessage(String targetChannelId, Player sender,
                     case GLOBAL, GLOBAL_PASSTHROUGH -> messageRecipients.addAll(implementor.getOnlinePlayers());
                     case LOCAL, LOCAL_PASSTHROUGH -> messageRecipients.addAll(implementor.getOnlinePlayersOnServer(sender));
                     default -> {
-                    } // No message recipients if the channel is exclusively passed through; let bukkit handle it
+                    } // No message recipients if the channel is exclusively passed through; let the backend handle it
                 }
 
                 // Dispatch message to all applicable users in the scope with permission who are not on a restricted server

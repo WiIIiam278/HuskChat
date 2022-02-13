@@ -1,6 +1,7 @@
 package net.william278.huskchat.command;
 
 import net.william278.huskchat.HuskChat;
+import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.message.PrivateMessage;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
@@ -15,7 +16,7 @@ public class ReplyCommand extends CommandBase {
     private final static String PERMISSION = "huskchat.command.msg.reply";
 
     public ReplyCommand(HuskChat implementor) {
-        super("reply", PERMISSION, implementor, "r");
+        super(Settings.messageCommandAliases.get(0), PERMISSION, implementor, Settings.getAliases(Settings.messageCommandAliases));
     }
 
     @Override

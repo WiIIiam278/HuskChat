@@ -1,6 +1,7 @@
 package net.william278.huskchat.command;
 
 import net.william278.huskchat.HuskChat;
+import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 
@@ -13,7 +14,7 @@ public class LocalSpyCommand extends CommandBase {
     private final static String PERMISSION = "huskchat.command.localspy";
 
     public LocalSpyCommand(HuskChat implementor) {
-        super("localspy", PERMISSION, implementor);
+        super(Settings.localSpyCommandAliases.get(0), PERMISSION, implementor, Settings.getAliases(Settings.localSpyCommandAliases));
     }
 
     @Override

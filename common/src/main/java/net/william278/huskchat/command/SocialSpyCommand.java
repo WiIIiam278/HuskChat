@@ -1,6 +1,7 @@
 package net.william278.huskchat.command;
 
 import net.william278.huskchat.HuskChat;
+import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 
@@ -13,7 +14,7 @@ public class SocialSpyCommand extends CommandBase {
     private final static String PERMISSION = "huskchat.command.socialspy";
 
     public SocialSpyCommand(HuskChat implementor) {
-        super("socialspy", PERMISSION, implementor);
+        super(Settings.socialSpyCommandAliases.get(0), PERMISSION, implementor, Settings.getAliases(Settings.socialSpyCommandAliases));
     }
 
     @Override

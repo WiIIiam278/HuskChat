@@ -1,7 +1,9 @@
 package net.william278.huskchat.channel;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Channel {
 
@@ -21,9 +23,9 @@ public class Channel {
     public final BroadcastScope broadcastScope;
 
     /**
-     * A {@link ArrayList} of shortcut commands users can execute to access the channel
+     * A {@link Set} of shortcut commands users can execute to access the channel
      */
-    public List<String> shortcutCommands = new ArrayList<>();
+    public Set<String> shortcutCommands = new HashSet<>();
 
     /**
      * A {@link ArrayList} of servers where this channel cannot be used

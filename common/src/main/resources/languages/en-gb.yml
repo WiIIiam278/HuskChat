@@ -29,3 +29,5 @@ local_spy_toggled_off: '[You are no longer spying on other servers'' local chat 
 error_chat_filter_advertising: '[You cannot advertise or post links in chat.(#ff7e5e)'
 error_chat_filter_profanity: '[You cannot use profanity in chat.](#ff7e5e)'
 error_chat_filter_caps: '[Please watch your caps in chat.](#ff7e5e)'
+error_chat_filter_spam: '[Please wait! You are sending messages too quickly.](#ff7e5e)'
+error_chat_filter_ascii: '[You cannot use special characters in chat.](#ff7e5e)'

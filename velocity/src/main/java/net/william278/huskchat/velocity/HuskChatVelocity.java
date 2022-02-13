@@ -111,7 +111,7 @@ public class HuskChatVelocity implements HuskChat {
         // Register shortcut commands
         for (Channel channel : Settings.channels) {
             for (String command : channel.shortcutCommands) {
-                new VelocityCommand(new ShortcutCommand(command.substring(1), channel.id, this));
+                new VelocityCommand(new ShortcutCommand(command, channel.id, this));
             }
         }
 

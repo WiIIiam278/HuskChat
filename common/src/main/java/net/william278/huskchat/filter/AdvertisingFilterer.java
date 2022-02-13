@@ -1,5 +1,7 @@
 package net.william278.huskchat.filter;
 
+import net.william278.huskchat.player.Player;
+
 import java.util.regex.Pattern;
 
 /**
@@ -54,13 +56,18 @@ public class AdvertisingFilterer extends ChatFilter {
             Pattern.CASE_INSENSITIVE);
 
     @Override
-    public boolean isAllowed(String message) {
+    public boolean isAllowed(Player player, String message) {
         return !(domainPattern.matcher(message).matches());
     }
 
     @Override
     public String getFailureErrorMessageId() {
         return "error_chat_filter_advertising";
+    }
+
+    @Override
+    public String getFilterIgnorePermission() {
+        return "huskchat.ignore_filters.advertising";
     }
 
 }

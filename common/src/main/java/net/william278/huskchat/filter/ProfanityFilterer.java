@@ -1,5 +1,6 @@
 package net.william278.huskchat.filter;
 
+import net.william278.huskchat.player.Player;
 import net.william278.profanitycheckerapi.ProfanityChecker;
 
 import java.util.concurrent.*;
@@ -25,7 +26,7 @@ public class ProfanityFilterer extends ChatFilter {
     }
 
     @Override
-    public boolean isAllowed(String message) {
+    public boolean isAllowed(Player player, String message) {
         try {
             return !getIsProfane(message);
         } catch (InterruptedException | ExecutionException e) {
@@ -37,6 +38,11 @@ public class ProfanityFilterer extends ChatFilter {
     @Override
     public String getFailureErrorMessageId() {
         return "error_chat_filter_profanity";
+    }
+
+    @Override
+    public String getFilterIgnorePermission() {
+        return "huskchat.ignore_filters.profanity";
     }
 
     /**
