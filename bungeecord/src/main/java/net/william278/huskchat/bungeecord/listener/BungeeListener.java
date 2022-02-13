@@ -1,5 +1,6 @@
 package net.william278.huskchat.bungeecord.listener;
 
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
@@ -23,8 +24,8 @@ public class BungeeListener extends PlayerListener implements Listener {
         }
         e.setCancelled(true);
         ProxiedPlayer player = (ProxiedPlayer) e.getSender();
-        new ChatMessage(PlayerCache.getPlayerChannel(player.getUniqueId()),
-                BungeePlayer.adaptCrossPlatform(player), e.getMessage(), plugin).dispatch();
+        ProxyServer.getInstance().getScheduler().runAsync(plugin, () -> new ChatMessage(PlayerCache.getPlayerChannel(player.getUniqueId()),
+                BungeePlayer.adaptCrossPlatform(player), e.getMessage(), plugin).dispatch());
     }
 
     @EventHandler(priority = EventPriority.HIGH)

@@ -34,10 +34,10 @@ public class SpamFilter extends ChatFilter {
         }
         final long currentTimestamp = Instant.now().getEpochSecond();
         if (!userMessageQueues.get(player.getUuid()).isEmpty()) {
-            if (userMessageQueues.get(player.getUuid()).getLast() < currentTimestamp + periodLength) {
+            if (currentTimestamp > userMessageQueues.get(player.getUuid()).getLast() + periodLength) {
                 userMessageQueues.get(player.getUuid()).removeLast();
             }
-            if (userMessageQueues.get(player.getUuid()).size() >= maxMessagesPerPeriod) {
+            if (userMessageQueues.get(player.getUuid()).size() > maxMessagesPerPeriod) {
                 return false;
             }
         }
