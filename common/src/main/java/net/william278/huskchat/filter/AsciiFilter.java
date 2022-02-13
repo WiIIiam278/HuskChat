@@ -16,7 +16,7 @@ public class AsciiFilter extends ChatFilter {
 
     @Override
     public boolean isAllowed(Player player, String message) {
-        return asciiPattern.matcher(message).matches();
+        return !asciiPattern.matcher(message).matches();
     }
 
     @Override

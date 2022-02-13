@@ -31,7 +31,6 @@ public class SpamFilter extends ChatFilter {
     public boolean isAllowed(Player player, String message) {
         if (!userMessageQueues.containsKey(player.getUuid())) {
             userMessageQueues.put(player.getUuid(), new LinkedList<>());
-            return true;
         }
         final long currentTimestamp = Instant.now().getEpochSecond();
         if (!userMessageQueues.isEmpty()) {
