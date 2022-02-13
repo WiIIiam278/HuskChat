@@ -12,11 +12,11 @@ public class AsciiFilter extends ChatFilter {
     /**
      * Regex pattern matching only ascii characters
      */
-    private final Pattern asciiPattern = Pattern.compile("/[\\x20-\\x7E\\x80-\\xFF]/");
+    private final Pattern asciiPattern = Pattern.compile("^[\\u0000-\\u007F]*$");
 
     @Override
     public boolean isAllowed(Player player, String message) {
-        return !asciiPattern.matcher(message).matches();
+        return asciiPattern.matcher(message).matches();
     }
 
     @Override
