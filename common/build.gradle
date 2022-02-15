@@ -3,7 +3,7 @@ dependencies {
     compileOnly 'net.luckperms:api:5.4'
     compileOnly 'net.alpenblock:BungeePerms:4.0-dev-138'
 
-    implementation 'com.github.WiIIiam278:ProfanityCheckerAPI:1.0.1'
+    implementation 'com.github.WiIIiam278:ProfanityCheckerAPI:1.1'
 }
 
 shadowJar {
