@@ -12,7 +12,6 @@ shadowJar {
     relocate 'de.themoep', 'net.william278.huskchat.libraries'
     relocate 'org.bstats', 'net.william278.huskchat.libraries.bstats'
     relocate 'org.apache', 'net.william278.huskchat.libraries'
-    relocate 'commons-io.commons-io', 'net.william278.huskchat.libraries.commons-io'
 
     dependencies {
         //noinspection GroovyAssignabilityCheck

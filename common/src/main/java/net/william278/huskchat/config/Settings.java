@@ -155,7 +155,8 @@ public class Settings {
         if (configFile.getBoolean("chat_filters.profanity_filter.enabled", false)) {
             filters.add(new ProfanityFilterer(ProfanityFilterer.ProfanityFilterMode.valueOf(
                     configFile.getString("chat_filters.profanity_filter.mode", "TOLERANCE").toUpperCase()),
-                    configFile.getDouble("chat_filters.profanity_filter.tolerance", 0.78d)));
+                    configFile.getDouble("chat_filters.profanity_filter.tolerance", 0.78d),
+                    configFile.getString("chat_filters.profanity_filter.library_path", "")));
         }
         if (configFile.getBoolean("chat_filters.ascii_filter.enabled", false)) {
             filters.add(new AsciiFilter());

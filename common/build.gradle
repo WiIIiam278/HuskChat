@@ -3,10 +3,11 @@ dependencies {
     compileOnly 'net.luckperms:api:5.4'
     compileOnly 'net.alpenblock:BungeePerms:4.0-dev-138'
 
-    implementation 'com.github.WiIIiam278:ProfanityCheckerAPI:1.0.1'
+    implementation 'com.github.WiIIiam278:ProfanityCheckerAPI:1.1'
 }
 
 shadowJar {
-    relocate 'commons-io.commons-io', 'net.william278.huskchat.libraries.commons-io'
-    relocate 'com.github.WiIIiam278', 'net.william278.huskchat.libraries.profanitycheckerapi'
+    relocate 'org.apache.commons-io', 'net.william278.huskchat.libraries.commons-io'
+    relocate 'net.william278.profanitycheckerapi', 'net.william278.huskchat.libraries.profanitycheckerapi'
+    relocate 'com.google', 'net.william278.huskchat.libraries'
 }

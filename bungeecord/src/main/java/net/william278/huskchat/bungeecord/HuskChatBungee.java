@@ -83,9 +83,7 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
 
         // Register shortcut commands
         for (Channel channel : Settings.channels) {
-            getLogger().info("Registering shortcut commands for channel: " + channel.id);
             for (String command : channel.shortcutCommands) {
-                getLogger().info("Registered shortuct command: " + command);
                 new BungeeCommand(new ShortcutCommand(command, channel.id, this));
             }
         }

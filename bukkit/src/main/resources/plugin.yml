@@ -1,0 +1,6 @@
+name: HuskChat
+version: ${version}
+author: William278
+main: net.william278.huskchat.bukkit.HuskChatBukkit
+description: Optional backend plugin for HuskChat, providing PlaceholderAPI support
+depend: [ PlaceholderAPI ]

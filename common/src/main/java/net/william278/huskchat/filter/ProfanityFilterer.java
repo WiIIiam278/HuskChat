@@ -18,10 +18,10 @@ public class ProfanityFilterer extends ChatFilter {
 
     private final ProfanityFiltererRunnable profanityFiltererRunnable;
 
-    public ProfanityFilterer(ProfanityFilterMode filterMode, double thresholdValue) {
+    public ProfanityFilterer(ProfanityFilterMode filterMode, double thresholdValue, String libraryPath) {
         this.thresholdValue = thresholdValue;
         this.profanityFilterMode = filterMode;
-        this.profanityFiltererRunnable = new ProfanityFiltererRunnable();
+        this.profanityFiltererRunnable = new ProfanityFiltererRunnable(libraryPath);
         new Thread(profanityFiltererRunnable).start();
     }
 
@@ -74,8 +74,11 @@ public class ProfanityFilterer extends ChatFilter {
         private String input;
         private CompletableFuture<Object> output;
 
-        public ProfanityFiltererRunnable() {
-            threadState = ThreadState.SETUP;
+        private final String libraryPath;
+
+        public ProfanityFiltererRunnable(String libraryPath) {
+            this.threadState = ThreadState.SETUP;
+            this.libraryPath = libraryPath;
         }
 
         public boolean calculateIsProfane(String text) {
@@ -110,7 +113,7 @@ public class ProfanityFilterer extends ChatFilter {
             executor.scheduleAtFixedRate(() -> {
                 switch (threadState) {
                     case SETUP -> {
-                        profanityChecker = new ProfanityChecker();
+                        profanityChecker = libraryPath.isEmpty() ? new ProfanityChecker() : new ProfanityChecker(libraryPath);
                         threadState = ThreadState.ASLEEP;
                     }
                     case CALCULATE -> {
@@ -122,7 +125,7 @@ public class ProfanityFilterer extends ChatFilter {
                         threadState = ThreadState.ASLEEP;
                     }
                     case TERMINATED -> {
-                        profanityChecker.dispose();
+                        profanityChecker.close();
                         executor.shutdown();
                     }
                 }

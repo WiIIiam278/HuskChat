@@ -29,14 +29,8 @@ allprojects {
         maven { url 'https://repo.velocitypowered.com/snapshots/' }
         maven { url 'https://repo.minebench.de/' }
         maven { url 'https://repo.wea-ondara.net/repository/public/' }
+        maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
         maven { url 'https://jitpack.io' }
-    }
-
-    dependencies {
-        implementation('redis.clients:jedis:4.1.1') {
-            //noinspection GroovyAssignabilityCheck
-            exclude module: 'slf4j-api'
-        }
     }
 
     processResources {
@@ -49,7 +43,7 @@ subprojects {
     version rootProject.version
     archivesBaseName = "${rootProject.name}-${project.name.capitalize()}"
 
-    if (['bungeecord', 'velocity', 'plugin'].contains(project.name)) {
+    if (['bungeecord', 'velocity', 'bukkit', 'plugin'].contains(project.name)) {
         shadowJar {
             destinationDirectory.set(file("$rootDir/target"))
             archiveClassifier.set('')
