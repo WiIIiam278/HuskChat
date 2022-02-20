@@ -89,7 +89,7 @@ public class HuskChatVelocity implements HuskChat {
         reloadMessages();
 
         // Setup player data getter
-        Optional<PluginContainer> luckPerms = getProxyServer().getPluginManager().getPlugin("LuckPerms");
+        Optional<PluginContainer> luckPerms = getProxyServer().getPluginManager().getPlugin("luckperms");
         if (luckPerms.isPresent()) {
             playerDataGetter = new LuckPermsDataGetter();
         } else {
