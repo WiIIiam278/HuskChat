@@ -152,6 +152,9 @@ public class Settings {
             filters.add(new SpamFilter(configFile.getInteger("chat_filters.spam_filter.period_seconds", 4),
                     configFile.getInteger("chat_filters.spam_filter.messages_per_period", 3)));
         }
+        if (configFile.getBoolean("chat_filters.repeat_filter.enabled", true)) {
+            filters.add(new RepeatFilter(configFile.getInteger("chat_filters.repeat_filter.previous_messages_to_check", 2)));
+        }
         if (configFile.getBoolean("chat_filters.profanity_filter.enabled", false)) {
             filters.add(new ProfanityFilterer(ProfanityFilterer.ProfanityFilterMode.valueOf(
                     configFile.getString("chat_filters.profanity_filter.mode", "TOLERANCE").toUpperCase()),

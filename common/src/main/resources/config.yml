@@ -119,6 +119,9 @@ chat_filters:
     library_path: '' # Define a directory path for the jep library
     mode: TOLERANCE # Filter rule - AUTOMATIC or TOLERANCE.
     tolerance: 0.78 # If using TOLERANCE mode, the algorithm will determine a profanity probability and compare with this to filter.
+  repeat_filter:
+    enabled: true
+    previous_messages_to_check: 2
   # Filters against the use of non-ASCII (Unicode) characters
   ascii_filter:
     enabled: false

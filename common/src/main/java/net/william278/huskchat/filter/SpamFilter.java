@@ -24,7 +24,7 @@ public class SpamFilter extends ChatFilter {
     public SpamFilter(int periodLength, int maxMessagesPerPeriod) {
         this.periodLength = periodLength;
         this.maxMessagesPerPeriod = maxMessagesPerPeriod;
-        userMessageQueues = new HashMap<>();
+        this.userMessageQueues = new HashMap<>();
     }
 
     @Override
