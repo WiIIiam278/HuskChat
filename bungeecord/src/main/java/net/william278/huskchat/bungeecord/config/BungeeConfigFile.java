@@ -7,7 +7,10 @@ import net.william278.huskchat.bungeecord.HuskChatBungee;
 import net.william278.huskchat.config.ConfigFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collection;
 import java.util.List;
@@ -35,7 +38,8 @@ public class BungeeConfigFile implements ConfigFile {
                     plugin.getLogger().log(Level.CONFIG, "An exception occurred loading the configuration file", e);
                 }
             }
-            config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
+            InputStreamReader stream = new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8);
+            config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(stream);
         } catch (IOException e) {
             plugin.getLogger().log(Level.CONFIG, "An IOException occurred fetching the configuration file", e);
         }
