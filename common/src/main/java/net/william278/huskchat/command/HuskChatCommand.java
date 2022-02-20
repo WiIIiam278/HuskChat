@@ -21,6 +21,7 @@ public class HuskChatCommand extends CommandBase {
         this.pluginInformation = "[HuskChat](#00fb9a bold) [| " + implementor.getMetaPlatform() + " Version " + implementor.getMetaVersion() + "](#00fb9a)\n" +
                 "[" + implementor.getMetaDescription() + "](gray)\n" +
                 "[• Author:](white) [William278](gray show_text=&7Click to visit website open_url=https://william278.net)\n" +
+                "[• Translators:](white) [xF3d3](gray show_text=&7Italian, it-it)\n" +
                 "[• Help Wiki:](white) [[Link]](#00fb9a show_text=&7Click to open link open_url=https://github.com/WiIIiam278/HuskChat/wiki/)\n" +
                 "[• Report Issues:](white) [[Link]](#00fb9a show_text=&7Click to open link open_url=https://github.com/WiIIiam278/HuskChat/issues)\n" +
                 "[• Support Discord:](white) [[Link]](#00fb9a show_text=&7Click to join open_url=https://discord.gg/tVYhJfyDWG)";
