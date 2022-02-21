@@ -117,12 +117,10 @@ public class ChatMessage {
 
                 // Log message to console if enabled on the channel
                 if (channel.logMessages) {
-                    String logMessage = Settings.channelLogFormat;
-                    logMessage = logMessage.replaceAll("%channel%", channel.id.toUpperCase());
-                    logMessage = logMessage.replaceAll("%sender%", sender.getName());
-                    logMessage = logMessage.replaceAll("%message%", message);
-
-                    implementor.getLoggingAdapter().log(Level.INFO, logMessage);
+                    String logFormat = Settings.channelLogFormat;
+                    logFormat = logFormat.replaceAll("%channel%", channel.id.toUpperCase());
+                    logFormat = logFormat.replaceAll("%sender%", sender.getName());
+                    implementor.getLoggingAdapter().log(Level.INFO, logFormat + message);
                 }
                 return;
             }

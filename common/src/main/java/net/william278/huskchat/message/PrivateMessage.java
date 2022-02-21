@@ -50,12 +50,11 @@ public record PrivateMessage(Player sender, String targetUsername,
 
             // Log to console if enabled
             if (Settings.logPrivateMessages) {
-                String logMessage = Settings.channelLogFormat;
-                logMessage = logMessage.replaceAll("%sender%", sender.getName());
-                logMessage = logMessage.replaceAll("%receiver%", target.getName());
-                logMessage = logMessage.replaceAll("%message%", message);
+                String logFormat = Settings.channelLogFormat;
+                logFormat = logFormat.replaceAll("%sender%", sender.getName());
+                logFormat = logFormat.replaceAll("%receiver%", target.getName());
 
-                implementor.getLoggingAdapter().log(Level.INFO, logMessage);
+                implementor.getLoggingAdapter().log(Level.INFO, logFormat + message);
             }
         }, () -> implementor.getMessageManager().sendMessage(sender, "error_player_not_found"));
     }

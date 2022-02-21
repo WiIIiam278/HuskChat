@@ -8,7 +8,7 @@
 # General options. Default channel should match one of the channels below.
 language: 'en-gb'
 default_channel: global
-channel_log_format: '[CHAT] [%channel%] %sender%: %message%'
+channel_log_format: '[CHAT] [%channel%] %sender%: '
 channel_command_aliases: # Must contain at least one item; the first being the primary alias of the command
   - /channel
   - /c
@@ -75,7 +75,7 @@ message_command:
     - /reply
     - /r
   log_to_console: true
-  log_format: '[MSG] [%sender% -> %receiver%]: %message%'
+  log_format: '[MSG] [%sender% -> %receiver%]: '
   format:
     inbound: '&#00fb9a&%name% &8→ &#00fb9a&You&8: &f'
     outbound: '&#00fb9a&You &8→ &#00fb9a&%name%&8: &f'
@@ -117,7 +117,7 @@ chat_filters:
   profanity_filter:
     enabled: false
     library_path: '' # Define a directory path for the jep library
-    mode: TOLERANCE # Filter rule - AUTOMATIC or TOLERANCE.
+    mode: AUTOMATIC # Filter rule - AUTOMATIC or TOLERANCE.
     tolerance: 0.78 # If using TOLERANCE mode, the algorithm will determine a profanity probability and compare with this to filter.
   repeat_filter:
     enabled: true
@@ -132,7 +132,7 @@ message_replacers:
   emoji_replacer:
     enabled: true
     emoji: # Emote character options: https://gist.githubusercontent.com/WiIIiam278/b74a6af6d9670350a60ad09d63b67169/raw/d8b596471c812eb2b68638469cb779d928bd733f/minecraft_unicode_characters.txt
-      ':)': 'smile'
+      ':)': '☺'
       ':-)': '☺'
       ':(': '☹'
       ':-(': '☹'

@@ -29,7 +29,7 @@ public class EmojiReplacer extends ReplacerFilter {
             }
             replacedMessage.add(word);
         }
-        return null;
+        return replacedMessage.toString();
     }
 
     @Override

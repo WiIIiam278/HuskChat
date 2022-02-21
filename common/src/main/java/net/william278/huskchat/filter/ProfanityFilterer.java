@@ -52,6 +52,10 @@ public class ProfanityFilterer extends ChatFilter {
      * @return {@code true} if the message is profane
      */
     private boolean getIsProfane(String message) throws ExecutionException, InterruptedException {
+        // Allow all messages if the filter is terminated
+        if (profanityFiltererRunnable.threadState == ProfanityFiltererRunnable.ThreadState.TERMINATED) {
+            return false;
+        }
         return switch (profanityFilterMode) {
             case AUTOMATIC -> profanityFiltererRunnable.calculateIsProfane(message);
             case TOLERANCE -> profanityFiltererRunnable.calculateIsProfane(message, thresholdValue);
@@ -77,7 +81,6 @@ public class ProfanityFilterer extends ChatFilter {
         private final String libraryPath;
 
         public ProfanityFiltererRunnable(String libraryPath) {
-            this.threadState = ThreadState.SETUP;
             this.libraryPath = libraryPath;
         }
 
@@ -109,13 +112,27 @@ public class ProfanityFilterer extends ChatFilter {
 
         @Override
         public void run() {
+            // Setup
+            try {
+                profanityChecker = libraryPath.isEmpty() ? new ProfanityChecker() : new ProfanityChecker(libraryPath);
+                threadState = ThreadState.ASLEEP;
+            } catch (UnsatisfiedLinkError unsatisfiedLinkError) {
+                // Detect improperly installed jep and display slightly friendlier error
+                System.out.println("""
+                        \033[1;31m[HuskChat] Error initializing the profanity checking filter: UnsatisfiedLinkError
+                        \033[1;31m• The profanity checking filter requires Python 3.8+ with the jep and alt-profanity-check dependencies installed on the system.
+                        \033[1;31m• This error indicates that the plugin was unable to find the necessary jep driver file.
+                        \033[1;31m• Please ensure the the jep library file path has been set correctly on your system.
+                        \033[1;31m• Please consult the HuskChat README file for more information on properly setting up the profanity checking filter.
+                        \033[1;31m• The profanity checking filter has been disabled.
+                        \033[1;31mStack trace:""");
+                unsatisfiedLinkError.printStackTrace();
+                threadState = ThreadState.TERMINATED;
+            }
+
             ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
             executor.scheduleAtFixedRate(() -> {
                 switch (threadState) {
-                    case SETUP -> {
-                        profanityChecker = libraryPath.isEmpty() ? new ProfanityChecker() : new ProfanityChecker(libraryPath);
-                        threadState = ThreadState.ASLEEP;
-                    }
                     case CALCULATE -> {
                         if (profanityFilterMode == ProfanityFilterMode.AUTOMATIC) {
                             output.complete(profanityChecker.isTextProfane(input));
@@ -125,7 +142,9 @@ public class ProfanityFilterer extends ChatFilter {
                         threadState = ThreadState.ASLEEP;
                     }
                     case TERMINATED -> {
-                        profanityChecker.close();
+                        if (profanityChecker != null) {
+                            profanityChecker.close();
+                        }
                         executor.shutdown();
                     }
                 }
@@ -134,7 +153,6 @@ public class ProfanityFilterer extends ChatFilter {
 
         public enum ThreadState {
             ASLEEP,
-            SETUP,
             CALCULATE,
             TERMINATED
         }
