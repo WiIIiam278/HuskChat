@@ -4,6 +4,7 @@ dependencies {
     implementation 'org.bstats:bstats-bungeecord:3.0.0'
     implementation 'de.themoep:minedown:1.7.1-SNAPSHOT'
     implementation 'commons-io:commons-io:2.11.0'
+    implementation 'com.github.WiIIiam278:ProfanityCheckerAPI:1.1'
 
     compileOnly 'net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT'
 }
@@ -12,6 +13,8 @@ shadowJar {
     relocate 'de.themoep', 'net.william278.huskchat.libraries'
     relocate 'org.bstats', 'net.william278.huskchat.libraries.bstats'
     relocate 'org.apache', 'net.william278.huskchat.libraries'
+    relocate 'net.william278.profanitycheckerapi', 'net.william278.huskchat.libraries.profanitycheckerapi'
+    relocate 'jep', 'net.william278.huskchat.libraries.profanitycheckerapi.jep'
 
     dependencies {
         //noinspection GroovyAssignabilityCheck

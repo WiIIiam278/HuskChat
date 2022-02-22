@@ -4,6 +4,7 @@ dependencies {
     implementation 'org.bstats:bstats-velocity:3.0.0'
     implementation 'de.themoep:minedown-adventure:1.7.2-SNAPSHOT'
     implementation 'commons-io:commons-io:2.11.0'
+    implementation 'com.github.WiIIiam278:ProfanityCheckerAPI:1.1'
 
     compileOnly 'com.velocitypowered:velocity-api:3.1.0'
 }
@@ -12,7 +13,8 @@ shadowJar {
     relocate 'de.themoep', 'net.william278.huskchat.libraries'
     relocate 'org.bstats', 'net.william278.huskchat.libraries.bstats'
     relocate 'org.apache', 'net.william278.huskchat.libraries'
-    relocate 'commons-io.commons-io', 'me.william278.huskchat.libraries.commons-io'
+    relocate 'net.william278.profanitycheckerapi', 'net.william278.huskchat.libraries.profanitycheckerapi'
+    relocate 'jep', 'net.william278.huskchat.libraries.profanitycheckerapi.jep'
 
     dependencies {
         //noinspection GroovyAssignabilityCheck
