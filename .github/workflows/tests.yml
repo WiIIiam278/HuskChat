@@ -30,4 +30,4 @@ jobs:
     - name: Build with Gradle
       uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
       with:
-        arguments: build --args='--java.library.path=/opt/hostedtoolcache/Python/3.10.2/x64/lib/python3.10/site-packages/jep/'
+        arguments: -Pjava.library.path='/opt/hostedtoolcache/Python/3.10.2/x64/lib/python3.10/site-packages/jep/' build
