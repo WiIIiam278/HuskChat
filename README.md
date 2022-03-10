@@ -23,7 +23,7 @@ of use cases by allowing you to define channels and manage who can send and rece
 ## Setup
 
 1. Download `HuskChat.jar`
-2. Drag it into the `/plugins/` folder on your proxy server (BungeeCord or Velocity; 1.16+. Derivatives like Waterfall
+2. Drag it into the `/plugins/` folder on your proxy server (BungeeCord or Velocity; 1.16+; Java 16+. Derivatives like Waterfall
    should work fine too)
 3. Restart your proxy. Once the config and message files have generated, make changes as appropriate and restart your
    proxy again
