@@ -224,6 +224,9 @@ below. Lower values mean the checker will be more strict.
 
 ### Social and Local Spy
 
+HuskChat provides `/socialspy` and `/localspy` commands. Players with permission can toggle `socialspy` to see the
+private messages of users. The `/localspy` command allows players with permission to view messages sent in Local chat
+channels on other servers, including ones that passthrough messages locally.
 
 ## Building
 
