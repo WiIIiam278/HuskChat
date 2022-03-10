@@ -2,7 +2,7 @@ package net.william278.huskchat.bukkit;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-//todo hook into plugin messages
+//todo Hook into plugin messages and handle PlaceholderAPI integration
 public class HuskChatBukkit extends JavaPlugin {
 
     private static HuskChatBukkit instance;
@@ -18,7 +18,7 @@ public class HuskChatBukkit extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
+        getLogger().severe("HuskChat needs to be installed on the BungeeCord or Velocity server!");
     }
 
     @Override

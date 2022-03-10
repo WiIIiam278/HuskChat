@@ -222,6 +222,9 @@ settings. By default, the checker will use `AUTOMATIC` mode to determine if the 
 like to fine tune how sensitive the checker is, you can set `mode` to `TOLERANCE` and change the `tolerance` value
 below. Lower values mean the checker will be more strict.
 
+### Social and Local Spy
+
+
 ## Building
 
 To build HuskChat, run the following in the root of the project directory:
