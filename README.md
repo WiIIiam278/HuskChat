@@ -18,13 +18,15 @@ of use cases by allowing you to define channels and manage who can send and rece
 * Private messaging and replying commands
 * Define who can send and receive messages in channels
 * Define shortcut commands to let players quickly switch channels
+* Machine learning powered profanity filter
+* Customisable spam limiting filter, anti-advertising & special emoji
 * Utilise modern 1.16+ formatting, with RGB and Gradient support via [MineDown](https://github.com/Phoenix616/MineDown)
 
 ## Setup
 
 1. Download `HuskChat.jar`
-2. Drag it into the `/plugins/` folder on your proxy server (BungeeCord or Velocity; 1.16+; Java 16+. Derivatives like Waterfall
-   should work fine too)
+2. Drag it into the `/plugins/` folder on your proxy server (BungeeCord or Velocity; 1.16+; Java 16+. Derivatives like
+   Waterfall should work fine too)
 3. Restart your proxy. Once the config and message files have generated, make changes as appropriate and restart your
    proxy again
 
@@ -59,15 +61,17 @@ command. By default, HuskSync has the following channels setup, perfect for a ty
 ### Channel definition
 
 To define custom channels, put them under the `channels:` section of `config.yml`. Below is the specification for how
-this should be laid out, using a typical `staff` channel as an example.
+this should be laid out, using a typical `staff` channel as an example. Keys marked as (Required) should be present.
+Fields not marked as required will be set to a default value.
 
 ```yaml
 channels:
   ...
-  staff: # The ID of the channel. To switch to this channel, users would execute /channel staff
-    format: '&e[Staff] %name%: &7' # Display format of the channel - See below
+  staff: # (Required) The ID of the channel. To switch to this channel, users would execute /channel staff
+    format: '&e[Staff] %name%: &7' # (Required) Display format of the channel - See below
     broadcast_scope: GLOBAL # Broadcast scope of the channel - See below
     log_to_console: true # Whether messages sent to this channel should be logged to the proxy console
+    filtered: false # Whether messages sent to this channel should be filtered and replaced (see below)
     permissions:
       send: 'huskchat.channel.staff.send' # Permission required to see channel messages
       receive: 'huskchat.channel.staff.receive' # Permission required to switch to & send messages
@@ -148,6 +152,75 @@ These display the current time
 * `%day%` - dd
 * `%month%` - MM
 * `%year%` - yyyy
+
+### Channel Filters & Replacers
+
+The `filtered:` property of a channel lets you specify whether a message sent to a channel should be filtered first by
+the enabled filters and message replacers defined in the `chat_filters` and `message_replacers` section of
+the `config.yml` file. To use a filter, ensure the channel you want to be filtered has `filtered` enabled and that the
+chat filters are correctly enabled and configured.
+
+Chat filters will prevent a user from sending a message based on certain conditions. Message replacers will alter the
+contents of the message, such as by replacing certain character combinations with emoji.
+
+#### Filters
+
+* `advertising_filter` - Prevents players from sending messages that contain IP or web addresses.
+* `caps_filter` - Prevents players from sending messages that are comprised of over a certain specifiable percentage (as
+  a decimal number, 0.0 to 1.0 representing 0% to 100%)
+* `spam_filter` - Prevents players from sending messages too fast in chat (i.e. rate limits them). Specify how many
+  messages players should be able to send in a period.
+* `profanity_filter` - Uses a profanity-check machine learning algorithm to determine if a message contains English
+  profanity. See below for more information on how to set this up as it requires a bit more work.
+* `repeat_filter` - Prevents players from sending repeat messages. Checks against a specifiable number of the players
+  previous messages.
+* `ascii_filter` - Prevents players from using non-ASCII (i.e. Unicode/UTF-8) characters in chat. If your server is
+  international, you probably want to turn this off.
+
+#### Replacers
+
+* `emoji_replacer` - Replaces certain character strings with the correct Unicode emoji. Note that if you have
+  the `ascii_filter` enabled, this will still work and display unicode emoji characters in chat.
+
+#### Profanity Check filter
+
+The profanity check filter uses a Python machine learning algorithm (alt-profanity-check) that uses Scikit-learn to
+predict whether messages contain profanity. It's imperfect and unable to catch elongated or modified slurs, but it's
+quite effective (and let's face it, if people are going to be bad actors and use bad language, they'll find a way around
+any swear filter).
+
+If you're on a **shared host**, unfortunately you probably won't be able to use this feature unless your host is utterly
+amazing and doesn't mind helping you with this. Note that due to the complexities associated with doing this feature, I
+consider this feature for **advanced users only**, and I can't provide support for setting it up beyond directing you
+here.
+
+The profanity checker is only trained on English words. To use it, you'll need to install Python 3.8+ and Jep onto your
+server and ensure that the Jep driver is correctly present in your Java classpath for your system. You can install Jep
+with `pip install jep`. In addition to Jep, you will also need to run `pip install alt-profanity-check` to install the
+profanity checker and prerequisites.
+
+You will then need to make sure HuskChat recognises your Jep driver by specifying the path to it if your system doesn't
+do so automatically. The name of the Jep driver varies based on platform. It's `libjep.so` on Linux, `libjep.jnilib` on
+macOS, and `jep.dll` on Windows.
+
+You can do this in one of a few ways:
+
+* Adding Jep's library path to your Java library environment variable
+    * On Linux, this is `LD_LIBRARY_PATH`.
+    * On macOS, this is `DYLD_LIBRARY_PATH`.
+    * On Windows, this is `PATH`.
+* Adding Jep's driver to your startup command by adding the `-Djava.library.path=<path>` argument
+* Adding Jep's driver path to the `library_path` config option provided by HuskChat.
+
+Your path should point to the folder containing the jep driver, not the driver itself. If you get an error when starting
+the profanity filter, you can try
+[troubleshooting through Jep's guide](https://github.com/ninia/jep/wiki/FAQ#how-do-i-fix-unsatisfied-link-error-no-jep-in-javalibrarypath)
+.
+
+Once you've set up the prerequisites and the server is starting the profanity checker without issue, you can change the
+settings. By default, the checker will use `AUTOMATIC` mode to determine if the message contains profanity, but if you'd
+like to fine tune how sensitive the checker is, you can set `mode` to `TOLERANCE` and change the `tolerance` value
+below. Lower values mean the checker will be more strict.
 
 ## Building
 
