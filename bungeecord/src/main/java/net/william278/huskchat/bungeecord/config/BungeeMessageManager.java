@@ -133,4 +133,12 @@ public class BungeeMessageManager extends MessageManager {
                 .append(message);
         BungeePlayer.adaptBungee(spy).sendMessage(componentBuilder.create());
     }
+
+    @Override
+    public void sendFormattedBroadcastMessage(Player player, String message) {
+        final ComponentBuilder componentBuilder = new ComponentBuilder();
+        componentBuilder.append(new MineDown(Settings.broadcastMessageFormat).toComponent());
+        componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
+        BungeePlayer.adaptBungee(player).sendMessage(componentBuilder.create());
+    }
 }

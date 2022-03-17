@@ -43,6 +43,13 @@ public class Settings {
     public static List<String> excludedLocalSpyChannels = new ArrayList<>();
     public static List<String> localSpyCommandAliases = new ArrayList<>();
 
+    // Broadcast command
+    public static boolean doBroadcastCommand;
+    public static List<String> broadcastCommandAliases = new ArrayList<>();
+    public static String broadcastMessageFormat;
+    public static boolean logBroadcasts;
+    public static String broadcastLogFormat;
+
     // Chat filters
     public static List<ChatFilter> chatFilters = new ArrayList<>();
 
@@ -63,10 +70,10 @@ public class Settings {
 
         // Channels
         defaultChannel = configFile.getString("default_channel", "global");
-        channelLogFormat = configFile.getString("channel_log_format", "[CHAT] [%channel%] %sender%: %message%");
+        channelLogFormat = configFile.getString("channel_log_format", "[CHAT] [%channel%] %sender%: ");
         channels.addAll(fetchChannels(configFile));
         serverDefaultChannels = getServerDefaultChannels(configFile);
-        channelCommandAliases = (configFile.contains("channel_command_aliases")) ? new ArrayList<>(configFile.getStringList("channel_command_aliases")) : Collections.singletonList("/channel");
+        channelCommandAliases = (configFile.contains("channel_command_aliases")) ? getCommandsFromList(new ArrayList<>(configFile.getStringList("channel_command_aliases"))) : Collections.singletonList("channel");
 
         // Other options
         doMessageCommand = configFile.getBoolean("message_command.enabled", true);
@@ -74,21 +81,28 @@ public class Settings {
         outboundMessageFormat = configFile.getString("message_command.format.outbound", "&#00fb9a&You &8→ &#00fb9a&%name%&8 &f");
         logPrivateMessages = configFile.getBoolean("messages_command.log_to_console", true);
         censorPrivateMessages = configFile.getBoolean("messages_command.censor", false);
-        messageLogFormat = configFile.getString("messages_command.log_format", "[MSG] [%sender% -> %receiver%]: %message%");
+        messageLogFormat = configFile.getString("messages_command.log_format", "[MSG] [%sender% -> %receiver%]: ");
         messageCommandRestrictedServers = configFile.getStringList("channels.messages_command.restricted_servers");
-        messageCommandAliases = (configFile.contains("messages_command.msg_aliases")) ? new ArrayList<>(configFile.getStringList("messages_command.msg_aliases")) : Collections.singletonList("/msg");
-        replyCommandAliases = (configFile.contains("messages_command.reply_aliases")) ? new ArrayList<>(configFile.getStringList("messages_command.reply_aliases")) : Collections.singletonList("/reply");
+        messageCommandAliases = (configFile.contains("messages_command.msg_aliases")) ? getCommandsFromList(new ArrayList<>(configFile.getStringList("messages_command.msg_aliases"))) : Collections.singletonList("msg");
+        replyCommandAliases = (configFile.contains("messages_command.reply_aliases")) ? getCommandsFromList(new ArrayList<>(configFile.getStringList("messages_command.reply_aliases"))) : Collections.singletonList("reply");
 
         // Social spy
         doSocialSpyCommand = configFile.getBoolean("social_spy.enabled", true);
         socialSpyFormat = configFile.getString("social_spy.format", "&e[Spy] &7%sender% &8→ &7%receiever%:%spy_color% ");
-        socialSpyCommandAliases = (configFile.contains("social_spy.socialspy_aliases")) ? new ArrayList<>(configFile.getStringList("social_spy.socialspy_aliases")) : Collections.singletonList("/socialspy");
+        socialSpyCommandAliases = (configFile.contains("social_spy.socialspy_aliases")) ? getCommandsFromList(new ArrayList<>(configFile.getStringList("social_spy.socialspy_aliases"))) : Collections.singletonList("socialspy");
 
         // Local spy
         doLocalSpyCommand = configFile.getBoolean("local_spy.enabled", true);
         localSpyFormat = configFile.getString("local_spy.format", "&e[Spy] &7[%channel%] %name%&8:%spy_color% ");
         excludedLocalSpyChannels = (configFile.contains("local_spy.excluded_local_channels")) ? configFile.getStringList("local_spy.excluded_local_channels") : new ArrayList<>();
-        localSpyCommandAliases = (configFile.contains("local_spy.localspy_aliases")) ? new ArrayList<>(configFile.getStringList("local_spy.localspy_aliases")) : Collections.singletonList("/localspy");
+        localSpyCommandAliases = (configFile.contains("local_spy.localspy_aliases")) ? getCommandsFromList(new ArrayList<>(configFile.getStringList("local_spy.localspy_aliases"))) : Collections.singletonList("localspy");
+
+        // Broadcast command
+        doBroadcastCommand = configFile.getBoolean("broadcast_command.enabled", true);
+        broadcastCommandAliases = (configFile.contains("broadcast_command.broadcast_aliases")) ? getCommandsFromList(new ArrayList<>(configFile.getStringList("broadcast_command.broadcast_aliases"))) : Collections.singletonList("broadcast");
+        broadcastMessageFormat = configFile.getString("broadcast_command.format", "&6[Broadcast]&e ");
+        logBroadcasts = configFile.getBoolean("broadcast_command.log_to_console", true);
+        broadcastLogFormat = configFile.getString("broadcast_command.log_format", "[BROADCAST]: ");
 
         // Chat filters
         chatFilters = fetchChatFilters(configFile);
@@ -106,7 +120,7 @@ public class Settings {
         for (String channelID : configFile.getConfigKeys("channels")) {
 
             // Get channel format and scope and create channel object
-            final String format = configFile.getString("channels." + channelID + ".format", "%fullname%&r: %message%");
+            final String format = configFile.getString("channels." + channelID + ".format", "%fullname%&r: ");
             final String broadcastScope = configFile.getString("channels." + channelID + ".broadcast_scope", "GLOBAL").toUpperCase();
             Channel channel = new Channel(channelID.toLowerCase(), format, Channel.BroadcastScope.valueOf(broadcastScope));
 
@@ -200,8 +214,8 @@ public class Settings {
      * @param rawCommands Raw commands prepended with {@code /}
      * @return formatted set of command strings
      */
-    private static Set<String> getCommandsFromList(List<String> rawCommands) {
-        Set<String> commands = new HashSet<>();
+    private static List<String> getCommandsFromList(List<String> rawCommands) {
+        List<String> commands = new ArrayList<>();
         for (String command : rawCommands) {
             commands.add(command.substring(1));
         }

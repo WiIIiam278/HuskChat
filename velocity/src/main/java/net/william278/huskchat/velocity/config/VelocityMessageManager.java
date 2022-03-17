@@ -134,4 +134,12 @@ public class VelocityMessageManager extends MessageManager {
                 .append(Component.text(message));
         VelocityPlayer.adaptVelocity(spy).sendMessage(componentBuilder);
     }
+
+    @Override
+    public void sendFormattedBroadcastMessage(Player player, String message) {
+        final TextComponent.Builder componentBuilder = Component.text();
+        componentBuilder.append(new MineDown(Settings.broadcastMessageFormat).toComponent());
+        componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
+        VelocityPlayer.adaptVelocity(player).sendMessage(componentBuilder);
+    }
 }

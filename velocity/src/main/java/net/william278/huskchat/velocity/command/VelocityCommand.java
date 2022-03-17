@@ -3,6 +3,7 @@ package net.william278.huskchat.velocity.command;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 import net.william278.huskchat.command.CommandBase;
+import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.velocity.HuskChatVelocity;
 import net.william278.huskchat.velocity.player.VelocityPlayer;
 
@@ -24,6 +25,8 @@ public class VelocityCommand implements SimpleCommand {
     public void execute(Invocation invocation) {
         if (invocation.source() instanceof Player player) {
             implementer.onExecute(VelocityPlayer.adaptCrossPlatform(player), invocation.arguments());
+        } else {
+            implementer.onExecute(ConsolePlayer.adaptConsolePlayer(plugin), invocation.arguments());
         }
     }
 

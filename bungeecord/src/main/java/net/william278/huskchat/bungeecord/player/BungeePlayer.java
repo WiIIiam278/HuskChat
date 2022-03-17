@@ -1,5 +1,6 @@
 package net.william278.huskchat.bungeecord.player;
 
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.william278.huskchat.player.Player;
@@ -52,7 +53,7 @@ public class BungeePlayer implements Player {
     }
 
     /**
-     * Adapts a cross-platform {@link Player} to a bungee {@link ProxiedPlayer} object
+     * Adapts a cross-platform {@link Player} to a bungee {@link CommandSender} object
      *
      * @param player {@link Player} to adapt
      * @return The {@link ProxiedPlayer} object, {@code null} if they are offline

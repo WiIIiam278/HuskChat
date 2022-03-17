@@ -108,6 +108,18 @@ public class HuskChatVelocity implements HuskChat {
             new VelocityCommand(new ReplyCommand(this));
         }
 
+        if (Settings.doBroadcastCommand) {
+            new VelocityCommand(new BroadcastCommand(this));
+        }
+
+        if (Settings.doSocialSpyCommand) {
+            new VelocityCommand(new SocialSpyCommand(this));
+        }
+
+        if (Settings.doLocalSpyCommand) {
+            new VelocityCommand(new LocalSpyCommand(this));
+        }
+
         // Register shortcut commands
         for (Channel channel : Settings.channels) {
             for (String command : channel.shortcutCommands) {

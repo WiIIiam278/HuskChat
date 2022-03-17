@@ -57,4 +57,5 @@ public abstract class MessageManager {
 
     public abstract void sendFormattedSocialSpyMessage(Player spy, PlayerCache.SpyColor spyColor, Player sender, Player receiver, String message);
 
+    public abstract void sendFormattedBroadcastMessage(Player recipient, String message);
 }

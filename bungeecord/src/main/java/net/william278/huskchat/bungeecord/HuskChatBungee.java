@@ -81,6 +81,18 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
             new BungeeCommand(new ReplyCommand(this));
         }
 
+        if (Settings.doBroadcastCommand) {
+            new BungeeCommand(new BroadcastCommand(this));
+        }
+
+        if (Settings.doSocialSpyCommand) {
+            new BungeeCommand(new SocialSpyCommand(this));
+        }
+
+        if (Settings.doLocalSpyCommand) {
+            new BungeeCommand(new LocalSpyCommand(this));
+        }
+
         // Register shortcut commands
         for (Channel channel : Settings.channels) {
             for (String command : channel.shortcutCommands) {
@@ -153,7 +165,7 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
     @Override
     public Collection<Player> getOnlinePlayersOnServer(Player player) {
         ArrayList<Player> crossPlatform = new ArrayList<>();
-        for (ProxiedPlayer playerOnServer : ProxyServer.getInstance().getPlayer(player.getUuid()).getServer().getInfo().getPlayers()) {
+        for (ProxiedPlayer playerOnServer : BungeePlayer.adaptBungee(player).getServer().getInfo().getPlayers()) {
             crossPlatform.add(BungeePlayer.adaptCrossPlatform(playerOnServer));
         }
         return crossPlatform;

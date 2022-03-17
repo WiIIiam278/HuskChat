@@ -40,6 +40,7 @@ of use cases by allowing you to define channels and manage who can send and rece
 | `/reply`          | `/reply <message>`                | `/r`                                               | Quickly reply to a private message                       | `huskchat.command.msg.reply`                                |
 | `/socialspy`      | `/socialspy`                      | `/ss`                                              | Lets you view other users' private messages              | `huskchat.command.socialspy`                                |
 | `/localspy`       | `/localspy`                       | `/ls`                                              | Lets you view messages sent in other local chat channels | `huskchat.command.localspy`                                 |
+| `/broadcast`      | `/broadcast`                      | `/alert`                                           | Lets you send a broadcast across the server              | `huskchat.command.broadcast`                                |
 | Shortcut commands | `/<shortcut_command> <message>`   | N/A                                                | Quickly send a message in or switch to a chat channel    | Channel send permission, e.g. `huskchat.channel.staff.send` |
 
 ## Channels & Out-of-box experience

@@ -1,12 +1,14 @@
 package net.william278.huskchat.command;
 
 import net.william278.huskchat.HuskChat;
+import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class HuskChatCommand extends CommandBase {
@@ -29,6 +31,10 @@ public class HuskChatCommand extends CommandBase {
 
     @Override
     public void onExecute(Player player, String[] args) {
+        if (player instanceof ConsolePlayer) {
+            implementor.getLoggingAdapter().log(Level.INFO, implementor.getMessageManager().getRawMessage("error_in_game_only"));
+            return;
+        }
         if (args.length == 1) {
             switch (args[0].toLowerCase(Locale.ROOT)) {
                 case "about", "info" -> sendAboutInformation(player);
@@ -37,7 +43,7 @@ public class HuskChatCommand extends CommandBase {
                     implementor.reloadMessages();
                     implementor.getMessageManager().sendCustomMessage(player, "[HuskChat](#00fb9a bold) &#00fb9a&| Reloaded config & message files.");
                 }
-                default -> implementor.getMessageManager().sendMessage(player, "error_invalid_syntax", "/husktowns <about/reload>");
+                default -> implementor.getMessageManager().sendMessage(player, "error_invalid_syntax", "/huskchat <about/reload>");
             }
         } else {
             sendAboutInformation(player);

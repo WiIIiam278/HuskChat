@@ -3,12 +3,14 @@ package net.william278.huskchat.command;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.message.PrivateMessage;
+import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class MsgCommand extends CommandBase {
@@ -21,6 +23,10 @@ public class MsgCommand extends CommandBase {
 
     @Override
     public void onExecute(Player player, String[] args) {
+        if (player instanceof ConsolePlayer) {
+            implementor.getLoggingAdapter().log(Level.INFO, implementor.getMessageManager().getRawMessage("error_in_game_only"));
+            return;
+        }
         if (args.length >= 2) {
             StringJoiner message = new StringJoiner(" ");
             int messageWordCount = 0;

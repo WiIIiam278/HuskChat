@@ -98,6 +98,15 @@ local_spy:
     - /ls
   #excluded_local_channels: # Channels to exclude from local spying
   #  - local
+# Options for the /broadcast command
+broadcast_command:
+  enabled: true
+  broadcast_aliases:
+    - /broadcast
+    - /alert
+  format: '&6[Broadcast]&e '
+  log_to_console: true
+  log_format: '[BROADCAST]: '
 
 # Chat filter options
 chat_filters:

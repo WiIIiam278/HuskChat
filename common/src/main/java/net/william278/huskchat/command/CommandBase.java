@@ -30,6 +30,7 @@ public abstract class CommandBase {
      */
     public final HuskChat implementor;
 
+
     public CommandBase(String command, String permission, HuskChat implementingPlugin, String... aliases) {
         this.command = command;
         this.permission = permission;
