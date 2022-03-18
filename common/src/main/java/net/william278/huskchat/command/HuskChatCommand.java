@@ -19,7 +19,7 @@ public class HuskChatCommand extends CommandBase {
     private final String pluginInformation;
 
     public HuskChatCommand(HuskChat implementor) {
-        super("huskchat", PERMISSION, implementor, "c");
+        super("huskchat", PERMISSION, implementor, "hc");
         this.pluginInformation = "[HuskChat](#00fb9a bold) [| " + implementor.getMetaPlatform() + " Version " + implementor.getMetaVersion() + "](#00fb9a)\n" +
                 "[" + implementor.getMetaDescription() + "](gray)\n" +
                 "[• Author:](white) [William278](gray show_text=&7Click to visit website open_url=https://william278.net)\n" +
