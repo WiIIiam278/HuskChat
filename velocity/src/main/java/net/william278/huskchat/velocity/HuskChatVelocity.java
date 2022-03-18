@@ -208,7 +208,7 @@ public class HuskChatVelocity implements HuskChat {
     @Override
     public Collection<Player> getOnlinePlayersOnServer(Player serverPlayer) {
         final ArrayList<Player> velocityPlayers = new ArrayList<>();
-        VelocityPlayer.adaptVelocity(serverPlayer).getCurrentServer().ifPresent(serverConnection -> {
+        VelocityPlayer.adaptVelocity(serverPlayer).flatMap(com.velocitypowered.api.proxy.Player::getCurrentServer).ifPresent(serverConnection -> {
             for (com.velocitypowered.api.proxy.Player player : serverConnection.getServer().getPlayersConnected()) {
                 velocityPlayers.add(VelocityPlayer.adaptCrossPlatform(player));
             }

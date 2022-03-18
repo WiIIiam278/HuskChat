@@ -50,7 +50,8 @@ public class VelocityMessageManager extends MessageManager {
         }
 
         // Convert to baseComponents[] via MineDown formatting and send
-        VelocityPlayer.adaptVelocity(player).sendMessage(new MineDown(message).toComponent());
+        String finalMessage = message;
+        VelocityPlayer.adaptVelocity(player).ifPresent(user -> user.sendMessage(new MineDown(finalMessage).toComponent()));
     }
 
     @Override
@@ -66,12 +67,12 @@ public class VelocityMessageManager extends MessageManager {
         }
 
         // Convert to baseComponents[] via MineDown formatting and send
-        VelocityPlayer.adaptVelocity(player).sendMessage(new MineDown(message).toComponent());
+        VelocityPlayer.adaptVelocity(player).ifPresent(user -> user.sendMessage(new MineDown(message).toComponent()));
     }
 
     @Override
     public void sendCustomMessage(Player player, String message) {
-        VelocityPlayer.adaptVelocity(player).sendMessage(new MineDown(message).toComponent());
+        VelocityPlayer.adaptVelocity(player).ifPresent(user -> user.sendMessage(new MineDown(message).toComponent()));
     }
 
     @Override
@@ -85,7 +86,7 @@ public class VelocityMessageManager extends MessageManager {
         } else {
             componentBuilder.append(Component.text(message));
         }
-        VelocityPlayer.adaptVelocity(target).sendMessage(componentBuilder);
+        VelocityPlayer.adaptVelocity(target).ifPresent(user -> user.sendMessage(componentBuilder.build()));
     }
 
     @Override
@@ -98,7 +99,7 @@ public class VelocityMessageManager extends MessageManager {
         } else {
             componentBuilder.append(Component.text(message));
         }
-        VelocityPlayer.adaptVelocity(messageSender).sendMessage(componentBuilder);
+        VelocityPlayer.adaptVelocity(messageSender).ifPresent(user -> user.sendMessage(componentBuilder.build()));
     }
 
     @Override
@@ -111,7 +112,7 @@ public class VelocityMessageManager extends MessageManager {
         } else {
             componentBuilder.append(Component.text(message));
         }
-        VelocityPlayer.adaptVelocity(messageRecipient).sendMessage(componentBuilder);
+        VelocityPlayer.adaptVelocity(messageRecipient).ifPresent(user -> user.sendMessage(componentBuilder.build()));
     }
 
     @Override
@@ -119,9 +120,8 @@ public class VelocityMessageManager extends MessageManager {
                                              Channel channel, String message) {
         final TextComponent.Builder componentBuilder = Component.text()
                 .append(new MineDown(PlaceholderReplacer.replace(sender, Settings.localSpyFormat, plugin)
-                        .replaceAll("%spy_color%", spyColor.colorCode)).toComponent())
-                .append(Component.text(message));
-        VelocityPlayer.adaptVelocity(spy).sendMessage(componentBuilder);
+                        .replaceAll("%spy_color%", spyColor.colorCode) + MineDown.escape(message)).toComponent());
+        VelocityPlayer.adaptVelocity(spy).ifPresent(user -> user.sendMessage(componentBuilder.build()));
     }
 
     @Override
@@ -133,10 +133,9 @@ public class VelocityMessageManager extends MessageManager {
                                                 Settings.socialSpyFormat.replaceAll("%sender_", "%"),
                                                 plugin)
                                         .replaceAll("%receiver_", "%"), plugin)
-                        .replaceAll("%receiever_name%", receiver.getName())
-                        .replaceAll("%spy_color%", spyColor.colorCode)).toComponent())
-                .append(Component.text(message));
-        VelocityPlayer.adaptVelocity(spy).sendMessage(componentBuilder);
+                        .replaceAll("%receiever_name%", MineDown.escape(receiver.getName()))
+                        .replaceAll("%spy_color%", spyColor.colorCode) + MineDown.escape(message)).toComponent());
+        VelocityPlayer.adaptVelocity(spy).ifPresent(user -> user.sendMessage(componentBuilder.build()));
     }
 
     @Override
@@ -144,6 +143,6 @@ public class VelocityMessageManager extends MessageManager {
         final TextComponent.Builder componentBuilder = Component.text();
         componentBuilder.append(new MineDown(Settings.broadcastMessageFormat).toComponent());
         componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
-        VelocityPlayer.adaptVelocity(player).sendMessage(componentBuilder);
+        VelocityPlayer.adaptVelocity(player).ifPresent(user -> user.sendMessage(componentBuilder.build()));
     }
 }

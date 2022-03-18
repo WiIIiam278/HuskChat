@@ -4,6 +4,7 @@ import com.velocitypowered.api.proxy.ServerConnection;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.velocity.HuskChatVelocity;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -70,8 +71,8 @@ public class VelocityPlayer implements Player {
      * @param player {@link Player} to adapt
      * @return The {@link com.velocitypowered.api.proxy.Player} object, {@code null} if they are offline
      */
-    public static com.velocitypowered.api.proxy.Player adaptVelocity(Player player) {
-        return plugin.getProxyServer().getPlayer(player.getUuid()).orElse(null);
+    public static Optional<com.velocitypowered.api.proxy.Player> adaptVelocity(Player player) {
+        return plugin.getProxyServer().getPlayer(player.getUuid());
     }
 
     /**
