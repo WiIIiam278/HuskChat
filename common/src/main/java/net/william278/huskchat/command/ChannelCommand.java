@@ -40,7 +40,7 @@ public class ChannelCommand extends CommandBase {
 
     @Override
     public List<String> onTabComplete(Player player, String[] args) {
-        if (!player.hasPermission(PERMISSION)) {
+        if (!player.hasPermission(permission)) {
             return Collections.emptyList();
         }
         if (args.length <= 1) {

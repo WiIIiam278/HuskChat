@@ -25,23 +25,27 @@ public class SocialSpyCommand extends CommandBase {
             implementor.getLoggingAdapter().log(Level.INFO, implementor.getMessageManager().getRawMessage("error_in_game_only"));
             return;
         }
-        if (args.length == 1) {
-            PlayerCache.SpyColor color;
-            Optional<PlayerCache.SpyColor> selectedColor = PlayerCache.SpyColor.getColor(args[0]);
-            if (selectedColor.isPresent()) {
-                color = selectedColor.get();
-                PlayerCache.setSocialSpy(player, color);
-                implementor.getMessageManager().sendMessage(player, "social_spy_toggled_on_color",
-                        color.colorCode, color.name().toLowerCase().replaceAll("_", " "));
-                return;
+        if (player.hasPermission(permission)) {
+            if (args.length == 1) {
+                PlayerCache.SpyColor color;
+                Optional<PlayerCache.SpyColor> selectedColor = PlayerCache.SpyColor.getColor(args[0]);
+                if (selectedColor.isPresent()) {
+                    color = selectedColor.get();
+                    PlayerCache.setSocialSpy(player, color);
+                    implementor.getMessageManager().sendMessage(player, "social_spy_toggled_on_color",
+                            color.colorCode, color.name().toLowerCase().replaceAll("_", " "));
+                    return;
+                }
             }
-        }
-        if (!PlayerCache.isSocialSpying(player)) {
-            PlayerCache.setSocialSpy(player);
-            implementor.getMessageManager().sendMessage(player, "social_spy_toggled_on");
+            if (!PlayerCache.isSocialSpying(player)) {
+                PlayerCache.setSocialSpy(player);
+                implementor.getMessageManager().sendMessage(player, "social_spy_toggled_on");
+            } else {
+                PlayerCache.removeSocialSpy(player);
+                implementor.getMessageManager().sendMessage(player, "social_spy_toggled_off");
+            }
         } else {
-            PlayerCache.removeSocialSpy(player);
-            implementor.getMessageManager().sendMessage(player, "social_spy_toggled_off");
+            implementor.getMessageManager().sendMessage(player, "error_no_permission");
         }
     }
 

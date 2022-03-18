@@ -89,31 +89,29 @@ public class VelocityMessageManager extends MessageManager {
     }
 
     @Override
-    public void sendFormattedOutboundPrivateMessage(Player recipient, Player sender, String message) {
-        final TextComponent.Builder componentBuilder = Component.text()
-                .append(new MineDown(PlaceholderReplacer.replace(recipient, Settings.outboundMessageFormat, plugin))
-                        .toComponent());
-        if (sender.hasPermission("huskchat.formatted_chat")) {
-            componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING)
-                    .toComponent());
+    public void sendFormattedOutboundPrivateMessage(Player messageSender, Player messageRecipient, String message) {
+        final TextComponent.Builder componentBuilder = Component.text();
+        componentBuilder.append(new MineDown(PlaceholderReplacer.replace(messageRecipient, Settings.outboundMessageFormat, plugin))
+                .toComponent());
+        if (messageSender.hasPermission("huskchat.formatted_chat")) {
+            componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
         } else {
             componentBuilder.append(Component.text(message));
         }
-        VelocityPlayer.adaptVelocity(recipient).sendMessage(componentBuilder);
+        VelocityPlayer.adaptVelocity(messageSender).sendMessage(componentBuilder);
     }
 
     @Override
-    public void sendFormattedInboundPrivateMessage(Player recipient, Player sender, String message) {
-        final TextComponent.Builder componentBuilder = Component.text()
-                .append(new MineDown(PlaceholderReplacer.replace(sender, Settings.inboundMessageFormat, plugin))
-                        .toComponent());
-        if (sender.hasPermission("huskchat.formatted_chat")) {
-            componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING)
-                    .toComponent());
+    public void sendFormattedInboundPrivateMessage(Player messageRecipient, Player messageSender, String message) {
+        final TextComponent.Builder componentBuilder = Component.text();
+        componentBuilder.append(new MineDown(PlaceholderReplacer.replace(messageSender, Settings.inboundMessageFormat, plugin))
+                .toComponent());
+        if (messageSender.hasPermission("huskchat.formatted_chat")) {
+            componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
         } else {
             componentBuilder.append(Component.text(message));
         }
-        VelocityPlayer.adaptVelocity(recipient).sendMessage(componentBuilder);
+        VelocityPlayer.adaptVelocity(messageRecipient).sendMessage(componentBuilder);
     }
 
     @Override

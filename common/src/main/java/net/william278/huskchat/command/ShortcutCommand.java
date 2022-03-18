@@ -28,14 +28,18 @@ public class ShortcutCommand extends CommandBase {
             implementor.getLoggingAdapter().log(Level.INFO, implementor.getMessageManager().getRawMessage("error_in_game_only"));
             return;
         }
-        if (args.length == 0) {
-            PlayerCache.switchPlayerChannel(player, channelId, implementor.getMessageManager());
-        } else {
-            StringJoiner message = new StringJoiner(" ");
-            for (String arg : args) {
-                message.add(arg);
+        if (player.hasPermission(permission)) {
+            if (args.length == 0) {
+                PlayerCache.switchPlayerChannel(player, channelId, implementor.getMessageManager());
+            } else {
+                StringJoiner message = new StringJoiner(" ");
+                for (String arg : args) {
+                    message.add(arg);
+                }
+                new ChatMessage(channelId, player, message.toString(), implementor).dispatch();
             }
-            new ChatMessage(channelId, player, message.toString(), implementor).dispatch();
+        } else {
+            implementor.getMessageManager().sendMessage(player, "error_no_permission");
         }
     }
 

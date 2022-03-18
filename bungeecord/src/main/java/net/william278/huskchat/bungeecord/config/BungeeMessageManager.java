@@ -86,31 +86,31 @@ public class BungeeMessageManager extends MessageManager {
     }
 
     @Override
-    public void sendFormattedOutboundPrivateMessage(Player recipient, Player sender, String message) {
+    public void sendFormattedOutboundPrivateMessage(Player messageSender, Player messageRecipient, String message) {
         final ComponentBuilder componentBuilder = new ComponentBuilder();
-        componentBuilder.append(new MineDown(PlaceholderReplacer.replace(recipient, Settings.outboundMessageFormat, plugin))
+        componentBuilder.append(new MineDown(PlaceholderReplacer.replace(messageRecipient, Settings.outboundMessageFormat, plugin))
                 .toComponent());
-        if (sender.hasPermission("huskchat.formatted_chat")) {
+        if (messageSender.hasPermission("huskchat.formatted_chat")) {
             componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING)
                     .toComponent());
         } else {
             componentBuilder.append(message);
         }
-        BungeePlayer.adaptBungee(recipient).sendMessage(componentBuilder.create());
+        BungeePlayer.adaptBungee(messageSender).sendMessage(componentBuilder.create());
     }
 
     @Override
-    public void sendFormattedInboundPrivateMessage(Player recipient, Player sender, String message) {
+    public void sendFormattedInboundPrivateMessage(Player messageRecipient, Player messageSender, String message) {
         final ComponentBuilder componentBuilder = new ComponentBuilder();
-        componentBuilder.append(new MineDown(PlaceholderReplacer.replace(sender, Settings.inboundMessageFormat, plugin))
+        componentBuilder.append(new MineDown(PlaceholderReplacer.replace(messageSender, Settings.inboundMessageFormat, plugin))
                 .toComponent());
-        if (sender.hasPermission("huskchat.formatted_chat")) {
+        if (messageSender.hasPermission("huskchat.formatted_chat")) {
             componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING)
                     .toComponent());
         } else {
             componentBuilder.append(message);
         }
-        BungeePlayer.adaptBungee(recipient).sendMessage(componentBuilder.create());
+        BungeePlayer.adaptBungee(messageRecipient).sendMessage(componentBuilder.create());
     }
 
     @Override

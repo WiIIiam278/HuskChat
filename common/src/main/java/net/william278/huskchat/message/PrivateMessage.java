@@ -35,7 +35,7 @@ public record PrivateMessage(Player sender, String targetUsername,
 
             // Show that the message has been sent
             PlayerCache.setLastMessenger(sender.getUuid(), target.getUuid());
-            implementor.getMessageManager().sendFormattedOutboundPrivateMessage(target, sender, message);
+            implementor.getMessageManager().sendFormattedOutboundPrivateMessage(sender, target, message);
 
             // Show the received message
             PlayerCache.setLastMessenger(target.getUuid(), sender.getUuid());
@@ -51,7 +51,7 @@ public record PrivateMessage(Player sender, String targetUsername,
 
             // Log to console if enabled
             if (Settings.logPrivateMessages) {
-                String logFormat = Settings.channelLogFormat;
+                String logFormat = Settings.messageLogFormat;
                 logFormat = logFormat.replaceAll("%sender%", sender.getName());
                 logFormat = logFormat.replaceAll("%receiver%", target.getName());
 

@@ -50,9 +50,9 @@ public abstract class MessageManager {
 
     public abstract void sendFormattedChannelMessage(Player target, Player sender, Channel channel, String message);
 
-    public abstract void sendFormattedOutboundPrivateMessage(Player recipient, Player sender, String message);
+    public abstract void sendFormattedOutboundPrivateMessage(Player messageSender, Player messageRecipient, String message);
 
-    public abstract void sendFormattedInboundPrivateMessage(Player recipient, Player sender, String message);
+    public abstract void sendFormattedInboundPrivateMessage(Player messageRecipient, Player messageSender, String message);
 
     public abstract void sendFormattedLocalSpyMessage(Player spy, PlayerCache.SpyColor spyColor, Player sender, Channel channel, String message);
 

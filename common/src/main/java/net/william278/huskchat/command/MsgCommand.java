@@ -27,20 +27,24 @@ public class MsgCommand extends CommandBase {
             implementor.getLoggingAdapter().log(Level.INFO, implementor.getMessageManager().getRawMessage("error_in_game_only"));
             return;
         }
-        if (args.length >= 2) {
-            StringJoiner message = new StringJoiner(" ");
-            int messageWordCount = 0;
-            for (String arg : args) {
-                if (messageWordCount >= 1) {
-                    message.add(arg);
+        if (player.hasPermission(permission)) {
+            if (args.length >= 2) {
+                StringJoiner message = new StringJoiner(" ");
+                int messageWordCount = 0;
+                for (String arg : args) {
+                    if (messageWordCount >= 1) {
+                        message.add(arg);
+                    }
+                    messageWordCount++;
                 }
-                messageWordCount++;
+                final String targetPlayerUsername = args[0];
+                final String messageToSend = message.toString();
+                new PrivateMessage(player, targetPlayerUsername, messageToSend, implementor).dispatch();
+            } else {
+                implementor.getMessageManager().sendMessage(player, "error_invalid_syntax", "/msg <player> <message>");
             }
-            final String targetPlayerUsername = args[0];
-            final String messageToSend = message.toString();
-            new PrivateMessage(player, targetPlayerUsername, messageToSend, implementor).dispatch();
         } else {
-            implementor.getMessageManager().sendMessage(player, "error_invalid_syntax", "/msg <player> <message>");
+            implementor.getMessageManager().sendMessage(player, "error_no_permission");
         }
     }
 

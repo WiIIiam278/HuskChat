@@ -35,18 +35,22 @@ public class HuskChatCommand extends CommandBase {
             implementor.getLoggingAdapter().log(Level.INFO, implementor.getMessageManager().getRawMessage("error_in_game_only"));
             return;
         }
-        if (args.length == 1) {
-            switch (args[0].toLowerCase(Locale.ROOT)) {
-                case "about", "info" -> sendAboutInformation(player);
-                case "reload" -> {
-                    implementor.reloadSettings();
-                    implementor.reloadMessages();
-                    implementor.getMessageManager().sendCustomMessage(player, "[HuskChat](#00fb9a bold) &#00fb9a&| Reloaded config & message files.");
+        if (player.hasPermission(permission)) {
+            if (args.length == 1) {
+                switch (args[0].toLowerCase(Locale.ROOT)) {
+                    case "about", "info" -> sendAboutInformation(player);
+                    case "reload" -> {
+                        implementor.reloadSettings();
+                        implementor.reloadMessages();
+                        implementor.getMessageManager().sendCustomMessage(player, "[HuskChat](#00fb9a bold) &#00fb9a&| Reloaded config & message files.");
+                    }
+                    default -> implementor.getMessageManager().sendMessage(player, "error_invalid_syntax", "/huskchat <about/reload>");
                 }
-                default -> implementor.getMessageManager().sendMessage(player, "error_invalid_syntax", "/huskchat <about/reload>");
+            } else {
+                sendAboutInformation(player);
             }
         } else {
-            sendAboutInformation(player);
+            implementor.getMessageManager().sendMessage(player, "error_no_permission");
         }
     }
 
@@ -61,7 +65,7 @@ public class HuskChatCommand extends CommandBase {
 
     @Override
     public List<String> onTabComplete(Player player, String[] args) {
-        if (!player.hasPermission(PERMISSION)) {
+        if (!player.hasPermission(permission)) {
             return Collections.emptyList();
         }
         if (args.length <= 1) {

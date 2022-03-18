@@ -27,29 +27,33 @@ public class ReplyCommand extends CommandBase {
             implementor.getLoggingAdapter().log(Level.INFO, implementor.getMessageManager().getRawMessage("error_in_game_only"));
             return;
         }
-        if (args.length >= 1) {
-            final UUID lastPlayerId = PlayerCache.getLastMessenger(player.getUuid());
-            if (lastPlayerId == null) {
-                implementor.getMessageManager().sendMessage(player, "error_reply_no_messages");
-                return;
-            }
+        if (player.hasPermission(permission)) {
+            if (args.length >= 1) {
+                final UUID lastPlayerId = PlayerCache.getLastMessenger(player.getUuid());
+                if (lastPlayerId == null) {
+                    implementor.getMessageManager().sendMessage(player, "error_reply_no_messages");
+                    return;
+                }
 
-            final Player lastPlayer = implementor.getPlayer(lastPlayerId);
-            if (lastPlayer == null) {
-                implementor.getMessageManager().sendMessage(player, "error_reply_not_online");
-                return;
-            }
+                final Player lastPlayer = implementor.getPlayer(lastPlayerId);
+                if (lastPlayer == null) {
+                    implementor.getMessageManager().sendMessage(player, "error_reply_not_online");
+                    return;
+                }
 
-            StringJoiner message = new StringJoiner(" ");
-            for (String arg : args) {
-                message.add(arg);
-            }
+                StringJoiner message = new StringJoiner(" ");
+                for (String arg : args) {
+                    message.add(arg);
+                }
 
-            final String messageToSend = message.toString();
-            final String targetPlayerUsername = lastPlayer.getName();
-            new PrivateMessage(player, targetPlayerUsername, messageToSend, implementor).dispatch();
+                final String messageToSend = message.toString();
+                final String targetPlayerUsername = lastPlayer.getName();
+                new PrivateMessage(player, targetPlayerUsername, messageToSend, implementor).dispatch();
+            } else {
+                implementor.getMessageManager().sendMessage(player, "error_invalid_syntax", "/r <message>");
+            }
         } else {
-            implementor.getMessageManager().sendMessage(player, "error_invalid_syntax", "/r <message>");
+            implementor.getMessageManager().sendMessage(player, "error_no_permission");
         }
     }
 
