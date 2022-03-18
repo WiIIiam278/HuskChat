@@ -18,8 +18,7 @@ public abstract class MessageManager {
 
     private void load(YamlDocument messagesConfig) {
         messages.clear();
-        for (Object messageKeyObject : messagesConfig.getKeys()) {
-            final String messageId = (String) messageKeyObject;
+        for (String messageId : messagesConfig.getRoutesAsStrings(false)) {
             messages.put(messageId, messagesConfig.getString(messageId, ""));
         }
     }

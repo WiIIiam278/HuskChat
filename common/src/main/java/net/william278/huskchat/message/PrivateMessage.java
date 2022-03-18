@@ -41,6 +41,7 @@ public record PrivateMessage(Player sender, String targetUsername,
             PlayerCache.setLastMessenger(target.getUuid(), sender.getUuid());
             implementor.getMessageManager().sendFormattedInboundPrivateMessage(target, sender, message);
 
+            // Show message to social spies
             if (Settings.doSocialSpyCommand) {
                 final HashMap<Player, PlayerCache.SpyColor> spies = PlayerCache.getSocialSpyMessageReceivers(target.getUuid(), implementor);
                 for (Player spy : spies.keySet()) {

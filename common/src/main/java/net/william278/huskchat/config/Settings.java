@@ -118,9 +118,7 @@ public class Settings {
      */
     private static HashSet<Channel> fetchChannels(YamlDocument configFile) throws IllegalArgumentException {
         final HashSet<Channel> channels = new HashSet<>();
-        for (Object channelIDObject : configFile.getSection("channels").getKeys()) {
-            final String channelID = (String) channelIDObject;
-
+        for (String channelID : configFile.getSection("channels").getRoutesAsStrings(false)) {
             // Get channel format and scope and create channel object
             final String format = configFile.getString("channels." + channelID + ".format", "%fullname%&r: ");
             final String broadcastScope = configFile.getString("channels." + channelID + ".broadcast_scope", "GLOBAL").toUpperCase();
@@ -184,8 +182,7 @@ public class Settings {
         // Replacers
         if (configFile.getBoolean("message_replacers.emoji_replacer.enabled", true)) {
             HashMap<String, String> emojiSequences = new HashMap<>();
-            for (Object charactersObject : configFile.getSection("message_replacers.emoji_replacer.emoji").getKeys()) {
-                final String characters = (String) charactersObject;
+            for (String characters : configFile.getSection("message_replacers.emoji_replacer.emoji").getRoutesAsStrings(false)) {
                 emojiSequences.put(characters, configFile.getString("message_replacers.emoji_replacer.emoji." + characters));
             }
             filters.add(new EmojiReplacer(emojiSequences));
@@ -203,8 +200,7 @@ public class Settings {
     private static HashMap<String, String> getServerDefaultChannels(YamlDocument configFile) {
         final HashMap<String, String> serverDefaults = new HashMap<>();
         if (configFile.contains("server_default_channels")) {
-            for (Object serverObject : configFile.getSection("server_default_channels").getKeys()) {
-                final String server = (String) serverObject;
+            for (String server : configFile.getSection("server_default_channels").getRoutesAsStrings(false)) {
                 String channelId = configFile.getString("server_default_channels." + server);
                 serverDefaults.put(server, channelId);
             }

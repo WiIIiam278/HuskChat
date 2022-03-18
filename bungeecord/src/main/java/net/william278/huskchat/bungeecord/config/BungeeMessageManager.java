@@ -91,8 +91,7 @@ public class BungeeMessageManager extends MessageManager {
         componentBuilder.append(new MineDown(PlaceholderReplacer.replace(messageRecipient, Settings.outboundMessageFormat, plugin))
                 .toComponent());
         if (messageSender.hasPermission("huskchat.formatted_chat")) {
-            componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING)
-                    .toComponent());
+            componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
         } else {
             componentBuilder.append(message);
         }
@@ -105,8 +104,7 @@ public class BungeeMessageManager extends MessageManager {
         componentBuilder.append(new MineDown(PlaceholderReplacer.replace(messageSender, Settings.inboundMessageFormat, plugin))
                 .toComponent());
         if (messageSender.hasPermission("huskchat.formatted_chat")) {
-            componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING)
-                    .toComponent());
+            componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
         } else {
             componentBuilder.append(message);
         }

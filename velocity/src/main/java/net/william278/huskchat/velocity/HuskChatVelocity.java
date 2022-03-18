@@ -150,7 +150,7 @@ public class HuskChatVelocity implements HuskChat {
         try {
             Settings.load(YamlDocument.create(new File(getDataFolder(), "config.yml"),
                     Objects.requireNonNull(HuskChat.class.getClassLoader().getResourceAsStream("config.yml")),
-                    GeneralSettings.DEFAULT,
+                    GeneralSettings.builder().setUseDefaults(false).build(),
                     LoaderSettings.builder().setAutoUpdate(true).build(),
                     DumperSettings.DEFAULT,
                     UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build()));
