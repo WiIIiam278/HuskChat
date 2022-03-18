@@ -18,7 +18,7 @@ public class ReplyCommand extends CommandBase {
     private final static String PERMISSION = "huskchat.command.msg.reply";
 
     public ReplyCommand(HuskChat implementor) {
-        super(Settings.messageCommandAliases.get(0), PERMISSION, implementor, Settings.getAliases(Settings.messageCommandAliases));
+        super(Settings.replyCommandAliases.get(0), PERMISSION, implementor, Settings.getAliases(Settings.replyCommandAliases));
     }
 
     @Override

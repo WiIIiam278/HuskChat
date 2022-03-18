@@ -26,16 +26,17 @@ public class SocialSpyCommand extends CommandBase {
             return;
         }
         if (args.length == 1) {
-            PlayerCache.SpyColor color = PlayerCache.SpyColor.DEFAULT_SPY_COLOR;
+            PlayerCache.SpyColor color;
             Optional<PlayerCache.SpyColor> selectedColor = PlayerCache.SpyColor.getColor(args[0]);
             if (selectedColor.isPresent()) {
                 color = selectedColor.get();
+                PlayerCache.setSocialSpy(player, color);
+                implementor.getMessageManager().sendMessage(player, "social_spy_toggled_on_color",
+                        color.colorCode, color.name().toLowerCase().replaceAll("_", " "));
+                return;
             }
-            PlayerCache.setSocialSpy(player, color);
-            implementor.getMessageManager().sendMessage(player, "social_spy_toggled_on_color");
-            return;
         }
-        if (PlayerCache.isSocialSpying(player)) {
+        if (!PlayerCache.isSocialSpying(player)) {
             PlayerCache.setSocialSpy(player);
             implementor.getMessageManager().sendMessage(player, "social_spy_toggled_on");
         } else {

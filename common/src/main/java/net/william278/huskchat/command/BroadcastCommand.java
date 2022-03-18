@@ -15,8 +15,6 @@ public class BroadcastCommand extends CommandBase {
 
     public BroadcastCommand(HuskChat implementor) {
         super(Settings.broadcastCommandAliases.get(0), PERMISSION, implementor, Settings.getAliases(Settings.broadcastCommandAliases));
-        System.out.println(Settings.broadcastCommandAliases);
-        System.out.println(Settings.broadcastCommandAliases.get(0));
     }
 
     @Override

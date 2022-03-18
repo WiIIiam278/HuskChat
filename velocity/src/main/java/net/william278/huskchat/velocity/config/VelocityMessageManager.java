@@ -2,8 +2,10 @@ package net.william278.huskchat.velocity.config;
 
 import de.themoep.minedown.adventure.MineDown;
 import de.themoep.minedown.adventure.MineDownParser;
+import dev.dejvokep.boostedyaml.YamlDocument;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.message.MessageManager;
@@ -13,13 +15,17 @@ import net.william278.huskchat.util.PlaceholderReplacer;
 import net.william278.huskchat.velocity.HuskChatVelocity;
 import net.william278.huskchat.velocity.player.VelocityPlayer;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
+
 public class VelocityMessageManager extends MessageManager {
 
     private static final HuskChatVelocity plugin = HuskChatVelocity.getInstance();
 
-    public VelocityMessageManager() {
-        super(new VelocityConfigFile("languages/" + Settings.language + ".yml",
-                "messages-" + Settings.language + ".yml"));
+    public VelocityMessageManager() throws IOException {
+        super(YamlDocument.create(new File(plugin.getDataFolder(), "messages-" + Settings.language + ".yml"),
+                Objects.requireNonNull(HuskChat.class.getClassLoader().getResourceAsStream("languages/" + Settings.language + ".yml"))));
     }
 
     @Override

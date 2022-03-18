@@ -147,11 +147,7 @@ message_replacers:
       ':(': '☹'
       ':frown:': '☹'
       ':-(': '☹'
-      '<3': '❤'
-      ':heart:': '❤'
-      '<-': '←'
-      '<--': '←'
-      '->': '→'
-      '-->': '→'
-      ':star:': '⭐'
       ':fire:': '🔥'
+
+# Version of the config file
+config-version: 1

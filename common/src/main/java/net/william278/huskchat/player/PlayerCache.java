@@ -170,9 +170,10 @@ public class PlayerCache {
             return colors;
         }
 
-        public static Optional<SpyColor> getColor(String colorCode) {
+        public static Optional<SpyColor> getColor(String colorInput) {
             for (SpyColor color : SpyColor.values()) {
-                if (color.colorCode.equals(colorCode) || color.colorCode.equalsIgnoreCase(color.name())) {
+                if (color.colorCode.replace("&", "").equals(colorInput.replace("&", ""))
+                        || color.name().equalsIgnoreCase(colorInput.toUpperCase())) {
                     return Optional.of(color);
                 }
             }

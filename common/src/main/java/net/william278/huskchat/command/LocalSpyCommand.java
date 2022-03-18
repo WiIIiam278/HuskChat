@@ -26,16 +26,17 @@ public class LocalSpyCommand extends CommandBase {
             return;
         }
         if (args.length == 1) {
-            PlayerCache.SpyColor color = PlayerCache.SpyColor.DEFAULT_SPY_COLOR;
+            PlayerCache.SpyColor color;
             Optional<PlayerCache.SpyColor> selectedColor = PlayerCache.SpyColor.getColor(args[0]);
             if (selectedColor.isPresent()) {
                 color = selectedColor.get();
+                PlayerCache.setLocalSpy(player, color);
+                implementor.getMessageManager().sendMessage(player, "local_spy_toggled_on_color",
+                        color.colorCode, color.name().toLowerCase().replaceAll("_", " "));
+                return;
             }
-            PlayerCache.setLocalSpy(player, color);
-            implementor.getMessageManager().sendMessage(player, "local_spy_toggled_on_color");
-            return;
         }
-        if (PlayerCache.isLocalSpying(player)) {
+        if (!PlayerCache.isLocalSpying(player)) {
             PlayerCache.setLocalSpy(player);
             implementor.getMessageManager().sendMessage(player, "local_spy_toggled_on");
         } else {

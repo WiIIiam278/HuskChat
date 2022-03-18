@@ -49,14 +49,14 @@ public class MsgCommand extends CommandBase {
         if (!player.hasPermission(PERMISSION)) {
             return Collections.emptyList();
         }
-        if (args.length == 1) {
+        if (args.length <= 1) {
             final ArrayList<String> userNames = new ArrayList<>();
             for (Player connectedPlayer : implementor.getOnlinePlayers()) {
                 if (!player.getUuid().equals(connectedPlayer.getUuid())) {
                     userNames.add(connectedPlayer.getName());
                 }
             }
-            return userNames.stream().filter(val -> val.startsWith(args[0]))
+            return userNames.stream().filter(val -> val.startsWith((args.length >= 1) ? args[0] : ""))
                     .sorted().collect(Collectors.toList());
         } else {
             return Collections.emptyList();

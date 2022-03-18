@@ -26,12 +26,13 @@ public record PrivateMessage(Player sender, String targetUsername,
             }
         }
 
-        if (targetUsername.equalsIgnoreCase(sender.getName())) {
-            implementor.getMessageManager().sendMessage(sender, "error_cannot_message_self");
-            return;
-        }
-
         implementor.matchPlayer(targetUsername).ifPresentOrElse(target -> {
+            // Prevent sending messages to yourself
+            if (target.getUuid().equals(sender.getUuid())) {
+                implementor.getMessageManager().sendMessage(sender, "error_cannot_message_self");
+                return;
+            }
+
             // Show that the message has been sent
             PlayerCache.setLastMessenger(sender.getUuid(), target.getUuid());
             implementor.getMessageManager().sendFormattedOutboundPrivateMessage(target, sender, message);

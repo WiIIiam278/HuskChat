@@ -64,8 +64,8 @@ public class HuskChatCommand extends CommandBase {
         if (!player.hasPermission(PERMISSION)) {
             return Collections.emptyList();
         }
-        if (args.length == 1) {
-            return Arrays.stream(COMMAND_TAB_ARGUMENTS).filter(val -> val.startsWith(args[0]))
+        if (args.length <= 1) {
+            return Arrays.stream(COMMAND_TAB_ARGUMENTS).filter(val -> val.startsWith((args.length >= 1) ? args[0] : ""))
                     .sorted().collect(Collectors.toList());
         } else {
             return Collections.emptyList();

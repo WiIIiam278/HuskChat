@@ -40,6 +40,7 @@ public class VelocityCommand implements SimpleCommand {
 
     @Override
     public boolean hasPermission(Invocation invocation) {
-        return invocation.source().hasPermission(implementer.permission);
+        //return invocation.source().hasPermission(implementer.permission);
+        return true; // We return true here because Velocity's implementation of this is to pretend to the user the command doesn't exist, which is really dumb and not user-friendly.
     }
 }

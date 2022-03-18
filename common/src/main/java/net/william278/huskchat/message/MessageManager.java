@@ -1,7 +1,7 @@
 package net.william278.huskchat.message;
 
+import dev.dejvokep.boostedyaml.YamlDocument;
 import net.william278.huskchat.channel.Channel;
-import net.william278.huskchat.config.ConfigFile;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 
@@ -12,14 +12,15 @@ public abstract class MessageManager {
 
     private static final Map<String, String> messages = new HashMap<>();
 
-    public MessageManager(ConfigFile messagesConfig) {
+    public MessageManager(YamlDocument messagesConfig) {
         load(messagesConfig);
     }
 
-    private void load(ConfigFile messagesConfig) {
+    private void load(YamlDocument messagesConfig) {
         messages.clear();
-        for (String messageKey : messagesConfig.getConfigKeys()) {
-            messages.put(messageKey, messagesConfig.getString(messageKey, ""));
+        for (Object messageKeyObject : messagesConfig.getKeys()) {
+            final String messageId = (String) messageKeyObject;
+            messages.put(messageId, messagesConfig.getString(messageId, ""));
         }
     }
 

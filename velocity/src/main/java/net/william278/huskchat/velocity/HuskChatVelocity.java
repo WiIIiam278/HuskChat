@@ -7,6 +7,12 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
+import dev.dejvokep.boostedyaml.YamlDocument;
+import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
+import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
+import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
+import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
+import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.command.*;
@@ -18,7 +24,6 @@ import net.william278.huskchat.message.MessageManager;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.util.Logger;
 import net.william278.huskchat.velocity.command.VelocityCommand;
-import net.william278.huskchat.velocity.config.VelocityConfigFile;
 import net.william278.huskchat.velocity.config.VelocityMessageManager;
 import net.william278.huskchat.velocity.listener.VelocityListener;
 import net.william278.huskchat.velocity.player.VelocityPlayer;
@@ -26,9 +31,11 @@ import net.william278.huskchat.velocity.util.VelocityLogger;
 import org.bstats.velocity.Metrics;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
 
 @Plugin(id = "huskchat")
 public class HuskChatVelocity implements HuskChat {
@@ -141,12 +148,25 @@ public class HuskChatVelocity implements HuskChat {
 
     @Override
     public void reloadSettings() {
-        Settings.load(new VelocityConfigFile("config.yml", "config.yml"));
+        try {
+            Settings.load(YamlDocument.create(new File(getDataFolder(), "config.yml"),
+                    Objects.requireNonNull(HuskChat.class.getClassLoader().getResourceAsStream("config.yml")),
+                    GeneralSettings.DEFAULT,
+                    LoaderSettings.builder().setAutoUpdate(true).build(),
+                    DumperSettings.DEFAULT,
+                    UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build()));
+        } catch (IOException e) {
+            getLoggingAdapter().log(Level.SEVERE, "Failed to load config file");
+        }
     }
 
     @Override
     public void reloadMessages() {
-        messageManager = new VelocityMessageManager();
+        try {
+            messageManager = new VelocityMessageManager();
+        } catch (IOException e) {
+            getLoggingAdapter().log(Level.SEVERE, "Failed to load messages file");
+        }
     }
 
     @Override

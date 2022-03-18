@@ -1,11 +1,16 @@
 package net.william278.huskchat.bungeecord;
 
+import dev.dejvokep.boostedyaml.YamlDocument;
+import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
+import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
+import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
+import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
+import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.william278.huskchat.HuskChat;
-import net.william278.huskchat.bungeecord.command.*;
-import net.william278.huskchat.bungeecord.config.BungeeConfigFile;
+import net.william278.huskchat.bungeecord.command.BungeeCommand;
 import net.william278.huskchat.bungeecord.config.BungeeMessageManager;
 import net.william278.huskchat.bungeecord.listener.BungeeListener;
 import net.william278.huskchat.bungeecord.player.BungeePlayer;
@@ -22,7 +27,10 @@ import net.william278.huskchat.player.Player;
 import net.william278.huskchat.util.Logger;
 import org.bstats.bungeecord.Metrics;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
 
 public final class HuskChatBungee extends Plugin implements HuskChat {
 
@@ -104,18 +112,22 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
         new Metrics(this, METRICS_ID);
 
         // Plugin startup logic
-        getLogger().info("Enabled HuskChat version " + getDescription().getVersion());
+        getLoggingAdapter().info("Enabled HuskChat version " + getDescription().getVersion());
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        getLogger().info("Disabled HuskChat version " + getDescription().getVersion());
+        getLoggingAdapter().info("Disabled HuskChat version " + getDescription().getVersion());
     }
 
     @Override
     public void reloadMessages() {
-        messageManager = new BungeeMessageManager();
+        try {
+            messageManager = new BungeeMessageManager();
+        } catch (IOException e) {
+            getLoggingAdapter().log(Level.SEVERE, "Failed to load messages file");
+        }
     }
 
     @Override
@@ -125,7 +137,16 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
 
     @Override
     public void reloadSettings() {
-        Settings.load(new BungeeConfigFile("config.yml", "config.yml"));
+        try {
+            Settings.load(YamlDocument.create(new File(getDataFolder(), "config.yml"),
+                    getResourceAsStream("config.yml"),
+                    GeneralSettings.DEFAULT,
+                    LoaderSettings.builder().setAutoUpdate(true).build(),
+                    DumperSettings.DEFAULT,
+                    UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build()));
+        } catch (IOException e) {
+            getLoggingAdapter().log(Level.SEVERE, "Failed to load config file");
+        }
     }
 
     @Override

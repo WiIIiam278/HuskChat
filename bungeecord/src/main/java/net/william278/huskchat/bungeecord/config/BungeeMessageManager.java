@@ -2,6 +2,7 @@ package net.william278.huskchat.bungeecord.config;
 
 import de.themoep.minedown.MineDown;
 import de.themoep.minedown.MineDownParser;
+import dev.dejvokep.boostedyaml.YamlDocument;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.william278.huskchat.bungeecord.HuskChatBungee;
 import net.william278.huskchat.bungeecord.player.BungeePlayer;
@@ -12,13 +13,16 @@ import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 import net.william278.huskchat.util.PlaceholderReplacer;
 
+import java.io.File;
+import java.io.IOException;
+
 public class BungeeMessageManager extends MessageManager {
 
     private static final HuskChatBungee plugin = HuskChatBungee.getInstance();
 
-    public BungeeMessageManager() {
-        super(new BungeeConfigFile("languages/" + Settings.language + ".yml",
-                "messages-" + Settings.language + ".yml"));
+    public BungeeMessageManager() throws IOException {
+        super(YamlDocument.create(new File(plugin.getDataFolder(), "messages-" + Settings.language + ".yml"),
+                plugin.getResourceAsStream("languages/" + Settings.language + ".yml")));
     }
 
     @Override

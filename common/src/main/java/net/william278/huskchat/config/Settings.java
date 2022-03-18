@@ -1,5 +1,6 @@
 package net.william278.huskchat.config;
 
+import dev.dejvokep.boostedyaml.YamlDocument;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.filter.*;
 import net.william278.huskchat.filter.replacer.EmojiReplacer;
@@ -54,7 +55,7 @@ public class Settings {
     public static List<ChatFilter> chatFilters = new ArrayList<>();
 
     /**
-     * Use {@link Settings#load(ConfigFile)}
+     * Use {@link Settings#load(YamlDocument)}
      */
     private Settings() {
     }
@@ -62,9 +63,9 @@ public class Settings {
     /**
      * Load plugin Settings from a config file
      *
-     * @param configFile Proxy {@link ConfigFile} data
+     * @param configFile Proxy {@link YamlDocument} data
      */
-    public static void load(ConfigFile configFile) {
+    public static void load(YamlDocument configFile) {
         // Language file
         language = configFile.getString("language", "en-gb");
 
@@ -73,33 +74,33 @@ public class Settings {
         channelLogFormat = configFile.getString("channel_log_format", "[CHAT] [%channel%] %sender%: ");
         channels.addAll(fetchChannels(configFile));
         serverDefaultChannels = getServerDefaultChannels(configFile);
-        channelCommandAliases = (configFile.contains("channel_command_aliases")) ? getCommandsFromList(new ArrayList<>(configFile.getStringList("channel_command_aliases"))) : Collections.singletonList("channel");
+        channelCommandAliases = (configFile.contains("channel_command_aliases")) ? getCommandsFromList(configFile.getStringList("channel_command_aliases")) : Collections.singletonList("channel");
 
         // Other options
         doMessageCommand = configFile.getBoolean("message_command.enabled", true);
         inboundMessageFormat = configFile.getString("message_command.format.inbound", "&#00fb9a&%name% &8→ &#00fb9a&You&8: &f");
         outboundMessageFormat = configFile.getString("message_command.format.outbound", "&#00fb9a&You &8→ &#00fb9a&%name%&8 &f");
-        logPrivateMessages = configFile.getBoolean("messages_command.log_to_console", true);
-        censorPrivateMessages = configFile.getBoolean("messages_command.censor", false);
-        messageLogFormat = configFile.getString("messages_command.log_format", "[MSG] [%sender% -> %receiver%]: ");
-        messageCommandRestrictedServers = configFile.getStringList("channels.messages_command.restricted_servers");
-        messageCommandAliases = (configFile.contains("messages_command.msg_aliases")) ? getCommandsFromList(new ArrayList<>(configFile.getStringList("messages_command.msg_aliases"))) : Collections.singletonList("msg");
-        replyCommandAliases = (configFile.contains("messages_command.reply_aliases")) ? getCommandsFromList(new ArrayList<>(configFile.getStringList("messages_command.reply_aliases"))) : Collections.singletonList("reply");
+        logPrivateMessages = configFile.getBoolean("message_command.log_to_console", true);
+        censorPrivateMessages = configFile.getBoolean("message_command.censor", false);
+        messageLogFormat = configFile.getString("message_command.log_format", "[MSG] [%sender% -> %receiver%]: ");
+        messageCommandRestrictedServers = configFile.getStringList("message_command.restricted_servers");
+        messageCommandAliases = (configFile.contains("message_command.msg_aliases")) ? getCommandsFromList(configFile.getStringList("message_command.msg_aliases")) : Collections.singletonList("msg");
+        replyCommandAliases = (configFile.contains("message_command.reply_aliases")) ? getCommandsFromList(configFile.getStringList("message_command.reply_aliases")) : Collections.singletonList("reply");
 
         // Social spy
         doSocialSpyCommand = configFile.getBoolean("social_spy.enabled", true);
         socialSpyFormat = configFile.getString("social_spy.format", "&e[Spy] &7%sender% &8→ &7%receiever%:%spy_color% ");
-        socialSpyCommandAliases = (configFile.contains("social_spy.socialspy_aliases")) ? getCommandsFromList(new ArrayList<>(configFile.getStringList("social_spy.socialspy_aliases"))) : Collections.singletonList("socialspy");
+        socialSpyCommandAliases = (configFile.contains("social_spy.socialspy_aliases")) ? getCommandsFromList(configFile.getStringList("social_spy.socialspy_aliases")) : Collections.singletonList("socialspy");
 
         // Local spy
         doLocalSpyCommand = configFile.getBoolean("local_spy.enabled", true);
         localSpyFormat = configFile.getString("local_spy.format", "&e[Spy] &7[%channel%] %name%&8:%spy_color% ");
         excludedLocalSpyChannels = (configFile.contains("local_spy.excluded_local_channels")) ? configFile.getStringList("local_spy.excluded_local_channels") : new ArrayList<>();
-        localSpyCommandAliases = (configFile.contains("local_spy.localspy_aliases")) ? getCommandsFromList(new ArrayList<>(configFile.getStringList("local_spy.localspy_aliases"))) : Collections.singletonList("localspy");
+        localSpyCommandAliases = (configFile.contains("local_spy.localspy_aliases")) ? getCommandsFromList(configFile.getStringList("local_spy.localspy_aliases")) : Collections.singletonList("localspy");
 
         // Broadcast command
         doBroadcastCommand = configFile.getBoolean("broadcast_command.enabled", true);
-        broadcastCommandAliases = (configFile.contains("broadcast_command.broadcast_aliases")) ? getCommandsFromList(new ArrayList<>(configFile.getStringList("broadcast_command.broadcast_aliases"))) : Collections.singletonList("broadcast");
+        broadcastCommandAliases = (configFile.contains("broadcast_command.broadcast_aliases")) ? getCommandsFromList(configFile.getStringList("broadcast_command.broadcast_aliases")) : Collections.singletonList("broadcast");
         broadcastMessageFormat = configFile.getString("broadcast_command.format", "&6[Broadcast]&e ");
         logBroadcasts = configFile.getBoolean("broadcast_command.log_to_console", true);
         broadcastLogFormat = configFile.getString("broadcast_command.log_format", "[BROADCAST]: ");
@@ -109,15 +110,16 @@ public class Settings {
     }
 
     /**
-     * Returns {@link Channel} data from the proxy {@link ConfigFile}
+     * Returns {@link Channel} data from the proxy {@link YamlDocument}
      *
-     * @param configFile The proxy {@link ConfigFile}
+     * @param configFile The proxy {@link YamlDocument}
      * @return {@link HashSet} of {@link Channel} data listed in the config file
      * @throws IllegalArgumentException if a channel contains an invalid broadcast scope
      */
-    private static HashSet<Channel> fetchChannels(ConfigFile configFile) throws IllegalArgumentException {
+    private static HashSet<Channel> fetchChannels(YamlDocument configFile) throws IllegalArgumentException {
         final HashSet<Channel> channels = new HashSet<>();
-        for (String channelID : configFile.getConfigKeys("channels")) {
+        for (Object channelIDObject : configFile.getSection("channels").getKeys()) {
+            final String channelID = (String) channelIDObject;
 
             // Get channel format and scope and create channel object
             final String format = configFile.getString("channels." + channelID + ".format", "%fullname%&r: ");
@@ -148,10 +150,10 @@ public class Settings {
     /**
      * Returns a {@link Set} of {@link ChatFilter}s to use for filtering chat messages
      *
-     * @param configFile The proxy {@link ConfigFile}
+     * @param configFile The proxy {@link YamlDocument}
      * @return {@link ChatFilter}s to use
      */
-    private static List<ChatFilter> fetchChatFilters(ConfigFile configFile) {
+    private static List<ChatFilter> fetchChatFilters(YamlDocument configFile) {
         ArrayList<ChatFilter> filters = new ArrayList<>();
         clearChatFilters(); // Clear and dispose of any existing ProfanityChecker instances
 
@@ -163,11 +165,11 @@ public class Settings {
             filters.add(new CapsFilter(configFile.getDouble("chat_filters.caps_filter.max_caps_percentage", 0.4)));
         }
         if (configFile.getBoolean("chat_filters.spam_filter.enabled", true)) {
-            filters.add(new SpamFilter(configFile.getInteger("chat_filters.spam_filter.period_seconds", 4),
-                    configFile.getInteger("chat_filters.spam_filter.messages_per_period", 3)));
+            filters.add(new SpamFilter(configFile.getInt("chat_filters.spam_filter.period_seconds", 4),
+                    configFile.getInt("chat_filters.spam_filter.messages_per_period", 3)));
         }
         if (configFile.getBoolean("chat_filters.repeat_filter.enabled", true)) {
-            filters.add(new RepeatFilter(configFile.getInteger("chat_filters.repeat_filter.previous_messages_to_check", 2)));
+            filters.add(new RepeatFilter(configFile.getInt("chat_filters.repeat_filter.previous_messages_to_check", 2)));
         }
         if (configFile.getBoolean("chat_filters.profanity_filter.enabled", false)) {
             filters.add(new ProfanityFilterer(ProfanityFilterer.ProfanityFilterMode.valueOf(
@@ -182,7 +184,8 @@ public class Settings {
         // Replacers
         if (configFile.getBoolean("message_replacers.emoji_replacer.enabled", true)) {
             HashMap<String, String> emojiSequences = new HashMap<>();
-            for (String characters : configFile.getConfigKeys("message_replacers.emoji_replacer.emoji")) {
+            for (Object charactersObject : configFile.getSection("message_replacers.emoji_replacer.emoji").getKeys()) {
+                final String characters = (String) charactersObject;
                 emojiSequences.put(characters, configFile.getString("message_replacers.emoji_replacer.emoji." + characters));
             }
             filters.add(new EmojiReplacer(emojiSequences));
@@ -194,13 +197,14 @@ public class Settings {
     /**
      * Returns a {@link java.util.Map} of servers to the default channel to enforce on that server
      *
-     * @param configFile The proxy {@link ConfigFile}
+     * @param configFile The proxy {@link YamlDocument}
      * @return {@link java.util.Map} of servers and their default channels
      */
-    private static HashMap<String, String> getServerDefaultChannels(ConfigFile configFile) {
+    private static HashMap<String, String> getServerDefaultChannels(YamlDocument configFile) {
         final HashMap<String, String> serverDefaults = new HashMap<>();
         if (configFile.contains("server_default_channels")) {
-            for (String server : configFile.getConfigKeys("server_default_channels")) {
+            for (Object serverObject : configFile.getSection("server_default_channels").getKeys()) {
+                final String server = (String) serverObject;
                 String channelId = configFile.getString("server_default_channels." + server);
                 serverDefaults.put(server, channelId);
             }
@@ -257,6 +261,9 @@ public class Settings {
      * @return The actual command aliases
      */
     public static String[] getAliases(List<String> aliases) {
+        if (aliases.size() <= 1) {
+            return new String[0];
+        }
         String[] aliasList = new String[aliases.size() - 1];
         for (int i = 1; i < aliases.size(); i++) {
             aliasList[i - 1] = aliases.get(i);
