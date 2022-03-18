@@ -2,7 +2,7 @@
 
 # HuskChat
 
-[![Maven CI](https://github.com/WiIIiam278/HuskChat/actions/workflows/gradle.yml/badge.svg)](https://github.com/WiIIiam278/HuskChat/actions/workflows/gradle.yml)
+[![Gradle CI](https://github.com/WiIIiam278/HuskChat/actions/workflows/tests.yml/badge.svg)](https://github.com/WiIIiam278/HuskChat/actions/workflows/tests.yml)
 [![Discord](https://img.shields.io/discord/818135932103557162?color=7289da&logo=discord)](https://discord.gg/tVYhJfyDWG)
 
 **HuskChat** is a no-frills, simple and customisable cross-server chat system for Minecraft networks running BungeeCord
