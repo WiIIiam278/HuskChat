@@ -60,7 +60,7 @@ public class MsgCommand extends CommandBase {
                     userNames.add(connectedPlayer.getName());
                 }
             }
-            return userNames.stream().filter(val -> val.startsWith((args.length >= 1) ? args[0] : ""))
+            return userNames.stream().filter(val -> val.toLowerCase().startsWith((args.length >= 1) ? args[0].toLowerCase() : ""))
                     .sorted().collect(Collectors.toList());
         } else {
             return Collections.emptyList();

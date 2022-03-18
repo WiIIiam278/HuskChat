@@ -69,7 +69,7 @@ public class HuskChatCommand extends CommandBase {
             return Collections.emptyList();
         }
         if (args.length <= 1) {
-            return Arrays.stream(COMMAND_TAB_ARGUMENTS).filter(val -> val.startsWith((args.length >= 1) ? args[0] : ""))
+            return Arrays.stream(COMMAND_TAB_ARGUMENTS).filter(val -> val.toLowerCase().startsWith((args.length >= 1) ? args[0].toLowerCase() : ""))
                     .sorted().collect(Collectors.toList());
         } else {
             return Collections.emptyList();

@@ -45,7 +45,7 @@ public class ChannelCommand extends CommandBase {
         }
         if (args.length <= 1) {
             return getChannelsIdsWithSendPermission(player).stream().filter(val ->
-                            val.startsWith((args.length >= 1) ? args[0] : ""))
+                            val.toLowerCase().startsWith((args.length >= 1) ? args[0].toLowerCase() : ""))
                     .sorted().collect(Collectors.toList());
         }
         return Collections.emptyList();
