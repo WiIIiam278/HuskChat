@@ -90,11 +90,14 @@ public class PlayerCache {
         HashMap<Player, SpyColor> receivers = new HashMap<>();
         for (UUID player : socialSpies.keySet()) {
             final SpyColor color = socialSpies.get(player);
-            final Player spy = implementor.getPlayer(player);
+            final Optional<Player> spy = implementor.getPlayer(player);
+            if (spy.isEmpty()) {
+                continue;
+            }
             if (player.equals(messageRecipient)) {
                 continue;
             }
-            receivers.put(spy, color);
+            receivers.put(spy.get(), color);
         }
         return receivers;
     }
@@ -119,15 +122,18 @@ public class PlayerCache {
         localSpies.remove(player.getUuid());
     }
 
-    public static HashMap<Player, SpyColor> getLocalSpyMessageReceivers(HashSet<Player> existingRecipients, String localMessageServer, HuskChat implementor) {
+    public static HashMap<Player, SpyColor> getLocalSpyMessageReceivers(String localMessageServer, HuskChat implementor) {
         HashMap<Player, SpyColor> receivers = new HashMap<>();
         for (UUID player : localSpies.keySet()) {
             final SpyColor color = localSpies.get(player);
-            final Player spy = implementor.getPlayer(player);
-            if (spy.getServerName().equals(localMessageServer)) {
+            final Optional<Player> spy = implementor.getPlayer(player);
+            if (spy.isEmpty()) {
                 continue;
             }
-            receivers.put(spy, color);
+            if (spy.get().getServerName().equals(localMessageServer)) {
+                continue;
+            }
+            receivers.put(spy.get(), color);
         }
         return receivers;
     }

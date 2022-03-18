@@ -34,7 +34,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 @Plugin(id = "huskchat")
@@ -190,10 +189,9 @@ public class HuskChatVelocity implements HuskChat {
     }
 
     @Override
-    public Player getPlayer(UUID uuid) {
-        AtomicReference<com.velocitypowered.api.proxy.Player> player = new AtomicReference<>();
-        getProxyServer().getPlayer(uuid).ifPresent(player::set);
-        return VelocityPlayer.adaptCrossPlatform(player.get());
+    public Optional<Player> getPlayer(UUID uuid) {
+        final Optional<com.velocitypowered.api.proxy.Player> player = getProxyServer().getPlayer(uuid);
+        return player.map(VelocityPlayer::adaptCrossPlatform);
     }
 
     @Override
@@ -209,8 +207,8 @@ public class HuskChatVelocity implements HuskChat {
     public Collection<Player> getOnlinePlayersOnServer(Player serverPlayer) {
         final ArrayList<Player> velocityPlayers = new ArrayList<>();
         VelocityPlayer.adaptVelocity(serverPlayer).flatMap(com.velocitypowered.api.proxy.Player::getCurrentServer).ifPresent(serverConnection -> {
-            for (com.velocitypowered.api.proxy.Player player : serverConnection.getServer().getPlayersConnected()) {
-                velocityPlayers.add(VelocityPlayer.adaptCrossPlatform(player));
+            for (com.velocitypowered.api.proxy.Player connectedPlayer : serverConnection.getServer().getPlayersConnected()) {
+                velocityPlayers.add(VelocityPlayer.adaptCrossPlatform(connectedPlayer));
             }
         });
         return velocityPlayers;

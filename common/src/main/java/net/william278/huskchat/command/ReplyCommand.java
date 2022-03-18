@@ -7,10 +7,7 @@ import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.StringJoiner;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class ReplyCommand extends CommandBase {
@@ -35,8 +32,8 @@ public class ReplyCommand extends CommandBase {
                     return;
                 }
 
-                final Player lastPlayer = implementor.getPlayer(lastPlayerId);
-                if (lastPlayer == null) {
+                final Optional<Player> lastPlayer = implementor.getPlayer(lastPlayerId);
+                if (lastPlayer.isEmpty()) {
                     implementor.getMessageManager().sendMessage(player, "error_reply_not_online");
                     return;
                 }
@@ -47,7 +44,7 @@ public class ReplyCommand extends CommandBase {
                 }
 
                 final String messageToSend = message.toString();
-                final String targetPlayerUsername = lastPlayer.getName();
+                final String targetPlayerUsername = lastPlayer.get().getName();
                 new PrivateMessage(player, targetPlayerUsername, messageToSend, implementor).dispatch();
             } else {
                 implementor.getMessageManager().sendMessage(player, "error_invalid_syntax", "/r <message>");

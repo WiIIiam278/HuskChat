@@ -170,8 +170,13 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
     }
 
     @Override
-    public Player getPlayer(UUID uuid) {
-        return BungeePlayer.adaptCrossPlatform(ProxyServer.getInstance().getPlayer(uuid));
+    public Optional<Player> getPlayer(UUID uuid) {
+        final ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
+        if (player != null) {
+            return Optional.of(BungeePlayer.adaptCrossPlatform(player));
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override

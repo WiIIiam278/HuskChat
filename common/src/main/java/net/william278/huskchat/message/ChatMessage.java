@@ -106,7 +106,7 @@ public class ChatMessage {
                 if (broadcastScope == Channel.BroadcastScope.LOCAL || broadcastScope == Channel.BroadcastScope.LOCAL_PASSTHROUGH) {
                     if (Settings.doLocalSpyCommand) {
                         if (!Settings.isLocalSpyChannelExcluded(channel)) {
-                            final HashMap<Player, PlayerCache.SpyColor> spies = PlayerCache.getLocalSpyMessageReceivers(messageRecipients, sender.getServerName(), implementor);
+                            final HashMap<Player, PlayerCache.SpyColor> spies = PlayerCache.getLocalSpyMessageReceivers(sender.getServerName(), implementor);
                             for (Player spy : spies.keySet()) {
                                 final PlayerCache.SpyColor color = spies.get(spy);
                                 implementor.getMessageManager().sendFormattedLocalSpyMessage(spy, color, sender, channel, message);

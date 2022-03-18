@@ -25,7 +25,7 @@ public interface HuskChat {
 
     DataGetter getDataGetter();
 
-    Player getPlayer(UUID uuid);
+    Optional<Player> getPlayer(UUID uuid);
 
     Collection<Player> getOnlinePlayers();
 
