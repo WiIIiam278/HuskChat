@@ -13,13 +13,13 @@ public class PlaceholderReplacer {
         final HashMap<String, String> placeholders = new HashMap<>();
 
         // Player related placeholders
-        placeholders.put("%name%", escapeFormatting(implementingPlugin.getDataGetter().getPlayerName(player)));
-        placeholders.put("%fullname%", escapeFormatting(implementingPlugin.getDataGetter().getPlayerFullName(player)));
+        placeholders.put("%name%", implementingPlugin.getDataGetter().getPlayerName(player));
+        placeholders.put("%fullname%", implementingPlugin.getDataGetter().getPlayerFullName(player));
         placeholders.put("%prefix%", implementingPlugin.getDataGetter().getPlayerPrefix(player).isPresent() ? implementingPlugin.getDataGetter().getPlayerPrefix(player).get() : "");
         placeholders.put("%suffix%", implementingPlugin.getDataGetter().getPlayerSuffix(player).isPresent() ? implementingPlugin.getDataGetter().getPlayerSuffix(player).get() : "");
         placeholders.put("%ping%", Integer.toString(player.getPing()));
         placeholders.put("%uuid%", player.getUuid().toString());
-        placeholders.put("%servername%", escapeFormatting(player.getServerName()));
+        placeholders.put("%servername%", player.getServerName());
         placeholders.put("%serverplayercount%", Integer.toString(player.getPlayersOnServer()));
 
         // Time related placeholders
@@ -39,10 +39,6 @@ public class PlaceholderReplacer {
         }
 
         return message;
-    }
-
-    private static String escapeFormatting(String input) {
-        return input.replaceAll("__", "\\__");
     }
 
 }
