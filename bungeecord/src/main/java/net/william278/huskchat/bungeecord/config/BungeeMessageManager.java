@@ -47,7 +47,8 @@ public class BungeeMessageManager extends MessageManager {
         }
 
         // Convert to baseComponents[] via MineDown formatting and send
-        BungeePlayer.adaptBungee(player).sendMessage(new MineDown(message).replace().toComponent());
+        String finalMessage = message;
+        BungeePlayer.adaptBungee(player).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(new MineDown(finalMessage).replace().toComponent()));
     }
 
     @Override
@@ -63,12 +64,12 @@ public class BungeeMessageManager extends MessageManager {
         }
 
         // Convert to baseComponents[] via MineDown formatting and send
-        BungeePlayer.adaptBungee(player).sendMessage(new MineDown(message).replace().toComponent());
+        BungeePlayer.adaptBungee(player).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(new MineDown(message).replace().toComponent()));
     }
 
     @Override
     public void sendCustomMessage(Player player, String message) {
-        BungeePlayer.adaptBungee(player).sendMessage(new MineDown(message).toComponent());
+        BungeePlayer.adaptBungee(player).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(new MineDown(message).replace().toComponent()));
     }
 
     @Override
@@ -82,7 +83,7 @@ public class BungeeMessageManager extends MessageManager {
         } else {
             componentBuilder.append(message);
         }
-        BungeePlayer.adaptBungee(target).sendMessage(componentBuilder.create());
+        BungeePlayer.adaptBungee(target).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(componentBuilder.create()));
     }
 
     @Override
@@ -95,7 +96,7 @@ public class BungeeMessageManager extends MessageManager {
         } else {
             componentBuilder.append(message);
         }
-        BungeePlayer.adaptBungee(messageSender).sendMessage(componentBuilder.create());
+        BungeePlayer.adaptBungee(messageSender).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(componentBuilder.create()));
     }
 
     @Override
@@ -108,7 +109,7 @@ public class BungeeMessageManager extends MessageManager {
         } else {
             componentBuilder.append(message);
         }
-        BungeePlayer.adaptBungee(messageRecipient).sendMessage(componentBuilder.create());
+        BungeePlayer.adaptBungee(messageRecipient).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(componentBuilder.create()));
     }
 
     @Override
@@ -118,7 +119,7 @@ public class BungeeMessageManager extends MessageManager {
                 .append(new MineDown(PlaceholderReplacer.replace(sender, Settings.localSpyFormat, plugin)
                         .replaceAll("%spy_color%", spyColor.colorCode)).toComponent())
                 .append(message);
-        BungeePlayer.adaptBungee(spy).sendMessage(componentBuilder.create());
+        BungeePlayer.adaptBungee(spy).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(componentBuilder.create()));
     }
 
     @Override
@@ -133,7 +134,7 @@ public class BungeeMessageManager extends MessageManager {
                         .replaceAll("%receiever_name%", receiver.getName())
                         .replaceAll("%spy_color%", spyColor.colorCode)).toComponent())
                 .append(message);
-        BungeePlayer.adaptBungee(spy).sendMessage(componentBuilder.create());
+        BungeePlayer.adaptBungee(spy).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(componentBuilder.create()));
     }
 
     @Override
@@ -141,6 +142,6 @@ public class BungeeMessageManager extends MessageManager {
         final ComponentBuilder componentBuilder = new ComponentBuilder();
         componentBuilder.append(new MineDown(Settings.broadcastMessageFormat).toComponent());
         componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
-        BungeePlayer.adaptBungee(player).sendMessage(componentBuilder.create());
+        BungeePlayer.adaptBungee(player).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(componentBuilder.create()));
     }
 }

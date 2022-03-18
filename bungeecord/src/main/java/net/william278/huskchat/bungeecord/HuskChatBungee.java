@@ -191,9 +191,11 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
     @Override
     public Collection<Player> getOnlinePlayersOnServer(Player player) {
         ArrayList<Player> crossPlatform = new ArrayList<>();
-        for (ProxiedPlayer playerOnServer : BungeePlayer.adaptBungee(player).getServer().getInfo().getPlayers()) {
-            crossPlatform.add(BungeePlayer.adaptCrossPlatform(playerOnServer));
-        }
+        BungeePlayer.adaptBungee(player).ifPresent(bungeePlayer -> {
+            for (ProxiedPlayer playerOnServer : bungeePlayer.getServer().getInfo().getPlayers()) {
+                crossPlatform.add(BungeePlayer.adaptCrossPlatform(playerOnServer));
+            }
+        });
         return crossPlatform;
     }
 

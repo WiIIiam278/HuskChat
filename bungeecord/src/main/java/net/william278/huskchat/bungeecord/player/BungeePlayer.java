@@ -5,6 +5,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.william278.huskchat.player.Player;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -58,8 +59,13 @@ public class BungeePlayer implements Player {
      * @param player {@link Player} to adapt
      * @return The {@link ProxiedPlayer} object, {@code null} if they are offline
      */
-    public static ProxiedPlayer adaptBungee(Player player) {
-        return ProxyServer.getInstance().getPlayer(player.getUuid());
+    public static Optional<ProxiedPlayer> adaptBungee(Player player) {
+        ProxiedPlayer proxiedPlayer = ProxyServer.getInstance().getPlayer(player.getUuid());
+        if (proxiedPlayer != null) {
+            return Optional.of(proxiedPlayer);
+        } else {
+            return Optional.empty();
+        }
     }
 
     /**
