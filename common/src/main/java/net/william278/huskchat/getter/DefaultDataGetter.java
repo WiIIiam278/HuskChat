@@ -15,12 +15,12 @@ public class DefaultDataGetter extends DataGetter {
 
     @Override
     public String getPlayerFullName(Player player) {
-        return player.getName().replaceAll("__", "\\__");
+        return player.getName();
     }
 
     @Override
     public String getPlayerName(Player player) {
-        return player.getName().replaceAll("__", "\\__");
+        return player.getName();
     }
 
     @Override

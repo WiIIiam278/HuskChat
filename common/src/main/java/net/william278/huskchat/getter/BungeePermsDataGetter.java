@@ -23,13 +23,13 @@ public class BungeePermsDataGetter extends DataGetter {
     public String getPlayerFullName(Player player) {
         final Optional<String> prefix = getPlayerPrefix(player);
         final Optional<String> suffix = getPlayerSuffix(player);
-        return (prefix.isPresent() ? prefix : "") + player.getName().replaceAll("__", "\\__")
+        return (prefix.isPresent() ? prefix : "") + player.getName()
                 + (suffix.isPresent() ? suffix : "");
     }
 
     @Override
     public String getPlayerName(Player player) {
-        return player.getName().replaceAll("__", "\\__");
+        return player.getName();
     }
 
     @Override

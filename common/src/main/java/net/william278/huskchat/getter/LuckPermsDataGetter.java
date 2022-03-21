@@ -33,7 +33,7 @@ public class LuckPermsDataGetter extends DataGetter {
         if (prefix != null) {
             fullName.append(prefix);
         }
-        fullName.append(player.getName().replaceAll("__", "\\__"));
+        fullName.append(player.getName());
         final String suffix = cachedData.getMetaData().getSuffix();
         if (suffix != null) {
             fullName.append(suffix);
@@ -43,7 +43,7 @@ public class LuckPermsDataGetter extends DataGetter {
 
     @Override
     public String getPlayerName(Player player) {
-        return player.getName().replaceAll("__", "\\__");
+        return player.getName();
     }
 
     @Override
