@@ -22,6 +22,7 @@ import net.william278.huskchat.getter.DefaultDataGetter;
 import net.william278.huskchat.getter.LuckPermsDataGetter;
 import net.william278.huskchat.message.MessageManager;
 import net.william278.huskchat.player.Player;
+import net.william278.huskchat.player.PlayerCache;
 import net.william278.huskchat.util.Logger;
 import net.william278.huskchat.velocity.command.VelocityCommand;
 import net.william278.huskchat.velocity.config.VelocityMessageManager;
@@ -93,6 +94,10 @@ public class HuskChatVelocity implements HuskChat {
 
         // Load messages
         reloadMessages();
+
+        // Load saved social spy state
+        PlayerCache.setDataFolder(getDataFolder());
+        PlayerCache.loadSpy();
 
         // Setup player data getter
         Optional<PluginContainer> luckPerms = getProxyServer().getPluginManager().getPlugin("luckperms");

@@ -1,16 +1,21 @@
 package net.william278.huskchat.player;
 
+import dev.dejvokep.boostedyaml.YamlDocument;
+import dev.dejvokep.boostedyaml.block.implementation.Section;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.message.MessageManager;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
  * Static class storing and managing player data
  */
 public class PlayerCache {
+    private static File dataFolder;
 
     // Map of users to their current channel
     private static final HashMap<UUID, String> playerChannels = new HashMap<>();
@@ -76,14 +81,17 @@ public class PlayerCache {
 
     public static void setSocialSpy(Player player) {
         socialSpies.put(player.getUuid(), SpyColor.DEFAULT_SPY_COLOR);
+        addSpy("social", player.getUuid(), SpyColor.DEFAULT_SPY_COLOR);
     }
 
     public static void setSocialSpy(Player player, SpyColor spyColor) {
         socialSpies.put(player.getUuid(), spyColor);
+        addSpy("social", player.getUuid(), spyColor);
     }
 
     public static void removeSocialSpy(Player player) {
         socialSpies.remove(player.getUuid());
+        removeSpy("social", player.getUuid());
     }
 
     public static HashMap<Player, SpyColor> getSocialSpyMessageReceivers(UUID messageRecipient, HuskChat implementor) {
@@ -112,14 +120,17 @@ public class PlayerCache {
 
     public static void setLocalSpy(Player player) {
         localSpies.put(player.getUuid(), SpyColor.DEFAULT_SPY_COLOR);
+        addSpy("local", player.getUuid(), SpyColor.DEFAULT_SPY_COLOR);
     }
 
     public static void setLocalSpy(Player player, SpyColor spyColor) {
         localSpies.put(player.getUuid(), spyColor);
+        addSpy("local", player.getUuid(), spyColor);
     }
 
     public static void removeLocalSpy(Player player) {
         localSpies.remove(player.getUuid());
+        removeSpy("local", player.getUuid());
     }
 
     public static HashMap<Player, SpyColor> getLocalSpyMessageReceivers(String localMessageServer, HuskChat implementor) {
@@ -136,6 +147,83 @@ public class PlayerCache {
             receivers.put(spy.get(), color);
         }
         return receivers;
+    }
+
+    // Load local and social spy data into maps
+    public static void loadSpy() {
+        try {
+            YamlDocument spies = YamlDocument.create(new File(dataFolder, "spies.yml"));
+
+            if (spies.contains("local")) {
+                Section local = spies.getSection("local");
+
+                for (Object name : local.getKeys()) {
+                    localSpies.put(UUID.fromString(name.toString()),
+                            SpyColor.valueOf(local.getSection(name.toString()).getString("color")));
+                }
+            }
+
+            if (spies.contains("social")) {
+                Section social = spies.getSection("social");
+
+                for (Object name : social.getKeys()) {
+                    socialSpies.put(UUID.fromString(name.toString()),
+                            SpyColor.valueOf(social.getSection(name.toString()).getString("color")));
+                }
+            }
+        } catch(IOException e) {
+            // TODO: Use logger
+            e.printStackTrace();
+        }
+    }
+
+    // Adds spy state to data file
+    public static void addSpy(String type, UUID uuid, SpyColor spyColor) {
+        try {
+            if (!type.equals("local") && !type.equals("social")) return;
+
+            YamlDocument spies = YamlDocument.create(new File(dataFolder, "spies.yml"));
+
+            if (!spies.contains(type)) {
+                spies.createSection(type);
+            }
+
+            if (!spies.getSection(type).contains(uuid.toString())) {
+                spies.createSection(type).createSection(uuid.toString());
+            }
+
+            spies.getSection(type)
+                    .getSection(uuid.toString())
+                    .set("color", spyColor.toString());
+            spies.save();
+        } catch (IOException e) {
+            // TODO: Use logger
+            e.printStackTrace();
+        }
+    }
+
+    // Removes spy state from data file
+    public static void removeSpy(String type, UUID uuid) {
+        try {
+            if (!type.equals("local") && !type.equals("social")) return;
+
+            YamlDocument spies = YamlDocument.create(new File(dataFolder, "spies.yml"));
+
+            if (!spies.contains(type)) return;
+            if (!spies.getSection(type).contains(uuid.toString())) return;
+
+            spies.getSection(type)
+                    .remove(uuid.toString());
+
+            if (spies.getSection(type).getKeys().size() == 0) {
+                spies.remove(type);
+            }
+
+            spies.save();
+        } catch (IOException e) {
+            // TODO: Use logger
+            e.printStackTrace();
+        }
     }
 
 
@@ -185,5 +273,10 @@ public class PlayerCache {
             }
             return Optional.empty();
         }
+    }
+
+    // Sets the data directory so that social spy state can be persisted
+    public static void setDataFolder(File folder) {
+        dataFolder = folder;
     }
 }

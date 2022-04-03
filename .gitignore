@@ -114,5 +114,6 @@ run/
 /.gradle/
 /velocity/build/
 /bungeecord/build/
+/bukkit/build/
 /plugin/build/
 /common/build/
