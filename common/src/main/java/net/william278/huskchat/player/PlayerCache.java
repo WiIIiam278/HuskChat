@@ -189,7 +189,7 @@ public class PlayerCache {
             }
 
             if (!spies.getSection(type).contains(uuid.toString())) {
-                spies.createSection(type).createSection(uuid.toString());
+                spies.getSection(type).createSection(uuid.toString());
             }
 
             spies.getSection(type)
