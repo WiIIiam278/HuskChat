@@ -54,7 +54,7 @@ public class LocalSpyCommand extends CommandBase {
                     PlayerCache.removeLocalSpy(player);
                     implementor.getMessageManager().sendMessage(player, "local_spy_toggled_off");
                 } catch (IOException e) {
-                    implementor.getLoggingAdapter().log(Level.SEVERE, "Failed to save social spy state to spies file");
+                    implementor.getLoggingAdapter().log(Level.SEVERE, "Failed to save local spy state to spies file");
                 }
             }
         } else {
