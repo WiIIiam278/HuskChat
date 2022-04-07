@@ -79,17 +79,17 @@ public class PlayerCache {
         return socialSpies.containsKey(player.getUuid());
     }
 
-    public static void setSocialSpy(Player player) {
+    public static void setSocialSpy(Player player) throws IOException {
         socialSpies.put(player.getUuid(), SpyColor.DEFAULT_SPY_COLOR);
         addSpy("social", player.getUuid(), SpyColor.DEFAULT_SPY_COLOR);
     }
 
-    public static void setSocialSpy(Player player, SpyColor spyColor) {
+    public static void setSocialSpy(Player player, SpyColor spyColor) throws IOException {
         socialSpies.put(player.getUuid(), spyColor);
         addSpy("social", player.getUuid(), spyColor);
     }
 
-    public static void removeSocialSpy(Player player) {
+    public static void removeSocialSpy(Player player) throws IOException {
         socialSpies.remove(player.getUuid());
         removeSpy("social", player.getUuid());
     }
@@ -118,17 +118,17 @@ public class PlayerCache {
         return localSpies.containsKey(player.getUuid());
     }
 
-    public static void setLocalSpy(Player player) {
+    public static void setLocalSpy(Player player) throws IOException {
         localSpies.put(player.getUuid(), SpyColor.DEFAULT_SPY_COLOR);
         addSpy("local", player.getUuid(), SpyColor.DEFAULT_SPY_COLOR);
     }
 
-    public static void setLocalSpy(Player player, SpyColor spyColor) {
+    public static void setLocalSpy(Player player, SpyColor spyColor) throws IOException {
         localSpies.put(player.getUuid(), spyColor);
         addSpy("local", player.getUuid(), spyColor);
     }
 
-    public static void removeLocalSpy(Player player) {
+    public static void removeLocalSpy(Player player) throws IOException {
         localSpies.remove(player.getUuid());
         removeSpy("local", player.getUuid());
     }
@@ -150,80 +150,65 @@ public class PlayerCache {
     }
 
     // Load local and social spy data into maps
-    public static void loadSpy() {
-        try {
-            YamlDocument spies = YamlDocument.create(new File(dataFolder, "spies.yml"));
+    public static void loadSpy() throws IOException {
+        YamlDocument spies = YamlDocument.create(new File(dataFolder, "spies.yml"));
 
-            if (spies.contains("local")) {
-                Section local = spies.getSection("local");
+        if (spies.contains("local")) {
+            Section local = spies.getSection("local");
 
-                for (Object name : local.getKeys()) {
-                    localSpies.put(UUID.fromString(name.toString()),
-                            SpyColor.valueOf(local.getSection(name.toString()).getString("color")));
-                }
+            for (Object name : local.getKeys()) {
+                localSpies.put(UUID.fromString(name.toString()),
+                        SpyColor.valueOf(local.getSection(name.toString()).getString("color")));
             }
+        }
 
-            if (spies.contains("social")) {
-                Section social = spies.getSection("social");
+        if (spies.contains("social")) {
+            Section social = spies.getSection("social");
 
-                for (Object name : social.getKeys()) {
-                    socialSpies.put(UUID.fromString(name.toString()),
-                            SpyColor.valueOf(social.getSection(name.toString()).getString("color")));
-                }
+            for (Object name : social.getKeys()) {
+                socialSpies.put(UUID.fromString(name.toString()),
+                        SpyColor.valueOf(social.getSection(name.toString()).getString("color")));
             }
-        } catch(IOException e) {
-            // TODO: Use logger
-            e.printStackTrace();
         }
     }
 
     // Adds spy state to data file
-    public static void addSpy(String type, UUID uuid, SpyColor spyColor) {
-        try {
-            if (!type.equals("local") && !type.equals("social")) return;
+    public static void addSpy(String type, UUID uuid, SpyColor spyColor) throws IOException {
+        if (!type.equals("local") && !type.equals("social")) return;
 
-            YamlDocument spies = YamlDocument.create(new File(dataFolder, "spies.yml"));
+        YamlDocument spies = YamlDocument.create(new File(dataFolder, "spies.yml"));
 
-            if (!spies.contains(type)) {
-                spies.createSection(type);
-            }
-
-            if (!spies.getSection(type).contains(uuid.toString())) {
-                spies.getSection(type).createSection(uuid.toString());
-            }
-
-            spies.getSection(type)
-                    .getSection(uuid.toString())
-                    .set("color", spyColor.toString());
-            spies.save();
-        } catch (IOException e) {
-            // TODO: Use logger
-            e.printStackTrace();
+        if (!spies.contains(type)) {
+            spies.createSection(type);
         }
+
+        if (!spies.getSection(type).contains(uuid.toString())) {
+            spies.getSection(type).createSection(uuid.toString());
+        }
+
+        spies.getSection(type)
+                .getSection(uuid.toString())
+                .set("color", spyColor.toString());
+        spies.save();
     }
 
     // Removes spy state from data file
-    public static void removeSpy(String type, UUID uuid) {
-        try {
-            if (!type.equals("local") && !type.equals("social")) return;
+    public static void removeSpy(String type, UUID uuid) throws IOException {
+        if (!type.equals("local") && !type.equals("social")) return;
 
-            YamlDocument spies = YamlDocument.create(new File(dataFolder, "spies.yml"));
+        YamlDocument spies = YamlDocument.create(new File(dataFolder, "spies.yml"));
 
-            if (!spies.contains(type)) return;
-            if (!spies.getSection(type).contains(uuid.toString())) return;
+        if (!spies.contains(type)) return;
+        if (!spies.getSection(type).contains(uuid.toString())) return;
 
-            spies.getSection(type)
-                    .remove(uuid.toString());
+        spies.getSection(type)
+                .remove(uuid.toString());
 
-            if (spies.getSection(type).getKeys().size() == 0) {
-                spies.remove(type);
-            }
-
-            spies.save();
-        } catch (IOException e) {
-            // TODO: Use logger
-            e.printStackTrace();
+        if (spies.getSection(type).getKeys().size() == 0) {
+            spies.remove(type);
         }
+
+        spies.save();
     }
 
 

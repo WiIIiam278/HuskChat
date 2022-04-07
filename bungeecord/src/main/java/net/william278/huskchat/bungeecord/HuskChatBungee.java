@@ -67,7 +67,12 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
 
         // Load saved social spy state
         PlayerCache.setDataFolder(getDataFolder());
-        PlayerCache.loadSpy();
+
+        try {
+            PlayerCache.loadSpy();
+        } catch (IOException e) {
+            getLoggingAdapter().log(Level.SEVERE, "Failed to load spies file");
+        }
 
         // Setup player data getter
         Plugin luckPerms = ProxyServer.getInstance().getPluginManager().getPlugin("LuckPerms");

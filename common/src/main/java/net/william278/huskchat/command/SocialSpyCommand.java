@@ -6,6 +6,7 @@ import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -30,19 +31,31 @@ public class SocialSpyCommand extends CommandBase {
                 PlayerCache.SpyColor color;
                 Optional<PlayerCache.SpyColor> selectedColor = PlayerCache.SpyColor.getColor(args[0]);
                 if (selectedColor.isPresent()) {
-                    color = selectedColor.get();
-                    PlayerCache.setSocialSpy(player, color);
-                    implementor.getMessageManager().sendMessage(player, "social_spy_toggled_on_color",
-                            color.colorCode, color.name().toLowerCase().replaceAll("_", " "));
+                    try {
+                        color = selectedColor.get();
+                        PlayerCache.setSocialSpy(player, color);
+                        implementor.getMessageManager().sendMessage(player, "social_spy_toggled_on_color",
+                                color.colorCode, color.name().toLowerCase().replaceAll("_", " "));
+                    } catch (IOException e) {
+                        implementor.getLoggingAdapter().log(Level.SEVERE, "Failed to save social spy state to spies file");
+                    }
                     return;
                 }
             }
             if (!PlayerCache.isSocialSpying(player)) {
-                PlayerCache.setSocialSpy(player);
-                implementor.getMessageManager().sendMessage(player, "social_spy_toggled_on");
+                try {
+                    PlayerCache.setSocialSpy(player);
+                    implementor.getMessageManager().sendMessage(player, "social_spy_toggled_on");
+                } catch (IOException e) {
+                    implementor.getLoggingAdapter().log(Level.SEVERE, "Failed to save social spy state to spies file");
+                }
             } else {
-                PlayerCache.removeSocialSpy(player);
-                implementor.getMessageManager().sendMessage(player, "social_spy_toggled_off");
+                try {
+                    PlayerCache.removeSocialSpy(player);
+                    implementor.getMessageManager().sendMessage(player, "social_spy_toggled_off");
+                } catch (IOException e) {
+                    implementor.getLoggingAdapter().log(Level.SEVERE, "Failed to save social spy state to spies file");
+                }
             }
         } else {
             implementor.getMessageManager().sendMessage(player, "error_no_permission");
