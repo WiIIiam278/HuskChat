@@ -108,6 +108,9 @@ public class ChatMessage {
                         if (!Settings.isLocalSpyChannelExcluded(channel)) {
                             final HashMap<Player, PlayerCache.SpyColor> spies = PlayerCache.getLocalSpyMessageReceivers(sender.getServerName(), implementor);
                             for (Player spy : spies.keySet()) {
+                                if (spy.getUuid().equals(sender.getUuid())) {
+                                    continue;
+                                }
                                 final PlayerCache.SpyColor color = spies.get(spy);
                                 implementor.getMessageManager().sendFormattedLocalSpyMessage(spy, color, sender, channel, message);
                             }

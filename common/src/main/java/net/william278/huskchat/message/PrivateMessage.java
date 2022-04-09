@@ -45,6 +45,9 @@ public record PrivateMessage(Player sender, String targetUsername,
             if (Settings.doSocialSpyCommand) {
                 final HashMap<Player, PlayerCache.SpyColor> spies = PlayerCache.getSocialSpyMessageReceivers(target.getUuid(), implementor);
                 for (Player spy : spies.keySet()) {
+                    if (spy.getUuid().equals(sender.getUuid()) || spy.getUuid().equals(target.getUuid())) {
+                        continue;
+                    }
                     final PlayerCache.SpyColor color = spies.get(spy);
                     implementor.getMessageManager().sendFormattedSocialSpyMessage(spy, color, sender, target, message);
                 }
