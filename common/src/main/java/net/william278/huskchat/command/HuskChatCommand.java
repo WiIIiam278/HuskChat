@@ -23,7 +23,7 @@ public class HuskChatCommand extends CommandBase {
         this.pluginInformation = "[HuskChat](#00fb9a bold) [| " + implementor.getMetaPlatform() + " Version " + implementor.getMetaVersion() + "](#00fb9a)\n" +
                 "[" + implementor.getMetaDescription() + "](gray)\n" +
                 "[• Author:](white) [William278](gray show_text=&7Click to visit website open_url=https://william278.net)\n" +
-                "[• Contributors:](white) [TrueWinter](gray show_text=&Code)\n" +
+                "[• Contributors:](white) [TrueWinter](gray show_text=&7Code)\n" +
                 "[• Translators:](white) [xF3d3](gray show_text=&7Italian, it-it), [MalzSmith](gray show_text=&7Hungarian, hu-hu)\n" +
                 "[• Help Wiki:](white) [[Link]](#00fb9a show_text=&7Click to open link open_url=https://github.com/WiIIiam278/HuskChat/wiki/)\n" +
                 "[• Report Issues:](white) [[Link]](#00fb9a show_text=&7Click to open link open_url=https://github.com/WiIIiam278/HuskChat/issues)\n" +
@@ -32,23 +32,41 @@ public class HuskChatCommand extends CommandBase {
 
     @Override
     public void onExecute(Player player, String[] args) {
-        if (player instanceof ConsolePlayer) {
-            implementor.getLoggingAdapter().log(Level.INFO, implementor.getMessageManager().getRawMessage("error_in_game_only"));
-            return;
-        }
-        if (player.hasPermission(permission)) {
+        boolean isConsole = player instanceof ConsolePlayer;
+        if (player.hasPermission(permission) || isConsole) {
             if (args.length == 1) {
                 switch (args[0].toLowerCase(Locale.ROOT)) {
-                    case "about", "info" -> sendAboutInformation(player);
+                    case "about", "info" -> {
+                        if (!isConsole) {
+                            sendAboutInformation(player);
+                        } else {
+                            implementor.getLoggingAdapter().log(Level.INFO, pluginInformation);
+                        }
+                    }
                     case "reload" -> {
                         implementor.reloadSettings();
                         implementor.reloadMessages();
-                        implementor.getMessageManager().sendCustomMessage(player, "[HuskChat](#00fb9a bold) &#00fb9a&| Reloaded config & message files.");
+
+                        if (!isConsole) {
+                            implementor.getMessageManager().sendCustomMessage(player, "[HuskChat](#00fb9a bold) &#00fb9a&| Reloaded config & message files.");
+                        } else {
+                            implementor.getLoggingAdapter().log(Level.INFO, "[HuskChat](#00fb9a bold) &#00fb9a&| Reloaded config & message files.");
+                        }
                     }
-                    default -> implementor.getMessageManager().sendMessage(player, "error_invalid_syntax", "/huskchat <about/reload>");
+                    default -> {
+                        if (!isConsole) {
+                            implementor.getMessageManager().sendMessage(player, "error_invalid_syntax", "/huskchat <about/reload>");
+                        } else {
+                            implementor.getLoggingAdapter().log(Level.INFO, implementor.getMessageManager().getRawMessage("error_invalid_syntax", "/huskchat <about/reload>"));
+                        }
+                    }
                 }
             } else {
-                sendAboutInformation(player);
+                if (!isConsole) {
+                    sendAboutInformation(player);
+                } else {
+                    implementor.getLoggingAdapter().log(Level.INFO, pluginInformation);
+                }
             }
         } else {
             implementor.getMessageManager().sendMessage(player, "error_no_permission");
