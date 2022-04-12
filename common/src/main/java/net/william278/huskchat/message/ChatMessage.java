@@ -111,6 +111,9 @@ public class ChatMessage {
                                 if (spy.getUuid().equals(sender.getUuid())) {
                                     continue;
                                 }
+                                if (!sender.hasPermission("huskchat.command.localspy")) {
+                                    continue;
+                                }
                                 final PlayerCache.SpyColor color = spies.get(spy);
                                 implementor.getMessageManager().sendFormattedLocalSpyMessage(spy, color, sender, channel, message);
                             }

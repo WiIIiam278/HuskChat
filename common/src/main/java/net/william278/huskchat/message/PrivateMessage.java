@@ -48,6 +48,9 @@ public record PrivateMessage(Player sender, String targetUsername,
                     if (spy.getUuid().equals(sender.getUuid()) || spy.getUuid().equals(target.getUuid())) {
                         continue;
                     }
+                    if (!sender.hasPermission("huskchat.command.socialspy")) {
+                        continue;
+                    }
                     final PlayerCache.SpyColor color = spies.get(spy);
                     implementor.getMessageManager().sendFormattedSocialSpyMessage(spy, color, sender, target, message);
                 }
