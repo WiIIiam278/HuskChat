@@ -116,7 +116,7 @@ public class ChatMessage {
                                     try {
                                         PlayerCache.removeLocalSpy(sender);
                                     } catch(IOException e) {
-                                        implementor.getLoggingAdapter().log(Level.SEVERE, "Failed to remove local spy after failed permission check");
+                                        implementor.getLoggingAdapter().log(Level.SEVERE, "Failed to remove local spy after failed permission check", e);
                                     }
                                     continue;
                                 }

@@ -53,7 +53,7 @@ public record PrivateMessage(Player sender, String targetUsername,
                         try {
                             PlayerCache.removeSocialSpy(sender);
                         } catch(IOException e) {
-                            implementor.getLoggingAdapter().log(Level.SEVERE, "Failed to remove social spy after failed permission check");
+                            implementor.getLoggingAdapter().log(Level.SEVERE, "Failed to remove social spy after failed permission check", e);
                         }
                         continue;
                     }
