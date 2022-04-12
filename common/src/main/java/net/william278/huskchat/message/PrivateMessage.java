@@ -5,6 +5,7 @@ import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Level;
 
@@ -49,6 +50,11 @@ public record PrivateMessage(Player sender, String targetUsername,
                         continue;
                     }
                     if (!sender.hasPermission("huskchat.command.socialspy")) {
+                        try {
+                            PlayerCache.removeSocialSpy(sender);
+                        } catch(IOException e) {
+                            implementor.getLoggingAdapter().log(Level.SEVERE, "Failed to remove social spy after failed permission check");
+                        }
                         continue;
                     }
                     final PlayerCache.SpyColor color = spies.get(spy);

@@ -8,6 +8,7 @@ import net.william278.huskchat.filter.replacer.ReplacerFilter;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Level;
@@ -112,6 +113,11 @@ public class ChatMessage {
                                     continue;
                                 }
                                 if (!sender.hasPermission("huskchat.command.localspy")) {
+                                    try {
+                                        PlayerCache.removeLocalSpy(sender);
+                                    } catch(IOException e) {
+                                        implementor.getLoggingAdapter().log(Level.SEVERE, "Failed to remove local spy after failed permission check");
+                                    }
                                     continue;
                                 }
                                 final PlayerCache.SpyColor color = spies.get(spy);
