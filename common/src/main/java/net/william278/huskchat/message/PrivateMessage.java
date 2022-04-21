@@ -44,22 +44,25 @@ public record PrivateMessage(Player sender, String targetUsername,
 
             // Show message to social spies
             if (Settings.doSocialSpyCommand) {
-                final HashMap<Player, PlayerCache.SpyColor> spies = PlayerCache.getSocialSpyMessageReceivers(target.getUuid(), implementor);
-                for (Player spy : spies.keySet()) {
-                    if (spy.getUuid().equals(sender.getUuid()) || spy.getUuid().equals(target.getUuid())) {
-                        continue;
-                    }
-                    if (!sender.hasPermission("huskchat.command.socialspy")) {
-                        try {
-                            PlayerCache.removeSocialSpy(sender);
-                        } catch(IOException e) {
-                            implementor.getLoggingAdapter().log(Level.SEVERE, "Failed to remove social spy after failed permission check", e);
+                if (!sender.hasPermission("huskchat.command.socialspy.bypass") && !target.hasPermission("huskchat.command.socialspy.bypass")) {
+                    final HashMap<Player, PlayerCache.SpyColor> spies = PlayerCache.getSocialSpyMessageReceivers(target.getUuid(), implementor);
+                    for (Player spy : spies.keySet()) {
+                        if (spy.getUuid().equals(sender.getUuid()) || spy.getUuid().equals(target.getUuid())) {
+                            continue;
                         }
-                        continue;
+                        if (!sender.hasPermission("huskchat.command.socialspy")) {
+                            try {
+                                PlayerCache.removeSocialSpy(sender);
+                            } catch (IOException e) {
+                                implementor.getLoggingAdapter().log(Level.SEVERE, "Failed to remove social spy after failed permission check", e);
+                            }
+                            continue;
+                        }
+                        final PlayerCache.SpyColor color = spies.get(spy);
+                        implementor.getMessageManager().sendFormattedSocialSpyMessage(spy, color, sender, target, message);
                     }
-                    final PlayerCache.SpyColor color = spies.get(spy);
-                    implementor.getMessageManager().sendFormattedSocialSpyMessage(spy, color, sender, target, message);
                 }
+
             }
 
             // Log to console if enabled

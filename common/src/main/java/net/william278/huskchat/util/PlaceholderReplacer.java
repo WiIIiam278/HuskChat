@@ -13,8 +13,8 @@ public class PlaceholderReplacer {
         final HashMap<String, String> placeholders = new HashMap<>();
 
         // Player related placeholders
-        placeholders.put("%name%", implementingPlugin.getDataGetter().getPlayerName(player));
-        placeholders.put("%fullname%", implementingPlugin.getDataGetter().getPlayerFullName(player));
+        placeholders.put("%name%", escape(implementingPlugin.getDataGetter().getPlayerName(player)));
+        placeholders.put("%fullname%", escape(implementingPlugin.getDataGetter().getPlayerFullName(player)));
         placeholders.put("%prefix%", implementingPlugin.getDataGetter().getPlayerPrefix(player).isPresent() ? implementingPlugin.getDataGetter().getPlayerPrefix(player).get() : "");
         placeholders.put("%suffix%", implementingPlugin.getDataGetter().getPlayerSuffix(player).isPresent() ? implementingPlugin.getDataGetter().getPlayerSuffix(player).get() : "");
         placeholders.put("%ping%", Integer.toString(player.getPing()));
@@ -39,6 +39,14 @@ public class PlaceholderReplacer {
         }
 
         return message;
+    }
+
+    public static String escape(String string) {
+        // Just escaping __ should suffice as the only special character
+        // allowed in Minecraft usernames is the underscore.
+        // By placing the escape character in the middle, the MineDown
+        // parser no longer sees this as a formatting code.
+        return string.replace("__", "_\\_");
     }
 
 }
