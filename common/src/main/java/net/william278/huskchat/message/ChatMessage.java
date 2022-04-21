@@ -5,6 +5,7 @@ import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.filter.ChatFilter;
 import net.william278.huskchat.filter.replacer.ReplacerFilter;
+import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 
@@ -55,6 +56,14 @@ public class ChatMessage {
 
                 // Determine the players who will receive the message;
                 Channel.BroadcastScope broadcastScope = channel.broadcastScope;
+
+                // There's no point in allowing console to send to local chat as it's not actually in any servers and
+                // therefore the message won't get sent to anyone
+                if (sender instanceof ConsolePlayer && (broadcastScope == Channel.BroadcastScope.LOCAL ||
+                        broadcastScope == Channel.BroadcastScope.LOCAL_PASSTHROUGH)) {
+                    implementor.getLoggingAdapter().log(Level.INFO, implementor.getMessageManager().getRawMessage("error_in_game_only"));
+                    return;
+                }
 
                 // If the message is to be filtered, then perform filter checks (unless they have the bypass permission)
                 if (channel.filter && !sender.hasPermission("huskchat.bypass_filters")) {

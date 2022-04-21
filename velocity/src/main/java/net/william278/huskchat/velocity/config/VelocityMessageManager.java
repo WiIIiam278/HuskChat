@@ -2,13 +2,17 @@ package net.william278.huskchat.velocity.config;
 
 import de.themoep.minedown.adventure.MineDown;
 import de.themoep.minedown.adventure.MineDownParser;
+import de.themoep.minedown.adventure.MineDownStringifier;
 import dev.dejvokep.boostedyaml.YamlDocument;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.message.MessageManager;
+import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 import net.william278.huskchat.util.PlaceholderReplacer;
@@ -49,6 +53,11 @@ public class VelocityMessageManager extends MessageManager {
             replacementIndexer = replacementIndexer + 1;
         }
 
+        if (player instanceof ConsolePlayer) {
+            sendMineDownToConsole(message);
+            return;
+        }
+
         // Convert to baseComponents[] via MineDown formatting and send
         String finalMessage = message;
         VelocityPlayer.adaptVelocity(player).ifPresent(user -> user.sendMessage(new MineDown(finalMessage).toComponent()));
@@ -66,12 +75,21 @@ public class VelocityMessageManager extends MessageManager {
             return;
         }
 
+        if (player instanceof ConsolePlayer) {
+            sendMineDownToConsole(message);
+            return;
+        }
+
         // Convert to baseComponents[] via MineDown formatting and send
         VelocityPlayer.adaptVelocity(player).ifPresent(user -> user.sendMessage(new MineDown(message).toComponent()));
     }
 
     @Override
     public void sendCustomMessage(Player player, String message) {
+        if (player instanceof ConsolePlayer) {
+            sendMineDownToConsole(message);
+            return;
+        }
         VelocityPlayer.adaptVelocity(player).ifPresent(user -> user.sendMessage(new MineDown(message).toComponent()));
     }
 
@@ -144,5 +162,9 @@ public class VelocityMessageManager extends MessageManager {
         componentBuilder.append(new MineDown(Settings.broadcastMessageFormat).toComponent());
         componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
         VelocityPlayer.adaptVelocity(player).ifPresent(user -> user.sendMessage(componentBuilder.build()));
+    }
+
+    private void sendMineDownToConsole(String minedown) {
+        plugin.getProxyServer().getConsoleCommandSource().sendMessage(new MineDown(extractMineDownLinks(minedown)).toComponent());
     }
 }

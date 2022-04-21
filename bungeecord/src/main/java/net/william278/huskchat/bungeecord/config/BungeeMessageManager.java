@@ -2,6 +2,7 @@ package net.william278.huskchat.bungeecord.config;
 
 import de.themoep.minedown.MineDown;
 import de.themoep.minedown.MineDownParser;
+import de.themoep.minedown.MineDownStringifier;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.william278.huskchat.bungeecord.HuskChatBungee;
@@ -9,6 +10,7 @@ import net.william278.huskchat.bungeecord.player.BungeePlayer;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.message.MessageManager;
+import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 import net.william278.huskchat.util.PlaceholderReplacer;
@@ -46,6 +48,11 @@ public class BungeeMessageManager extends MessageManager {
             replacementIndexer = replacementIndexer + 1;
         }
 
+        if (player instanceof ConsolePlayer) {
+            sendMineDownToConsole(message);
+            return;
+        }
+
         // Convert to baseComponents[] via MineDown formatting and send
         String finalMessage = message;
         BungeePlayer.adaptBungee(player).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(new MineDown(finalMessage).replace().toComponent()));
@@ -63,12 +70,22 @@ public class BungeeMessageManager extends MessageManager {
             return;
         }
 
+        if (player instanceof ConsolePlayer) {
+            sendMineDownToConsole(message);
+            return;
+        }
+
         // Convert to baseComponents[] via MineDown formatting and send
         BungeePlayer.adaptBungee(player).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(new MineDown(message).replace().toComponent()));
     }
 
     @Override
     public void sendCustomMessage(Player player, String message) {
+        if (player instanceof ConsolePlayer) {
+            sendMineDownToConsole(message);
+            return;
+        }
+
         BungeePlayer.adaptBungee(player).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(new MineDown(message).replace().toComponent()));
     }
 
@@ -143,5 +160,9 @@ public class BungeeMessageManager extends MessageManager {
         componentBuilder.append(new MineDown(Settings.broadcastMessageFormat).toComponent());
         componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
         BungeePlayer.adaptBungee(player).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(componentBuilder.create()));
+    }
+
+    private void sendMineDownToConsole(String minedown) {
+        plugin.getProxy().getConsole().sendMessage(new MineDown(extractMineDownLinks(minedown)).toComponent());
     }
 }

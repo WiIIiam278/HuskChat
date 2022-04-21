@@ -24,12 +24,14 @@ public class ShortcutCommand extends CommandBase {
 
     @Override
     public void onExecute(Player player, String[] args) {
-        if (player instanceof ConsolePlayer) {
-            implementor.getLoggingAdapter().log(Level.INFO, implementor.getMessageManager().getRawMessage("error_in_game_only"));
-            return;
-        }
         if (player.hasPermission(permission)) {
             if (args.length == 0) {
+                // Console can't chat in the same way as players can, it can only use commands.
+                // So no need to allow it to switch channels.
+                if (player instanceof ConsolePlayer) {
+                    implementor.getLoggingAdapter().log(Level.INFO, implementor.getMessageManager().getRawMessage("error_in_game_only"));
+                    return;
+                }
                 PlayerCache.switchPlayerChannel(player, channelId, implementor.getMessageManager());
             } else {
                 StringJoiner message = new StringJoiner(" ");
