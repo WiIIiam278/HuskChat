@@ -140,6 +140,7 @@ message_replacers:
   # Replaces text emoticons in messages with the correct emoji
   emoji_replacer:
     enabled: true
+    case_insensitive: false
     emoji: # Emote character options: https://gist.githubusercontent.com/WiIIiam278/b74a6af6d9670350a60ad09d63b67169/raw/d8b596471c812eb2b68638469cb779d928bd733f/minecraft_unicode_characters.txt
       ':)': '☺'
       ':smile:': '☺'

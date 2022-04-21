@@ -3,6 +3,7 @@ package net.william278.huskchat.filter.replacer;
 import net.william278.huskchat.player.Player;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.StringJoiner;
 
 /**
@@ -11,9 +12,11 @@ import java.util.StringJoiner;
 public class EmojiReplacer extends ReplacerFilter {
 
     private final HashMap<String, String> emoticons;
+    private final boolean caseInsensitive;
 
-    public EmojiReplacer(HashMap<String, String> emoticons) {
+    public EmojiReplacer(HashMap<String, String> emoticons, boolean caseInsensitive) {
         this.emoticons = emoticons;
+        this.caseInsensitive = caseInsensitive;
     }
 
     @Override
@@ -22,9 +25,16 @@ public class EmojiReplacer extends ReplacerFilter {
         StringJoiner replacedMessage = new StringJoiner(" ");
         for (String word : words) {
             for (String emoteFormat : emoticons.keySet()) {
-                if (word.equals(emoteFormat)) {
-                    word = emoticons.get(emoteFormat);
-                    break;
+                if (!caseInsensitive) {
+                    if (word.equals(emoteFormat)) {
+                        word = emoticons.get(emoteFormat);
+                        break;
+                    }
+                } else {
+                    if (word.toLowerCase(Locale.ROOT).equals(emoteFormat)) {
+                        word = emoticons.get(emoteFormat);
+                        break;
+                    }
                 }
             }
             replacedMessage.add(word);

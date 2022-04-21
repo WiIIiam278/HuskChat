@@ -182,10 +182,15 @@ public class Settings {
         // Replacers
         if (configFile.getBoolean("message_replacers.emoji_replacer.enabled", true)) {
             HashMap<String, String> emojiSequences = new HashMap<>();
+            boolean caseInsensitive = configFile.getBoolean("message_replacers.emoji_replacer.case_insensitive", false);
             for (String characters : configFile.getSection("message_replacers.emoji_replacer.emoji").getRoutesAsStrings(false)) {
-                emojiSequences.put(characters, configFile.getString("message_replacers.emoji_replacer.emoji." + characters));
+                if (!caseInsensitive) {
+                    emojiSequences.put(characters, configFile.getString("message_replacers.emoji_replacer.emoji." + characters));
+                } else {
+                    emojiSequences.put(characters.toLowerCase(Locale.ROOT), configFile.getString("message_replacers.emoji_replacer.emoji." + characters));
+                }
             }
-            filters.add(new EmojiReplacer(emojiSequences));
+            filters.add(new EmojiReplacer(emojiSequences, caseInsensitive));
         }
 
         return filters;
