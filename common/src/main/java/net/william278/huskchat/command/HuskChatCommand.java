@@ -25,7 +25,7 @@ public class HuskChatCommand extends CommandBase {
                 "[• Author:](white) [William278](gray show_text=&7Click to visit website open_url=https://william278.net)\n" +
                 "[• Contributors:](white) [TrueWinter](gray show_text=&7Code), [Ironboundred](gray show_text=&7Code)\n" +
                 "[• Translators:](white) [xF3d3](gray show_text=&7Italian, it-it), [MalzSmith](gray show_text=&7Hungarian, hu-hu)\n" +
-                "[• Help Wiki:](white) [[Link]](#00fb9a show_text=&7Click to open link open_url=https://github.com/WiIIiam278/HuskChat/wiki/)\n" +
+                "[• Help Wiki:](white) [[Link]](#00fb9a show_text=&7Click to open link open_url=https://william278.net/docs/huskchat/Home)\n" +
                 "[• Report Issues:](white) [[Link]](#00fb9a show_text=&7Click to open link open_url=https://github.com/WiIIiam278/HuskChat/issues)\n" +
                 "[• Support Discord:](white) [[Link]](#00fb9a show_text=&7Click to join open_url=https://discord.gg/tVYhJfyDWG)";
     }
