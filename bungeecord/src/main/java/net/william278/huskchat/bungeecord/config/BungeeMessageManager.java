@@ -2,7 +2,6 @@ package net.william278.huskchat.bungeecord.config;
 
 import de.themoep.minedown.MineDown;
 import de.themoep.minedown.MineDownParser;
-import de.themoep.minedown.MineDownStringifier;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.william278.huskchat.bungeecord.HuskChatBungee;
