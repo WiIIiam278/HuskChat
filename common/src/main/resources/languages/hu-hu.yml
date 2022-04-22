@@ -34,3 +34,5 @@ error_chat_filter_spam: '[Kérlek várj! Túl gyorsan küldesz üzenetet.](#ff7e
 error_chat_filter_ascii: '[Nem használhatsz speciális karaktereket a chat-en!](#ff7e5e)'
 error_chat_filter_repeat: '[Nemrég már elküldted ezt az üzentet!](#ff7e5e)'
 error_in_game_only: 'Hiba: Ez a parancs csak játékon belül használható!'
+error_console_local_scope: 'Hiba: Az üzenetek konzolról helyi hatókörrel rendelkező csatornákra történő küldése nem támogatott.'
+error_console_switch_channels: 'Hiba: Nem lehet másik csatornára váltani a konzolról. Használja helyette a parancsikont.'

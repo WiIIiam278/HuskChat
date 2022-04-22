@@ -34,3 +34,5 @@ error_chat_filter_spam: '[Per favore aspetta! Stai mandando messaggi troppo velo
 error_chat_filter_ascii: '[Non puoi usare caratteri speciali in chat.](#ff7e5e)'
 error_chat_filter_repeat: '[Hai già mandato questo messaggio recentemente!](#ff7e5e)'
 error_in_game_only: 'Error: That command can only be used in-game.'
+error_console_local_scope: 'Error: l''invio di messaggi dalla console ai canali con ambito locale non è supportato.'
+error_console_switch_channels: 'Error: non puoi passare a un altro canale dalla console. Utilizzare invece il comando di scelta rapida.'

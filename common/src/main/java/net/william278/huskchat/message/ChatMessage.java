@@ -61,7 +61,7 @@ public class ChatMessage {
                 // therefore the message won't get sent to anyone
                 if (sender instanceof ConsolePlayer && (broadcastScope == Channel.BroadcastScope.LOCAL ||
                         broadcastScope == Channel.BroadcastScope.LOCAL_PASSTHROUGH)) {
-                    implementor.getLoggingAdapter().log(Level.INFO, implementor.getMessageManager().getRawMessage("error_in_game_only"));
+                    implementor.getLoggingAdapter().log(Level.INFO, implementor.getMessageManager().getRawMessage("error_console_local_scope"));
                     return;
                 }
 

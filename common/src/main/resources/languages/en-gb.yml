@@ -34,3 +34,5 @@ error_chat_filter_spam: '[Please wait! You are sending messages too quickly.](#f
 error_chat_filter_ascii: '[You cannot use special characters in chat.](#ff7e5e)'
 error_chat_filter_repeat: '[You''ve already sent that message recently!](#ff7e5e)'
 error_in_game_only: 'Error: That command can only be used in-game.'
+error_console_local_scope: 'Error: Sending messages from console to channels with a local scope is unsupported.'
+error_console_switch_channels: 'Error: You cannot switch to another channel from console. Please use the shortcut command instead.'
