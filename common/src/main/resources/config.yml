@@ -83,7 +83,7 @@ message_command:
     inbound: '&#00fb9a&%name% &8→ &#00fb9a&You&8: &f'
     outbound: '&#00fb9a&You &8→ &#00fb9a&%name%&8: &f'
     group_inbound: '&#00fb9a&%name% &8→ &#00fb9a&You [₍₊%group_amount_subscript%₎](gray show_text=&7%group_members% suggest_command=/msg %group_members_comma_separated% )&8: &f'
-    group_outbound: '&#00fb9a&You &8→ &#00fb9a&%name% [₍₊%group_amount_subscript%₎](gray show_text=&7%group_members% suggest_command=/msg %group_members_comma_separated% )%&8: &f'
+    group_outbound: '&#00fb9a&You &8→ &#00fb9a&%name% [₍₊%group_amount_subscript%₎](gray show_text=&7%group_members% suggest_command=/msg %group_members_comma_separated% )&8: &f'
   #restricted_servers: # Set where /msg and /r cannot be used
   #  - hub
 

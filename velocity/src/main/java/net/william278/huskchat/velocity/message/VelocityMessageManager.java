@@ -114,9 +114,10 @@ public class VelocityMessageManager extends MessageManager {
         } else {
             componentBuilder.append(new MineDown(
                     PlaceholderReplacer.replace(messageRecipients.get(0), Settings.groupOutboundMessageFormat, plugin)
-                            .replaceAll("%group_amount_subscript%", convertToUnicodeSubScript(messageRecipients.size()))
-                            .replaceAll("%group_amount%", Integer.toString(messageRecipients.size()-1))
-                            .replaceAll("%group_members%", getGroupMemberList(messageRecipients)))
+                            .replaceAll("%group_amount_subscript%", convertToUnicodeSubScript(messageRecipients.size() - 1))
+                            .replaceAll("%group_amount%", Integer.toString(messageRecipients.size() - 1))
+                            .replaceAll("%group_members_comma_separated%", getGroupMemberList(messageRecipients, ","))
+                            .replaceAll("%group_members%", getGroupMemberList(messageRecipients, "\n")))
                     .toComponent());
         }
         if (messageSender.hasPermission("huskchat.formatted_chat")) {
@@ -136,9 +137,10 @@ public class VelocityMessageManager extends MessageManager {
         } else {
             componentBuilder.append(new MineDown(
                     PlaceholderReplacer.replace(messageSender, Settings.groupInboundMessageFormat, plugin)
-                            .replaceAll("%group_amount_subscript%", convertToUnicodeSubScript(messageRecipients.size()))
-                            .replaceAll("%group_amount%", Integer.toString(messageRecipients.size()-1))
-                            .replaceAll("%group_members%", getGroupMemberList(messageRecipients)))
+                            .replaceAll("%group_amount_subscript%", convertToUnicodeSubScript(messageRecipients.size() - 1))
+                            .replaceAll("%group_amount%", Integer.toString(messageRecipients.size() - 1))
+                            .replaceAll("%group_members_comma_separated%", getGroupMemberList(messageRecipients, ","))
+                            .replaceAll("%group_members%", getGroupMemberList(messageRecipients, "\n")))
                     .toComponent());
         }
         if (messageSender.hasPermission("huskchat.formatted_chat")) {
@@ -167,24 +169,25 @@ public class VelocityMessageManager extends MessageManager {
         if (receivers.size() == 1) {
             final Player receiver = receivers.get(0);
             componentBuilder.append(new MineDown(PlaceholderReplacer.replace(receiver,
-                                    PlaceholderReplacer.replace(sender,
-                                                    Settings.socialSpyFormat.replaceAll("%sender_", "%"),
-                                                    plugin)
-                                            .replaceAll("%receiver_", "%"), plugin)
-                            .replaceAll("%receiever_name%", receiver.getName())
-                            .replaceAll("%spy_color%", spyColor.colorCode)).toComponent());
+                            PlaceholderReplacer.replace(sender,
+                                            Settings.socialSpyFormat.replaceAll("%sender_", "%"),
+                                            plugin)
+                                    .replaceAll("%receiver_", "%"), plugin)
+                    .replaceAll("%receiever_name%", receiver.getName())
+                    .replaceAll("%spy_color%", spyColor.colorCode)).toComponent());
         } else {
             final Player firstReceiver = receivers.get(0);
             componentBuilder.append(new MineDown(PlaceholderReplacer.replace(firstReceiver,
-                                    PlaceholderReplacer.replace(sender,
-                                                    Settings.socialSpyGroupFormat.replaceAll("%sender_", "%"),
-                                                    plugin)
-                                            .replaceAll("%receiver_", "%"), plugin)
-                            .replaceAll("%group_amount_subscript%", convertToUnicodeSubScript(receivers.size()))
-                            .replaceAll("%group_amount%", Integer.toString(receivers.size()-1))
-                            .replaceAll("%group_members%", getGroupMemberList(receivers))
-                            .replaceAll("%receiever_name%", firstReceiver.getName())
-                            .replaceAll("%spy_color%", spyColor.colorCode)).toComponent());
+                            PlaceholderReplacer.replace(sender,
+                                            Settings.socialSpyGroupFormat.replaceAll("%sender_", "%"),
+                                            plugin)
+                                    .replaceAll("%receiver_", "%"), plugin)
+                    .replaceAll("%group_amount_subscript%", convertToUnicodeSubScript(receivers.size() - 1))
+                    .replaceAll("%group_amount%", Integer.toString(receivers.size() - 1))
+                    .replaceAll("%group_members_comma_separated%", getGroupMemberList(receivers, ","))
+                    .replaceAll("%group_members%", getGroupMemberList(receivers, "\n"))
+                    .replaceAll("%receiever_name%", firstReceiver.getName())
+                    .replaceAll("%spy_color%", spyColor.colorCode)).toComponent());
         }
         componentBuilder.append(Component.text(message));
         VelocityPlayer.adaptVelocity(spy).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(componentBuilder));

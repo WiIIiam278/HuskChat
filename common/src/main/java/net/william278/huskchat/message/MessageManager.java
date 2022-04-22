@@ -91,8 +91,8 @@ public abstract class MessageManager {
     public abstract void sendFormattedBroadcastMessage(Player recipient, String message);
 
     // Returns a newline separated list of player names
-    public final String getGroupMemberList(ArrayList<Player> players) {
-        final StringJoiner memberList = new StringJoiner("\n");
+    public final String getGroupMemberList(ArrayList<Player> players, String delimiter) {
+        final StringJoiner memberList = new StringJoiner(delimiter);
         for (Player player : players) {
             memberList.add(player.getName());
         }

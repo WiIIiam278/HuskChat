@@ -11,14 +11,15 @@ ext {
     set 'version', version.toString()
 }
 
-import org.apache.tools.ant.filters.ReplaceTokens
-
 allprojects {
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'java'
 
     compileJava.options.encoding = 'UTF-8'
     javadoc.options.encoding = 'UTF-8'
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
 
     compileJava.options.release.set 16
 
@@ -33,10 +34,10 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 
-    processResources {
-        filter ReplaceTokens as Class, beginToken: '${', endToken: '}',
-                tokens: rootProject.ext.properties
-    }
+//    processResources {
+//        filter ReplaceTokens as Class, beginToken: '${', endToken: '}',
+//                tokens: rootProject.ext.properties
+//    }
 }
 
 subprojects {

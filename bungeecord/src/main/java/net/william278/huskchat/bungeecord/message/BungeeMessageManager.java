@@ -112,9 +112,10 @@ public class BungeeMessageManager extends MessageManager {
         } else {
             componentBuilder.append(new MineDown(
                     PlaceholderReplacer.replace(messageRecipients.get(0), Settings.groupOutboundMessageFormat, plugin)
-                            .replaceAll("%group_amount_subscript%", convertToUnicodeSubScript(messageRecipients.size()))
-                            .replaceAll("%group_amount%", Integer.toString(messageRecipients.size()-1))
-                            .replaceAll("%group_members%", getGroupMemberList(messageRecipients)))
+                            .replaceAll("%group_amount_subscript%", convertToUnicodeSubScript(messageRecipients.size() - 1))
+                            .replaceAll("%group_amount%", Integer.toString(messageRecipients.size() - 1))
+                            .replaceAll("%group_members_comma_separated%", getGroupMemberList(messageRecipients, ","))
+                            .replaceAll("%group_members%", getGroupMemberList(messageRecipients, "\n")))
                     .toComponent());
         }
         if (messageSender.hasPermission("huskchat.formatted_chat")) {
@@ -134,9 +135,10 @@ public class BungeeMessageManager extends MessageManager {
         } else {
             componentBuilder.append(new MineDown(
                     PlaceholderReplacer.replace(messageSender, Settings.groupInboundMessageFormat, plugin)
-                            .replaceAll("%group_amount_subscript%", convertToUnicodeSubScript(messageRecipients.size()))
-                            .replaceAll("%group_amount%", Integer.toString(messageRecipients.size()-1))
-                            .replaceAll("%group_members%", getGroupMemberList(messageRecipients)))
+                            .replaceAll("%group_amount_subscript%", convertToUnicodeSubScript(messageRecipients.size() - 1))
+                            .replaceAll("%group_amount%", Integer.toString(messageRecipients.size() - 1))
+                            .replaceAll("%group_members_comma_separated%", getGroupMemberList(messageRecipients, ","))
+                            .replaceAll("%group_members%", getGroupMemberList(messageRecipients, "\n")))
                     .toComponent());
         }
         if (messageSender.hasPermission("huskchat.formatted_chat")) {
@@ -180,9 +182,10 @@ public class BungeeMessageManager extends MessageManager {
                                                     Settings.socialSpyGroupFormat.replaceAll("%sender_", "%"),
                                                     plugin)
                                             .replaceAll("%receiver_", "%"), plugin)
-                            .replaceAll("%group_amount_subscript%", convertToUnicodeSubScript(receivers.size()))
-                            .replaceAll("%group_amount%", Integer.toString(receivers.size()-1))
-                            .replaceAll("%group_members%", getGroupMemberList(receivers))
+                            .replaceAll("%group_amount_subscript%", convertToUnicodeSubScript(receivers.size() - 1))
+                            .replaceAll("%group_amount%", Integer.toString(receivers.size() - 1))
+                            .replaceAll("%group_members%", getGroupMemberList(receivers, "\n"))
+                            .replaceAll("%group_members_comma_separated%", getGroupMemberList(receivers, ","))
                             .replaceAll("%receiever_name%", firstReceiver.getName())
                             .replaceAll("%spy_color%", spyColor.colorCode)).toComponent())
                     .append(message);

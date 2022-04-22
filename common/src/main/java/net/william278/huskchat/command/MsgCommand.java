@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public class MsgCommand extends CommandBase {
 
@@ -68,8 +67,19 @@ public class MsgCommand extends CommandBase {
                     userNames.add(connectedPlayer.getName());
                 }
             }
-            return userNames.stream().filter(val -> val.toLowerCase().startsWith((args.length >= 1) ? args[0].toLowerCase() : ""))
-                    .sorted().collect(Collectors.toList());
+            String currentText = (args.length >= 1) ? args[0] : "";
+            String precursoryText = "";
+            if (currentText.contains(",")) {
+                currentText = currentText.split(",")[currentText.split(",").length-1];
+                precursoryText = !args[0].replace(currentText, "").startsWith(",") ? args[0].replace(currentText, "") : "";
+            }
+
+            final String completionFilter = currentText;
+            final ArrayList<String> prependedUsernames = new ArrayList<>();
+            for (String username : userNames.stream().filter(val -> val.toLowerCase().startsWith(completionFilter.toLowerCase())).sorted().toList()) {
+                prependedUsernames.add(precursoryText + username);
+            }
+            return prependedUsernames;
         } else {
             return Collections.emptyList();
         }
