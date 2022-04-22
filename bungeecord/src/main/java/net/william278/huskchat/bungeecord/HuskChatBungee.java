@@ -11,7 +11,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.bungeecord.command.BungeeCommand;
-import net.william278.huskchat.bungeecord.config.BungeeMessageManager;
+import net.william278.huskchat.bungeecord.message.BungeeMessageManager;
 import net.william278.huskchat.bungeecord.listener.BungeeListener;
 import net.william278.huskchat.bungeecord.player.BungeePlayer;
 import net.william278.huskchat.bungeecord.util.BungeeLogger;

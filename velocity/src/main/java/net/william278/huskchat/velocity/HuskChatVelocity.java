@@ -25,7 +25,7 @@ import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 import net.william278.huskchat.util.Logger;
 import net.william278.huskchat.velocity.command.VelocityCommand;
-import net.william278.huskchat.velocity.config.VelocityMessageManager;
+import net.william278.huskchat.velocity.message.VelocityMessageManager;
 import net.william278.huskchat.velocity.listener.VelocityListener;
 import net.william278.huskchat.velocity.player.VelocityPlayer;
 import net.william278.huskchat.velocity.util.VelocityLogger;
