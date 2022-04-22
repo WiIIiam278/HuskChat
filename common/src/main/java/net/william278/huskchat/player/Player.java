@@ -55,5 +55,5 @@ public interface Player {
      *
      * @param message The message to pass to the backend server
      */
-    void passthroughChat(String message);
+    void passThroughChat(String message);
 }

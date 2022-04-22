@@ -15,7 +15,7 @@ public class ConsolePlayer implements Player {
 
     @Override
     public String getName() {
-        return "CONSOLE";
+        return "[CONSOLE]";
     }
 
     @Override
@@ -44,7 +44,7 @@ public class ConsolePlayer implements Player {
     }
 
     @Override
-    public void passthroughChat(String message) {
+    public void passThroughChat(String message) {
         implementor.getLoggingAdapter().log(Level.INFO, message);
     }
 

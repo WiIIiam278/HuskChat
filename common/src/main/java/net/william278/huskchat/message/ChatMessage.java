@@ -83,7 +83,7 @@ public class ChatMessage {
 
                 // If the message is to be passed through, then do so
                 if (broadcastScope.isPassThrough) {
-                    sender.passthroughChat(message);
+                    sender.passThroughChat(message);
                 }
 
                 HashSet<Player> messageRecipients = new HashSet<>();

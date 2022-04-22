@@ -61,7 +61,7 @@ public class VelocityPlayer implements Player {
     }
 
     @Override
-    public void passthroughChat(String message) {
+    public void passThroughChat(String message) {
         player.spoofChatInput(message);
     }
 

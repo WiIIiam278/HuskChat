@@ -49,7 +49,7 @@ public class BungeePlayer implements Player {
     }
 
     @Override
-    public void passthroughChat(String s) {
+    public void passThroughChat(String s) {
         player.chat(s);
     }
 

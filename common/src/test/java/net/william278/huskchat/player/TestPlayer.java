@@ -50,7 +50,7 @@ public class TestPlayer implements Player {
     }
 
     @Override
-    public void passthroughChat(String message) {
+    public void passThroughChat(String message) {
         // Ignore (test player)
     }
 }
