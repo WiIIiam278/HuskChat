@@ -113,9 +113,9 @@ public class VelocityMessageManager extends MessageManager {
                     .toComponent());
         } else {
             componentBuilder.append(new MineDown(
-                    PlaceholderReplacer.replace(messageRecipients.get(0), Settings.outboundMessageFormat, plugin)
+                    PlaceholderReplacer.replace(messageRecipients.get(0), Settings.groupOutboundMessageFormat, plugin)
                             .replaceAll("%group_amount_subscript%", convertToUnicodeSubScript(messageRecipients.size()))
-                            .replaceAll("%group_amount%", Integer.toString(messageRecipients.size()))
+                            .replaceAll("%group_amount%", Integer.toString(messageRecipients.size()-1))
                             .replaceAll("%group_members%", getGroupMemberList(messageRecipients)))
                     .toComponent());
         }
@@ -135,9 +135,9 @@ public class VelocityMessageManager extends MessageManager {
                     .toComponent());
         } else {
             componentBuilder.append(new MineDown(
-                    PlaceholderReplacer.replace(messageSender, Settings.inboundMessageFormat, plugin)
+                    PlaceholderReplacer.replace(messageSender, Settings.groupInboundMessageFormat, plugin)
                             .replaceAll("%group_amount_subscript%", convertToUnicodeSubScript(messageRecipients.size()))
-                            .replaceAll("%group_amount%", Integer.toString(messageRecipients.size()))
+                            .replaceAll("%group_amount%", Integer.toString(messageRecipients.size()-1))
                             .replaceAll("%group_members%", getGroupMemberList(messageRecipients)))
                     .toComponent());
         }
@@ -177,11 +177,11 @@ public class VelocityMessageManager extends MessageManager {
             final Player firstReceiver = receivers.get(0);
             componentBuilder.append(new MineDown(PlaceholderReplacer.replace(firstReceiver,
                                     PlaceholderReplacer.replace(sender,
-                                                    Settings.socialSpyFormat.replaceAll("%sender_", "%"),
+                                                    Settings.socialSpyGroupFormat.replaceAll("%sender_", "%"),
                                                     plugin)
                                             .replaceAll("%receiver_", "%"), plugin)
                             .replaceAll("%group_amount_subscript%", convertToUnicodeSubScript(receivers.size()))
-                            .replaceAll("%group_amount%", Integer.toString(receivers.size()))
+                            .replaceAll("%group_amount%", Integer.toString(receivers.size()-1))
                             .replaceAll("%group_members%", getGroupMemberList(receivers))
                             .replaceAll("%receiever_name%", firstReceiver.getName())
                             .replaceAll("%spy_color%", spyColor.colorCode)).toComponent());

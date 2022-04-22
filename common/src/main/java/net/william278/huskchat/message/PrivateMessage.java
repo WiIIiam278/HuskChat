@@ -27,13 +27,9 @@ public record PrivateMessage(Player sender, List<String> targetUsernames,
             }
         }
 
-        // Verify that the player is not sending a group message illegally
+        // Verify that the player is not sending a group message when they are turned off
         if (targetUsernames.size() > 1 && !Settings.doGroupMessages) {
             implementor.getMessageManager().sendMessage(sender, "error_group_messages_disabled");
-            return;
-        }
-        if (targetUsernames.size() > Settings.maxGroupMessageSize) {
-            implementor.getMessageManager().sendMessage(sender, "error_group_messages_max", Integer.toString(Settings.maxGroupMessageSize));
             return;
         }
 
@@ -57,6 +53,12 @@ public record PrivateMessage(Player sender, List<String> targetUsernames,
                 targetPlayers.add(targetPlayer.get());
                 targetUUIDs.add(targetPlayer.get().getUuid());
             }
+        }
+
+        // Validate that there aren't too many users
+        if (targetPlayers.size() > Settings.maxGroupMessageSize) {
+            implementor.getMessageManager().sendMessage(sender, "error_group_messages_max", Integer.toString(Settings.maxGroupMessageSize));
+            return;
         }
 
         // Validate that the message has recipients
@@ -106,7 +108,6 @@ public record PrivateMessage(Player sender, List<String> targetUsernames,
             }
 
         }
-
 
         // Log the private message to console, if that is enabled
         if (Settings.logPrivateMessages) {

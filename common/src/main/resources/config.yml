@@ -79,11 +79,11 @@ message_command:
   group_messages: # Whether to allow sending and replying to a message in a group (/msg User1,User2 <message>)
     enabled: true
     max_size: 5
-  format:
+  format: # Formats for the /msg command (MineDown syntax). A separate format is used for group private messages.
     inbound: '&#00fb9a&%name% &8→ &#00fb9a&You&8: &f'
     outbound: '&#00fb9a&You &8→ &#00fb9a&%name%&8: &f'
-    group_inbound: '&#00fb9a&%name% &8→ &#00fb9a&You[₍₊%group_amount_subscript%₎](gray show_text=&7%group_members%)&8: &f'
-    group_outbound: '&#00fb9a&You &8→ &#00fb9a&%name%[₍₊%group_amount_subscript%₎](gray show_text=&7%group_members%)%&8: &f'
+    group_inbound: '&#00fb9a&%name% &8→ &#00fb9a&You [₍₊%group_amount_subscript%₎](gray show_text=&7%group_members% suggest_command=/msg %group_members_comma_separated% )&8: &f'
+    group_outbound: '&#00fb9a&You &8→ &#00fb9a&%name% [₍₊%group_amount_subscript%₎](gray show_text=&7%group_members% suggest_command=/msg %group_members_comma_separated% )%&8: &f'
   #restricted_servers: # Set where /msg and /r cannot be used
   #  - hub
 
@@ -91,7 +91,7 @@ message_command:
 social_spy:
   enabled: true
   format: '&e[Spy] &7%sender_name% &8→ &7%receiever_name%:%spy_color% '
-  group_format: '&e[Spy] &7%sender_name% &8→ &7%receiver_name%[₍₊%group_amount_subscript%₎](gray show_text=&7%group_members%):%spy_color% '
+  group_format: '&e[Spy] &7%sender_name% &8→ &7%receiver_name% [₍₊%group_amount_subscript%₎](gray show_text=&7%group_members% suggest_command=/msg %group_members_comma_separated% ):%spy_color% '
   socialspy_aliases:
     - /socialspy
     - /ss
