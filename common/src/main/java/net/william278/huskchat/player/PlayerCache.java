@@ -58,17 +58,21 @@ public class PlayerCache {
 
 
     // Map of users last private message target for /reply command
-    private static final HashMap<UUID, UUID> lastMessagePlayers = new HashMap<>();
+    private static final HashMap<UUID, HashSet<UUID>> lastMessagePlayers = new HashMap<>();
 
-    public static UUID getLastMessenger(UUID uuid) {
+    public static Optional<HashSet<UUID>> getLastMessengers(UUID uuid) {
         if (lastMessagePlayers.containsKey(uuid)) {
-            return lastMessagePlayers.get(uuid);
+            return Optional.of(lastMessagePlayers.get(uuid));
         }
-        return null;
+        return Optional.empty();
     }
 
-    public static void setLastMessenger(UUID playerToSet, UUID lastMessenger) {
-        lastMessagePlayers.put(playerToSet, lastMessenger);
+    public static void setLastMessenger(UUID playerToSet, ArrayList<Player> lastMessengers) {
+        final HashSet<UUID> uuidPlayers = new HashSet<>();
+        for (Player player : lastMessengers) {
+            uuidPlayers.add(player.getUuid());
+        }
+        lastMessagePlayers.put(playerToSet, uuidPlayers);
     }
 
 
@@ -94,22 +98,26 @@ public class PlayerCache {
         removeSpy("social", player.getUuid());
     }
 
-    public static HashMap<Player, SpyColor> getSocialSpyMessageReceivers(UUID messageRecipient, HuskChat implementor) {
-        HashMap<Player, SpyColor> receivers = new HashMap<>();
+    // Determines who is going to receive a spy message
+    public static HashMap<Player, SpyColor> getSocialSpyMessageReceivers(ArrayList<Player> messageRecipients, HuskChat implementor) {
+        final HashMap<Player, SpyColor> receivers = new HashMap<>();
+
+        calculateSpies:
         for (UUID player : socialSpies.keySet()) {
             final SpyColor color = socialSpies.get(player);
             final Optional<Player> spy = implementor.getPlayer(player);
             if (spy.isEmpty()) {
                 continue;
             }
-            if (player.equals(messageRecipient)) {
-                continue;
+            for (Player messageRecipient : messageRecipients) {
+                if (player.equals(messageRecipient.getUuid())) {
+                    continue calculateSpies;
+                }
             }
             receivers.put(spy.get(), color);
         }
         return receivers;
     }
-
 
     // Set of players local spying
     private static final HashMap<UUID, SpyColor> localSpies = new HashMap<>();

@@ -162,7 +162,7 @@ public class HuskChatVelocity implements HuskChat {
                     Objects.requireNonNull(HuskChat.class.getClassLoader().getResourceAsStream("config.yml")),
                     GeneralSettings.builder().setUseDefaults(false).build(),
                     LoaderSettings.builder().setAutoUpdate(true).build(),
-                    DumperSettings.DEFAULT,
+                    DumperSettings.builder().setEncoding(DumperSettings.Encoding.UNICODE).build(),
                     UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build()));
         } catch (IOException e) {
             getLoggingAdapter().log(Level.SEVERE, "Failed to load config file");

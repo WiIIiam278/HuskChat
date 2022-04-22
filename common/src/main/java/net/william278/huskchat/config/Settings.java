@@ -24,10 +24,16 @@ public class Settings {
 
     // Message command config
     public static boolean doMessageCommand;
+
+    public static boolean doGroupMessages;
+
+    public static int maxGroupMessageSize;
     public static List<String> messageCommandAliases = new ArrayList<>();
     public static List<String> replyCommandAliases = new ArrayList<>();
     public static String inboundMessageFormat;
     public static String outboundMessageFormat;
+    public static String groupInboundMessageFormat;
+    public static String groupOutboundMessageFormat;
     public static boolean logPrivateMessages;
     public static boolean censorPrivateMessages;
     public static String messageLogFormat;
@@ -36,6 +42,7 @@ public class Settings {
     // Social spy
     public static boolean doSocialSpyCommand;
     public static String socialSpyFormat;
+    public static String socialSpyGroupFormat;
     public static List<String> socialSpyCommandAliases = new ArrayList<>();
 
     // Local spy
@@ -76,10 +83,14 @@ public class Settings {
         serverDefaultChannels = getServerDefaultChannels(configFile);
         channelCommandAliases = (configFile.contains("channel_command_aliases")) ? getCommandsFromList(configFile.getStringList("channel_command_aliases")) : Collections.singletonList("channel");
 
-        // Other options
+        // Message command options
         doMessageCommand = configFile.getBoolean("message_command.enabled", true);
+        doGroupMessages = configFile.getBoolean("message_command.group_messages.enabled", true);
+        maxGroupMessageSize = configFile.getInt("message_command.group_messages.max_size", 5);
         inboundMessageFormat = configFile.getString("message_command.format.inbound", "&#00fb9a&%name% &8→ &#00fb9a&You&8: &f");
         outboundMessageFormat = configFile.getString("message_command.format.outbound", "&#00fb9a&You &8→ &#00fb9a&%name%&8 &f");
+        groupInboundMessageFormat = configFile.getString("message_command.format.group_inbound", "&#00fb9a&%group_first_entry%[₍₊%group_amount_subscript%₎](show_text=&7%group_members%) &8→ &#00fb9a&You&8: &f");
+        groupOutboundMessageFormat = configFile.getString("message_command.format.group_outbound", "&#00fb9a&You &8→ &#00fb9a&%group_first_entry[₍₊%group_amount_subscript%₎](show_text=&7%group_members%)%&8: &f");
         logPrivateMessages = configFile.getBoolean("message_command.log_to_console", true);
         censorPrivateMessages = configFile.getBoolean("message_command.censor", false);
         messageLogFormat = configFile.getString("message_command.log_format", "[MSG] [%sender% -> %receiver%]: ");
@@ -90,6 +101,7 @@ public class Settings {
         // Social spy
         doSocialSpyCommand = configFile.getBoolean("social_spy.enabled", true);
         socialSpyFormat = configFile.getString("social_spy.format", "&e[Spy] &7%sender% &8→ &7%receiever%:%spy_color% ");
+        socialSpyGroupFormat = configFile.getString("social_spy.group_format", "&e[Spy] &7%sender_name% &8→ &7%group_first_entry%[₍₊%group_amount_subscript%₎](show_text=&7%group_members%):%spy_color% ");
         socialSpyCommandAliases = (configFile.contains("social_spy.socialspy_aliases")) ? getCommandsFromList(configFile.getStringList("social_spy.socialspy_aliases")) : Collections.singletonList("socialspy");
 
         // Local spy

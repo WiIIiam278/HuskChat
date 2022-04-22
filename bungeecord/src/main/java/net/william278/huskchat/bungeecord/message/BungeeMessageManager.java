@@ -16,6 +16,7 @@ import net.william278.huskchat.util.PlaceholderReplacer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class BungeeMessageManager extends MessageManager {
 
@@ -103,10 +104,19 @@ public class BungeeMessageManager extends MessageManager {
     }
 
     @Override
-    public void sendFormattedOutboundPrivateMessage(Player messageSender, Player messageRecipient, String message) {
+    public void sendFormattedOutboundPrivateMessage(Player messageSender, ArrayList<Player> messageRecipients, String message) {
         final ComponentBuilder componentBuilder = new ComponentBuilder();
-        componentBuilder.append(new MineDown(PlaceholderReplacer.replace(messageRecipient, Settings.outboundMessageFormat, plugin))
-                .toComponent());
+        if (messageRecipients.size() == 1) {
+            componentBuilder.append(new MineDown(PlaceholderReplacer.replace(messageRecipients.get(0), Settings.outboundMessageFormat, plugin))
+                    .toComponent());
+        } else {
+            componentBuilder.append(new MineDown(
+                    PlaceholderReplacer.replace(messageRecipients.get(0), Settings.outboundMessageFormat, plugin)
+                            .replaceAll("%group_amount_subscript%", convertToUnicodeSubScript(messageRecipients.size()))
+                            .replaceAll("%group_amount%", Integer.toString(messageRecipients.size()))
+                            .replaceAll("%group_members%", getGroupMemberList(messageRecipients)))
+                    .toComponent());
+        }
         if (messageSender.hasPermission("huskchat.formatted_chat")) {
             componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
         } else {
@@ -116,16 +126,27 @@ public class BungeeMessageManager extends MessageManager {
     }
 
     @Override
-    public void sendFormattedInboundPrivateMessage(Player messageRecipient, Player messageSender, String message) {
+    public void sendFormattedInboundPrivateMessage(ArrayList<Player> messageRecipients, Player messageSender, String message) {
         final ComponentBuilder componentBuilder = new ComponentBuilder();
-        componentBuilder.append(new MineDown(PlaceholderReplacer.replace(messageSender, Settings.inboundMessageFormat, plugin))
-                .toComponent());
+        if (messageRecipients.size() == 1) {
+            componentBuilder.append(new MineDown(PlaceholderReplacer.replace(messageSender, Settings.inboundMessageFormat, plugin))
+                    .toComponent());
+        } else {
+            componentBuilder.append(new MineDown(
+                    PlaceholderReplacer.replace(messageSender, Settings.inboundMessageFormat, plugin)
+                            .replaceAll("%group_amount_subscript%", convertToUnicodeSubScript(messageRecipients.size()))
+                            .replaceAll("%group_amount%", Integer.toString(messageRecipients.size()))
+                            .replaceAll("%group_members%", getGroupMemberList(messageRecipients)))
+                    .toComponent());
+        }
         if (messageSender.hasPermission("huskchat.formatted_chat")) {
             componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
         } else {
             componentBuilder.append(message);
         }
-        BungeePlayer.adaptBungee(messageRecipient).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(componentBuilder.create()));
+        for (Player recipient : messageRecipients) {
+            BungeePlayer.adaptBungee(recipient).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(componentBuilder.create()));
+        }
     }
 
     @Override
@@ -140,16 +161,32 @@ public class BungeeMessageManager extends MessageManager {
 
     @Override
     public void sendFormattedSocialSpyMessage(Player spy, PlayerCache.SpyColor spyColor, Player sender,
-                                              Player receiver, String message) {
-        final ComponentBuilder componentBuilder = new ComponentBuilder()
-                .append(new MineDown(PlaceholderReplacer.replace(receiver,
-                                PlaceholderReplacer.replace(sender,
-                                                Settings.socialSpyFormat.replaceAll("%sender_", "%"),
-                                                plugin)
-                                        .replaceAll("%receiver_", "%"), plugin)
-                        .replaceAll("%receiever_name%", receiver.getName())
-                        .replaceAll("%spy_color%", spyColor.colorCode)).toComponent())
-                .append(message);
+                                              ArrayList<Player> receivers, String message) {
+        final ComponentBuilder componentBuilder = new ComponentBuilder();
+        if (receivers.size() == 1) {
+            final Player receiver = receivers.get(0);
+            componentBuilder.append(new MineDown(PlaceholderReplacer.replace(receiver,
+                                    PlaceholderReplacer.replace(sender,
+                                                    Settings.socialSpyFormat.replaceAll("%sender_", "%"),
+                                                    plugin)
+                                            .replaceAll("%receiver_", "%"), plugin)
+                            .replaceAll("%receiever_name%", receiver.getName())
+                            .replaceAll("%spy_color%", spyColor.colorCode)).toComponent())
+                    .append(message);
+        } else {
+            final Player firstReceiver = receivers.get(0);
+            componentBuilder.append(new MineDown(PlaceholderReplacer.replace(firstReceiver,
+                                    PlaceholderReplacer.replace(sender,
+                                                    Settings.socialSpyFormat.replaceAll("%sender_", "%"),
+                                                    plugin)
+                                            .replaceAll("%receiver_", "%"), plugin)
+                            .replaceAll("%group_amount_subscript%", convertToUnicodeSubScript(receivers.size()))
+                            .replaceAll("%group_amount%", Integer.toString(receivers.size()))
+                            .replaceAll("%group_members%", getGroupMemberList(receivers))
+                            .replaceAll("%receiever_name%", firstReceiver.getName())
+                            .replaceAll("%spy_color%", spyColor.colorCode)).toComponent())
+                    .append(message);
+        }
         BungeePlayer.adaptBungee(spy).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(componentBuilder.create()));
     }
 

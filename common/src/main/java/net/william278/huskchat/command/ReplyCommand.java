@@ -26,15 +26,23 @@ public class ReplyCommand extends CommandBase {
         }
         if (player.hasPermission(permission)) {
             if (args.length >= 1) {
-                final UUID lastPlayerId = PlayerCache.getLastMessenger(player.getUuid());
-                if (lastPlayerId == null) {
+                final Optional<HashSet<UUID>> lastMessengers = PlayerCache.getLastMessengers(player.getUuid());
+                if (lastMessengers.isEmpty()) {
                     implementor.getMessageManager().sendMessage(player, "error_reply_no_messages");
                     return;
                 }
 
-                final Optional<Player> lastPlayer = implementor.getPlayer(lastPlayerId);
-                if (lastPlayer.isEmpty()) {
-                    implementor.getMessageManager().sendMessage(player, "error_reply_not_online");
+                final ArrayList<String> lastPlayers = new ArrayList<>();
+                for (UUID lastMessenger : lastMessengers.get()) {
+                    implementor.getPlayer(lastMessenger).ifPresent(onlineMessenger -> lastPlayers.add(onlineMessenger.getName()));
+                }
+
+                if (lastPlayers.isEmpty()) {
+                    if (lastMessengers.get().size() > 1) {
+                        implementor.getMessageManager().sendMessage(player, "error_reply_none_online");
+                    } else {
+                        implementor.getMessageManager().sendMessage(player, "error_reply_not_online");
+                    }
                     return;
                 }
 
@@ -44,8 +52,7 @@ public class ReplyCommand extends CommandBase {
                 }
 
                 final String messageToSend = message.toString();
-                final String targetPlayerUsername = lastPlayer.get().getName();
-                new PrivateMessage(player, targetPlayerUsername, messageToSend, implementor).dispatch();
+                new PrivateMessage(player, lastPlayers, messageToSend, implementor).dispatch();
             } else {
                 implementor.getMessageManager().sendMessage(player, "error_invalid_syntax", "/r <message>");
             }

@@ -37,15 +37,23 @@ public class MsgCommand extends CommandBase {
                     }
                     messageWordCount++;
                 }
-                final String targetPlayerUsername = args[0];
+                final List<String> targetPlayers = getTargetPlayers(args[0]);
                 final String messageToSend = message.toString();
-                new PrivateMessage(player, targetPlayerUsername, messageToSend, implementor).dispatch();
+                new PrivateMessage(player, targetPlayers, messageToSend, implementor).dispatch();
             } else {
                 implementor.getMessageManager().sendMessage(player, "error_invalid_syntax", "/msg <player> <message>");
             }
         } else {
             implementor.getMessageManager().sendMessage(player, "error_no_permission");
         }
+    }
+
+    // Parses a string-separated list of target players
+    private List<String> getTargetPlayers(String playerList) {
+        if (!playerList.contains(",")) {
+            return Collections.singletonList(playerList);
+        }
+        return List.of(playerList.split(","));
     }
 
     @Override
