@@ -6,10 +6,7 @@ import net.william278.huskchat.message.PrivateMessage;
 import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.logging.Level;
 
 public class MsgCommand extends CommandBase {
@@ -69,14 +66,24 @@ public class MsgCommand extends CommandBase {
             }
             String currentText = (args.length >= 1) ? args[0] : "";
             String precursoryText = "";
+            String[] names = new String[0];
             if (currentText.contains(",")) {
-                currentText = currentText.split(",")[currentText.split(",").length-1];
-                precursoryText = !args[0].replace(currentText, "").startsWith(",") ? args[0].replace(currentText, "") : "";
+                names = currentText.split(",");
+                currentText = names[names.length-1];
+
+                // Names array without the last name
+                String[] previousNames = Arrays.copyOf(names, names.length - 1);
+                precursoryText = String.join(",", previousNames) + (previousNames.length != 0 ? "," : "")
+                        + (!names[names.length-1].isBlank() ? names[names.length-1].replace(currentText, "") : "");
             }
 
             final String completionFilter = currentText;
             final ArrayList<String> prependedUsernames = new ArrayList<>();
             for (String username : userNames.stream().filter(val -> val.toLowerCase().startsWith(completionFilter.toLowerCase())).sorted().toList()) {
+                // If the name was added already, don't suggest it again
+                if (names.length != 0 && Arrays.asList(names).stream().anyMatch(name -> name.equalsIgnoreCase(username))) {
+                    continue;
+                }
                 prependedUsernames.add(precursoryText + username);
             }
             return prependedUsernames;

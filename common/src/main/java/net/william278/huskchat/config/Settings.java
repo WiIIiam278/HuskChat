@@ -90,7 +90,7 @@ public class Settings {
         inboundMessageFormat = configFile.getString("message_command.format.inbound", "&#00fb9a&%name% &8→ &#00fb9a&You&8: &f");
         outboundMessageFormat = configFile.getString("message_command.format.outbound", "&#00fb9a&You &8→ &#00fb9a&%name%&8 &f");
         groupInboundMessageFormat = configFile.getString("message_command.format.group_inbound", "&#00fb9a&%name% &8→ &#00fb9a&You[₍₊%group_amount_subscript%₎](gray show_text=&7%group_members%)&8: &f");
-        groupOutboundMessageFormat = configFile.getString("message_command.format.group_outbound", "&#00fb9a&You &8→ &#00fb9a&%name%[₍₊%group_amount_subscript%₎](gray show_text=&7%group_members%)%&8: &f");
+        groupOutboundMessageFormat = configFile.getString("message_command.format.group_outbound", "&#00fb9a&You &8→ &#00fb9a&%name%[₍₊%group_amount_subscript%₎](gray show_text=&7%group_members%)&8: &f");
         logPrivateMessages = configFile.getBoolean("message_command.log_to_console", true);
         censorPrivateMessages = configFile.getBoolean("message_command.censor", false);
         messageLogFormat = configFile.getString("message_command.log_format", "[MSG] [%sender% -> %receiver%]: ");
