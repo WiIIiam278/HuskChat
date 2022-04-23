@@ -50,9 +50,9 @@ public record PrivateMessage(Player sender, String targetUsername,
                         if (spy.getUuid().equals(sender.getUuid()) || spy.getUuid().equals(target.getUuid())) {
                             continue;
                         }
-                        if (!sender.hasPermission("huskchat.command.socialspy")) {
+                        if (!spy.hasPermission("huskchat.command.socialspy")) {
                             try {
-                                PlayerCache.removeSocialSpy(sender);
+                                PlayerCache.removeSocialSpy(spy);
                             } catch (IOException e) {
                                 implementor.getLoggingAdapter().log(Level.SEVERE, "Failed to remove social spy after failed permission check", e);
                             }
