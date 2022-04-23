@@ -73,8 +73,7 @@ public class MsgCommand extends CommandBase {
 
                 // Names array without the last name
                 String[] previousNames = Arrays.copyOf(names, names.length - 1);
-                precursoryText = String.join(",", previousNames) + (previousNames.length != 0 ? "," : "")
-                        + (!names[names.length-1].isBlank() ? names[names.length-1].replace(currentText, "") : "");
+                precursoryText = String.join(",", previousNames) + (previousNames.length != 0 ? "," : "");
             }
 
             final String completionFilter = currentText;
