@@ -1,6 +1,6 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id 'org.ajoberstar.grgit' version '5.0.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
+    id 'org.ajoberstar.grgit' version '4.1.1'
     id 'java'
 }
 
@@ -11,15 +11,14 @@ ext {
     set 'version', version.toString()
 }
 
+import org.apache.tools.ant.filters.ReplaceTokens
+
 allprojects {
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'java'
 
     compileJava.options.encoding = 'UTF-8'
     javadoc.options.encoding = 'UTF-8'
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
-    }
 
     compileJava.options.release.set 16
 
@@ -34,17 +33,17 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 
-//    processResources {
-//        filter ReplaceTokens as Class, beginToken: '${', endToken: '}',
-//                tokens: rootProject.ext.properties
-//    }
+    processResources {
+        filter ReplaceTokens as Class, beginToken: '${', endToken: '}',
+                tokens: rootProject.ext.properties
+    }
 }
 
 subprojects {
     version rootProject.version
     archivesBaseName = "${rootProject.name}-${project.name.capitalize()}"
 
-    if (['bungeecord', 'velocity', 'bukkit', 'plugin'].contains(project.name)) {
+    if (['bukkit', 'bungeecord', 'velocity', 'plugin'].contains(project.name)) {
         shadowJar {
             destinationDirectory.set(file("$rootDir/target"))
             archiveClassifier.set('')
