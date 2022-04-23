@@ -216,6 +216,10 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
 
     @Override
     public Optional<Player> matchPlayer(String username) {
+        if (username.isEmpty()) {
+            return Optional.empty();
+        }
+
         final Optional<Player> optionalPlayer;
         if (ProxyServer.getInstance().getPlayer(username) != null) {
             final ProxiedPlayer player = ProxyServer.getInstance().getPlayer(username);

@@ -231,6 +231,10 @@ public class HuskChatVelocity implements HuskChat {
 
     @Override
     public Optional<Player> matchPlayer(String username) {
+        if (username.isEmpty()) {
+            return Optional.empty();
+        }
+
         final Optional<Player> optionalPlayer;
         if (getProxyServer().getPlayer(username).isPresent()) {
             final com.velocitypowered.api.proxy.Player player = getProxyServer().getPlayer(username).get();
