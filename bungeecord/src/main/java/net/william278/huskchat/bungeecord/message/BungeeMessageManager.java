@@ -123,6 +123,11 @@ public class BungeeMessageManager extends MessageManager {
         } else {
             componentBuilder.append(message);
         }
+
+        if (messageSender instanceof ConsolePlayer) {
+            plugin.getProxy().getConsole().sendMessage(componentBuilder.create());
+            return;
+        }
         BungeePlayer.adaptBungee(messageSender).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(componentBuilder.create()));
     }
 
@@ -147,6 +152,11 @@ public class BungeeMessageManager extends MessageManager {
             componentBuilder.append(message);
         }
         for (Player recipient : messageRecipients) {
+            if (recipient instanceof ConsolePlayer) {
+                plugin.getProxy().getConsole().sendMessage(componentBuilder.create());
+                continue;
+            }
+
             BungeePlayer.adaptBungee(recipient).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(componentBuilder.create()));
         }
     }

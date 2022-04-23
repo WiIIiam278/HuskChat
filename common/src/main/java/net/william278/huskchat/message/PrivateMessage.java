@@ -2,6 +2,7 @@ package net.william278.huskchat.message;
 
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.config.Settings;
+import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 
@@ -37,7 +38,13 @@ public record PrivateMessage(Player sender, List<String> targetUsernames,
         final ArrayList<Player> targetPlayers = new ArrayList<>();
         final HashSet<UUID> targetUUIDs = new HashSet<>();
         for (String targetUsername : targetUsernames) {
-            final Optional<Player> targetPlayer = implementor.matchPlayer(targetUsername);
+            Optional<Player> targetPlayer;
+            if (ConsolePlayer.isConsolePlayer(targetUsername)) {
+                targetPlayer = Optional.of(ConsolePlayer.adaptConsolePlayer(implementor));
+            } else {
+                targetPlayer = implementor.matchPlayer(targetUsername);
+            }
+
             if (targetPlayer.isPresent()) {
                 // Prevent sending messages to yourself
                 if (targetPlayer.get().getUuid().equals(sender.getUuid())) {
@@ -87,8 +94,7 @@ public record PrivateMessage(Player sender, List<String> targetUsernames,
 
         // Show message to social spies
         if (Settings.doSocialSpyCommand) {
-            if (!sender.hasPermission("huskchat.command.socialspy.bypass") && (targetPlayers.size() > 1 || targetPlayers.size() == 1
-                    && targetPlayers.stream().findFirst().get().hasPermission("huskchat.command.socialspy.bypass"))) {
+            if (!(sender.hasPermission("huskchat.command.socialspy.bypass") || targetPlayers.stream().findFirst().get().hasPermission("huskchat.command.socialspy.bypass"))) {
                 final HashMap<Player, PlayerCache.SpyColor> spies = PlayerCache.getSocialSpyMessageReceivers(targetPlayers, implementor);
                 for (Player spy : spies.keySet()) {
                     if (spy.getUuid().equals(sender.getUuid())) {

@@ -125,6 +125,11 @@ public class VelocityMessageManager extends MessageManager {
         } else {
             componentBuilder.append(Component.text(message));
         }
+
+        if (messageSender instanceof ConsolePlayer) {
+            plugin.getProxyServer().getConsoleCommandSource().sendMessage(componentBuilder);
+            return;
+        }
         VelocityPlayer.adaptVelocity(messageSender).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(componentBuilder));
     }
 
@@ -149,6 +154,10 @@ public class VelocityMessageManager extends MessageManager {
             componentBuilder.append(Component.text(message));
         }
         for (Player recipient : messageRecipients) {
+            if (recipient instanceof ConsolePlayer) {
+                plugin.getProxyServer().getConsoleCommandSource().sendMessage(componentBuilder);
+                continue;
+            }
             VelocityPlayer.adaptVelocity(recipient).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(componentBuilder));
         }
     }
