@@ -121,9 +121,9 @@ public class ChatMessage {
                                 if (spy.getUuid().equals(sender.getUuid())) {
                                     continue;
                                 }
-                                if (!sender.hasPermission("huskchat.command.localspy")) {
+                                if (!spy.hasPermission("huskchat.command.localspy")) {
                                     try {
-                                        PlayerCache.removeLocalSpy(sender);
+                                        PlayerCache.removeLocalSpy(spy);
                                     } catch(IOException e) {
                                         implementor.getLoggingAdapter().log(Level.SEVERE, "Failed to remove local spy after failed permission check", e);
                                     }
