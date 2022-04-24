@@ -183,7 +183,7 @@ public class VelocityMessageManager extends MessageManager {
                                             plugin)
                                     .replaceAll("%receiver_", "%"), plugin)
                     .replaceAll("%receiever_name%", receiver.getName())
-                    .replaceAll("%spy_color%", spyColor.colorCode)).toComponent());
+                    .replaceAll("%spy_color%", spyColor.colorCode) + MineDown.escape(message)).toComponent());
         } else {
             final Player firstReceiver = receivers.get(0);
             componentBuilder.append(new MineDown(PlaceholderReplacer.replace(firstReceiver,
@@ -196,9 +196,8 @@ public class VelocityMessageManager extends MessageManager {
                     .replaceAll("%group_members_comma_separated%", getGroupMemberList(receivers, ","))
                     .replaceAll("%group_members%", getGroupMemberList(receivers, "\n"))
                     .replaceAll("%receiever_name%", firstReceiver.getName())
-                    .replaceAll("%spy_color%", spyColor.colorCode)).toComponent());
+                    .replaceAll("%spy_color%", spyColor.colorCode) + MineDown.escape(message)).toComponent());
         }
-        componentBuilder.append(Component.text(message));
         VelocityPlayer.adaptVelocity(spy).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(componentBuilder));
     }
 
