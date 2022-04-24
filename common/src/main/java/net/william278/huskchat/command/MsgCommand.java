@@ -19,10 +19,6 @@ public class MsgCommand extends CommandBase {
 
     @Override
     public void onExecute(Player player, String[] args) {
-        if (player instanceof ConsolePlayer) {
-            implementor.getLoggingAdapter().log(Level.INFO, implementor.getMessageManager().getRawMessage("error_in_game_only"));
-            return;
-        }
         if (player.hasPermission(permission)) {
             if (args.length >= 2) {
                 StringJoiner message = new StringJoiner(" ");

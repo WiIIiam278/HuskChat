@@ -20,10 +20,6 @@ public class ReplyCommand extends CommandBase {
 
     @Override
     public void onExecute(Player player, String[] args) {
-        if (player instanceof ConsolePlayer) {
-            implementor.getLoggingAdapter().log(Level.INFO, implementor.getMessageManager().getRawMessage("error_in_game_only"));
-            return;
-        }
         if (player.hasPermission(permission)) {
             if (args.length >= 1) {
                 final Optional<HashSet<UUID>> lastMessengers = PlayerCache.getLastMessengers(player.getUuid());
@@ -34,7 +30,11 @@ public class ReplyCommand extends CommandBase {
 
                 final ArrayList<String> lastPlayers = new ArrayList<>();
                 for (UUID lastMessenger : lastMessengers.get()) {
-                    implementor.getPlayer(lastMessenger).ifPresent(onlineMessenger -> lastPlayers.add(onlineMessenger.getName()));
+                    if (ConsolePlayer.isConsolePlayer(lastMessenger)) {
+                        lastPlayers.add(ConsolePlayer.adaptConsolePlayer(implementor).getName());
+                    } else {
+                        implementor.getPlayer(lastMessenger).ifPresent(onlineMessenger -> lastPlayers.add(onlineMessenger.getName()));
+                    }
                 }
 
                 if (lastPlayers.isEmpty()) {

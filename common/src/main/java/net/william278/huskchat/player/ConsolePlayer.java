@@ -8,6 +8,7 @@ import java.util.logging.Level;
 public class ConsolePlayer implements Player {
 
     private static final UUID consoleUUID = new UUID(0, 0);
+    private static final String consoleUsername = "[CONSOLE]";
     private HuskChat implementor;
 
     private ConsolePlayer() {
@@ -15,7 +16,7 @@ public class ConsolePlayer implements Player {
 
     @Override
     public String getName() {
-        return "[CONSOLE]";
+        return consoleUsername;
     }
 
     @Override
@@ -68,5 +69,15 @@ public class ConsolePlayer implements Player {
      */
     public static boolean isConsolePlayer(UUID uuid) {
         return uuid.equals(consoleUUID);
+    }
+
+    /**
+     * Returns true if the username is that of the console player
+     *
+     * @param username username to check
+     * @return {@code true} if the username is the console
+     */
+    public static boolean isConsolePlayer(String username) {
+        return username.equals(consoleUsername);
     }
 }
