@@ -182,7 +182,6 @@ public class VelocityMessageManager extends MessageManager {
                                             Settings.socialSpyFormat.replaceAll("%sender_", "%"),
                                             plugin)
                                     .replaceAll("%receiver_", "%"), plugin)
-                    .replaceAll("%receiever_name%", receiver.getName())
                     .replaceAll("%spy_color%", spyColor.colorCode) + MineDown.escape(message)).toComponent());
         } else {
             final Player firstReceiver = receivers.get(0);
@@ -195,7 +194,6 @@ public class VelocityMessageManager extends MessageManager {
                     .replaceAll("%group_amount%", Integer.toString(receivers.size() - 1))
                     .replaceAll("%group_members_comma_separated%", getGroupMemberList(receivers, ","))
                     .replaceAll("%group_members%", getGroupMemberList(receivers, "\n"))
-                    .replaceAll("%receiever_name%", firstReceiver.getName())
                     .replaceAll("%spy_color%", spyColor.colorCode) + MineDown.escape(message)).toComponent());
         }
         VelocityPlayer.adaptVelocity(spy).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(componentBuilder));

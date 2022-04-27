@@ -4,6 +4,7 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
+import net.william278.huskchat.util.PlaceholderReplacer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,7 +95,8 @@ public abstract class MessageManager {
     public final String getGroupMemberList(ArrayList<Player> players, String delimiter) {
         final StringJoiner memberList = new StringJoiner(delimiter);
         for (Player player : players) {
-            memberList.add(player.getName());
+            // Escaping weirdness: just a normal escape (\\) doesn't work here
+            memberList.add(PlaceholderReplacer.doubleEscape(player.getName()));
         }
         return memberList.toString();
     }

@@ -182,7 +182,6 @@ public class BungeeMessageManager extends MessageManager {
                                                     Settings.socialSpyFormat.replaceAll("%sender_", "%"),
                                                     plugin)
                                             .replaceAll("%receiver_", "%"), plugin)
-                            .replaceAll("%receiever_name%", receiver.getName())
                             .replaceAll("%spy_color%", spyColor.colorCode)).toComponent())
                     .append(message);
         } else {
@@ -196,7 +195,6 @@ public class BungeeMessageManager extends MessageManager {
                             .replaceAll("%group_amount%", Integer.toString(receivers.size() - 1))
                             .replaceAll("%group_members%", getGroupMemberList(receivers, "\n"))
                             .replaceAll("%group_members_comma_separated%", getGroupMemberList(receivers, ","))
-                            .replaceAll("%receiever_name%", firstReceiver.getName())
                             .replaceAll("%spy_color%", spyColor.colorCode)).toComponent())
                     .append(message);
         }
