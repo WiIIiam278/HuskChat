@@ -48,9 +48,4 @@ public class PlaceholderReplacer {
         // parser no longer sees this as a formatting code.
         return string.replace("__", "_\\_");
     }
-
-    public static String doubleEscape(String string) {
-        // Because sometimes escaping once just isn't enough
-        return string.replace("__", "_\\\\_");
-    }
 }

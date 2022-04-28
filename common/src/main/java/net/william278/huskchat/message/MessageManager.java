@@ -95,8 +95,7 @@ public abstract class MessageManager {
     public final String getGroupMemberList(ArrayList<Player> players, String delimiter) {
         final StringJoiner memberList = new StringJoiner(delimiter);
         for (Player player : players) {
-            // Escaping weirdness: just a normal escape (\\) doesn't work here
-            memberList.add(PlaceholderReplacer.doubleEscape(player.getName()));
+            memberList.add(player.getName());
         }
         return memberList.toString();
     }
