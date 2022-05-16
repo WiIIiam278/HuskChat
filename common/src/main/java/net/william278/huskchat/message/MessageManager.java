@@ -4,6 +4,7 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
+import net.william278.huskchat.util.PlaceholderReplacer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
