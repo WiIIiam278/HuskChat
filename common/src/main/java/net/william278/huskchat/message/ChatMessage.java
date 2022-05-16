@@ -67,7 +67,7 @@ public class ChatMessage {
 
                 // If the message is to be filtered, then perform filter checks (unless they have the bypass permission)
                 if (channel.filter && !sender.hasPermission("huskchat.bypass_filters")) {
-                    for (ChatFilter filter : Settings.chatFilters) {
+                    for (ChatFilter filter : Settings.chatFilters.get(channel.id)) {
                         if (sender.hasPermission(filter.getFilterIgnorePermission())) {
                             continue;
                         }
