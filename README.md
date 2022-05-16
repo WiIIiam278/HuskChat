@@ -154,6 +154,17 @@ These display the current time
 * `%month%` - MM
 * `%year%` - yyyy
 
+#### Private message placeholders
+In private messages, the placeholders are applied to the sender of the message for inbound messages, and the receiver for outbound messages. You can use all placeholders above after the `sender_` or `receiver_` prefix. (e.g. `%sender_(placeholder)%` and `%receiver_(placeholder)%`).
+
+There are additional placeholders for group private messages:
+* `%group_amount%` (number of members in the group private message)
+* `%group_amount_subscript%` (number of members in the group private message, in subscript font)
+* `%group_members_comma_separated%` (comma separated list of members in the group private message)
+* `%group_members%` (newline separated list of members in the group private message)
+
+The social spy message formatting lets you format both the message sender and receiver with the same placeholders listed above. The sender and receiver are disambiguated with prefixes, so you can use both; i.e. `%sender_(placeholder)%` and `%receiver_(placeholder)%`
+
 ### Channel Filters & Replacers
 
 The `filtered:` property of a channel lets you specify whether a message sent to a channel should be filtered first by
