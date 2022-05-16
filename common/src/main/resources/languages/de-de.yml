@@ -40,3 +40,6 @@ error_group_messages_disabled: '[Fehler:](#ff3300) [Du kannst nicht mehreren Per
 error_group_messages_max: '[Fehler:](#ff3300) [Du kannst nur maximal %1% Personen gleichzeitig schreiben.](#ff7e5e)'
 error_players_not_found: '[Fehler:](#ff3300) [Es konnte keiner der angegebenen Spieler gefunden werden; sind sie online?](#ff7e5e)'
 error_reply_none_online: '[Fehler:](#ff3300) [Niemand aus der letzten Gruppe von Personen, denen du geschrieben hast, ist noch online.](#ff7e5e)'
+error_last_message_not_group: '[Error:](#ff3300) [The last message you received was not a group message.](#ff7e5e)'
+error_no_messages_opt_out: '[Error:](#ff3300) [You have not yet sent or received messages.](#ff7e5e)'
+removed_from_group_message: 'Removed you from the group message between: %1%'

@@ -122,6 +122,7 @@ public class HuskChatVelocity implements HuskChat {
         if (Settings.doMessageCommand) {
             new VelocityCommand(new MsgCommand(this));
             new VelocityCommand(new ReplyCommand(this));
+            new VelocityCommand(new OptOutMsgCommand(this));
         }
 
         if (Settings.doBroadcastCommand) {

@@ -40,3 +40,6 @@ error_group_messages_disabled: '[Error:](#ff3300) [You cannot send messages to m
 error_group_messages_max: '[Error:](#ff3300) [You can only send messages to a maximum of %1% people at once.](#ff7e5e)'
 error_players_not_found: '[Error:](#ff3300) [Could not find any of the specified players; are they online?](#ff7e5e)'
 error_reply_none_online: '[Error:](#ff3300) [Nobody in the last group of people you messaged are still online.](#ff7e5e)'
+error_last_message_not_group: '[Error:](#ff3300) [The last message you received was not a group message.](#ff7e5e)'
+error_no_messages_opt_out: '[Error:](#ff3300) [You have not yet sent or received messages.](#ff7e5e)'
+removed_from_group_message: 'Removed you from the group message between: %1%'

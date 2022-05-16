@@ -97,6 +97,7 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
         if (Settings.doMessageCommand) {
             new BungeeCommand(new MsgCommand(this));
             new BungeeCommand(new ReplyCommand(this));
+            new BungeeCommand(new OptOutMsgCommand(this));
         }
 
         if (Settings.doBroadcastCommand) {
