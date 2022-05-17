@@ -5,7 +5,7 @@ dependencies {
     implementation 'de.themoep:minedown:1.7.1-SNAPSHOT'
     implementation 'commons-io:commons-io:2.11.0'
     implementation 'com.github.WiIIiam278:ProfanityCheckerAPI:1.1'
-    implementation 'dev.dejvokep:boosted-yaml:1.1'
+    implementation 'dev.dejvokep:boosted-yaml:1.2'
 
     compileOnly 'net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT'
 }
