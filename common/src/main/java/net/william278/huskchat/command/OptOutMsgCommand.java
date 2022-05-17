@@ -29,9 +29,15 @@ public class OptOutMsgCommand extends CommandBase {
                 });
             }
 
-            implementor.getMessageManager().sendMessage(player, "removed_from_group_message",
-                    lastMessengers.stream().flatMap(u -> implementor.getPlayer(u).stream()).map(Player::getName)
-                            .collect(Collectors.joining(", ")));
+            String playerList = lastMessengers.stream().flatMap(u -> implementor.getPlayer(u).stream())
+                    .map(Player::getName).collect(Collectors.joining(", "));
+            StringBuilder builder = new StringBuilder();
+            int lastComma = playerList.lastIndexOf(',');
+            builder.append(playerList, 0, lastComma);
+            builder.append(" ").append(implementor.getMessageManager().getRawMessage("list_conjunction"));
+            builder.append(playerList.substring(lastComma + 1));
+
+            implementor.getMessageManager().sendMessage(player, "removed_from_group_message", builder.toString());
             lastMessengers.clear();
         }, () -> {
             implementor.getMessageManager().sendMessage(player, "error_no_messages_opt_out");
