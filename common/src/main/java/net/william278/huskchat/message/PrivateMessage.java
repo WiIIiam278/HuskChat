@@ -2,6 +2,8 @@ package net.william278.huskchat.message;
 
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.config.Settings;
+import net.william278.huskchat.filter.ChatFilter;
+import net.william278.huskchat.filter.replacer.ReplacerFilter;
 import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
@@ -15,7 +17,6 @@ import java.util.logging.Level;
  */
 public record PrivateMessage(Player sender, List<String> targetUsernames,
                              String message, HuskChat implementor) {
-
     /**
      * Dispatch the private message to be sent
      */
@@ -78,9 +79,27 @@ public record PrivateMessage(Player sender, List<String> targetUsernames,
             return;
         }
 
+        String finalMessage = message;
+
+        // If the message is to be filtered, then perform filter checks (unless they have the bypass permission)
+        if (!sender.hasPermission("huskchat.bypass_filters")) {
+            for (ChatFilter filter : Settings.chatFilters.get("private_messages")) {
+                if (sender.hasPermission(filter.getFilterIgnorePermission())) {
+                    continue;
+                }
+                if (!filter.isAllowed(sender, finalMessage)) {
+                    implementor.getMessageManager().sendMessage(sender, filter.getFailureErrorMessageId());
+                    return;
+                }
+                if (filter instanceof ReplacerFilter replacer) {
+                    finalMessage = replacer.replace(finalMessage);
+                }
+            }
+        }
+
         // Show that the message has been sent
         PlayerCache.setLastMessenger(sender.getUuid(), targetPlayers);
-        implementor.getMessageManager().sendFormattedOutboundPrivateMessage(sender, targetPlayers, message);
+        implementor.getMessageManager().sendFormattedOutboundPrivateMessage(sender, targetPlayers, finalMessage);
 
         // Show the received message
         for (Player target : targetPlayers) {
@@ -90,7 +109,7 @@ public record PrivateMessage(Player sender, List<String> targetUsernames,
 
             PlayerCache.setLastMessenger(target.getUuid(), receivedMessageFrom);
         }
-        implementor.getMessageManager().sendFormattedInboundPrivateMessage(targetPlayers, sender, message);
+        implementor.getMessageManager().sendFormattedInboundPrivateMessage(targetPlayers, sender, finalMessage);
 
         // Show message to social spies
         if (Settings.doSocialSpyCommand) {
@@ -109,7 +128,7 @@ public record PrivateMessage(Player sender, List<String> targetUsernames,
                         continue;
                     }
                     final PlayerCache.SpyColor color = spies.get(spy);
-                    implementor.getMessageManager().sendFormattedSocialSpyMessage(spy, color, sender, targetPlayers, message);
+                    implementor.getMessageManager().sendFormattedSocialSpyMessage(spy, color, sender, targetPlayers, finalMessage);
                 }
             }
 
@@ -127,7 +146,7 @@ public record PrivateMessage(Player sender, List<String> targetUsernames,
             logFormat = logFormat.replaceAll("%sender%", sender.getName());
             logFormat = logFormat.replaceAll("%receiver%", formattedPlayers.toString());
 
-            implementor.getLoggingAdapter().log(Level.INFO, logFormat + message);
+            implementor.getLoggingAdapter().log(Level.INFO, logFormat + finalMessage);
         }
     }
 

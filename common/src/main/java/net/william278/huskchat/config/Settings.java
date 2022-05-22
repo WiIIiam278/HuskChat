@@ -59,7 +59,7 @@ public class Settings {
     public static String broadcastLogFormat;
 
     // Chat filters
-    public static List<ChatFilter> chatFilters = new ArrayList<>();
+    public static Map<String, List<ChatFilter>> chatFilters = new HashMap<>();
 
     /**
      * Use {@link Settings#load(YamlDocument)}
@@ -163,32 +163,86 @@ public class Settings {
      * @param configFile The proxy {@link YamlDocument}
      * @return {@link ChatFilter}s to use
      */
-    private static List<ChatFilter> fetchChatFilters(YamlDocument configFile) {
-        ArrayList<ChatFilter> filters = new ArrayList<>();
+    private static Map<String, List<ChatFilter>> fetchChatFilters(YamlDocument configFile) {
+        Map<String, List<ChatFilter>> filters = new HashMap<>();
         clearChatFilters(); // Clear and dispose of any existing ProfanityChecker instances
+
+        for (String channelID : configFile.getSection("channels").getRoutesAsStrings(false)) {
+            filters.put(channelID, new ArrayList<>());
+        }
+
+        filters.put("private_messages", new ArrayList<>());
 
         // Filters
         if (configFile.getBoolean("chat_filters.advertising_filter.enabled", true)) {
-            filters.add(new AdvertisingFilterer());
+            List<String> channels = configFile.getStringList("chat_filters.advertising_filter.channels");
+
+            if (configFile.getBoolean("chat_filters.advertising_filter.private_messages", true)) {
+                channels.add("private_messages");
+            }
+
+            for (String channel : channels) {
+                filters.get(channel).add(new AdvertisingFilterer());
+            }
         }
         if (configFile.getBoolean("chat_filters.caps_filter.enabled", true)) {
-            filters.add(new CapsFilter(configFile.getDouble("chat_filters.caps_filter.max_caps_percentage", 0.4)));
+            List<String> channels = configFile.getStringList("chat_filters.caps_filter.channels");
+
+            if (configFile.getBoolean("chat_filters.caps_filter.private_messages", true)) {
+                channels.add("private_messages");
+            }
+
+            for (String channel : channels) {
+                filters.get(channel).add(new CapsFilter(configFile.getDouble("chat_filters.caps_filter.max_caps_percentage", 0.4)));
+            }
         }
         if (configFile.getBoolean("chat_filters.spam_filter.enabled", true)) {
-            filters.add(new SpamFilter(configFile.getInt("chat_filters.spam_filter.period_seconds", 4),
-                    configFile.getInt("chat_filters.spam_filter.messages_per_period", 3)));
+            List<String> channels = configFile.getStringList("chat_filters.spam_filter.channels");
+
+            if (configFile.getBoolean("chat_filters.spam_filter.private_messages", true)) {
+                channels.add("private_messages");
+            }
+
+            for (String channel : channels) {
+                filters.get(channel).add(new SpamFilter(configFile.getInt("chat_filters.spam_filter.period_seconds", 4),
+                        configFile.getInt("chat_filters.spam_filter.messages_per_period", 3)));
+            }
         }
         if (configFile.getBoolean("chat_filters.repeat_filter.enabled", true)) {
-            filters.add(new RepeatFilter(configFile.getInt("chat_filters.repeat_filter.previous_messages_to_check", 2)));
+            List<String> channels = configFile.getStringList("chat_filters.repeat_filter.channels");
+
+            if (configFile.getBoolean("chat_filters.repeat_filter.private_messages", true)) {
+                channels.add("private_messages");
+            }
+
+            for (String channel : channels) {
+                filters.get(channel).add(new RepeatFilter(configFile.getInt("chat_filters.repeat_filter.previous_messages_to_check", 2)));
+            }
         }
         if (configFile.getBoolean("chat_filters.profanity_filter.enabled", false)) {
-            filters.add(new ProfanityFilterer(ProfanityFilterer.ProfanityFilterMode.valueOf(
-                    configFile.getString("chat_filters.profanity_filter.mode", "TOLERANCE").toUpperCase()),
-                    configFile.getDouble("chat_filters.profanity_filter.tolerance", 0.78d),
-                    configFile.getString("chat_filters.profanity_filter.library_path", "")));
+            List<String> channels = configFile.getStringList("chat_filters.profanity_filter.channels");
+
+            if (configFile.getBoolean("chat_filters.profanity_filter.private_messages", true)) {
+                channels.add("private_messages");
+            }
+
+            for (String channel : channels) {
+                filters.get(channel).add(new ProfanityFilterer(ProfanityFilterer.ProfanityFilterMode.valueOf(
+                        configFile.getString("chat_filters.profanity_filter.mode", "TOLERANCE").toUpperCase()),
+                        configFile.getDouble("chat_filters.profanity_filter.tolerance", 0.78d),
+                        configFile.getString("chat_filters.profanity_filter.library_path", "")));
+            }
         }
         if (configFile.getBoolean("chat_filters.ascii_filter.enabled", false)) {
-            filters.add(new AsciiFilter());
+            List<String> channels = configFile.getStringList("chat_filters.ascii_filter.channels");
+
+            if (configFile.getBoolean("chat_filters.ascii_filter.private_messages", true)) {
+                channels.add("private_messages");
+            }
+
+            for (String channel : channels) {
+                filters.get(channel).add(new AsciiFilter());
+            }
         }
 
         // Replacers
@@ -202,7 +256,16 @@ public class Settings {
                     emojiSequences.put(characters.toLowerCase(Locale.ROOT), configFile.getString("message_replacers.emoji_replacer.emoji." + characters));
                 }
             }
-            filters.add(new EmojiReplacer(emojiSequences, caseInsensitive));
+
+            List<String> channels = configFile.getStringList("message_replacers.emoji_replacer.channels");
+
+            if (configFile.getBoolean("chat_filters.emoji_replacer.private_messages", true)) {
+                channels.add("private_messages");
+            }
+
+            for (String channel : channels) {
+                filters.get(channel).add(new EmojiReplacer(emojiSequences, caseInsensitive));
+            }
         }
 
         return filters;
@@ -258,13 +321,15 @@ public class Settings {
      * Clears the chat filters and disposes of the existing ProfanityFilter
      */
     private static void clearChatFilters() {
-        for (ChatFilter chatFilter : chatFilters) {
-            if (chatFilter instanceof ProfanityFilterer p) {
-                p.dispose();
-                break;
+        for (String filter : chatFilters.keySet()) {
+            for (ChatFilter chatFilter : chatFilters.get(filter)) {
+                if (chatFilter instanceof ProfanityFilterer p) {
+                    p.dispose();
+                    break;
+                }
             }
         }
-        chatFilters = new ArrayList<>();
+        chatFilters = new HashMap<>();
     }
 
     /**
