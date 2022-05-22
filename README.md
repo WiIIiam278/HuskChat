@@ -15,7 +15,7 @@ of use cases by allowing you to define channels and manage who can send and rece
 
 * Works great out of the box, install on your Velocity or BungeeCord-based proxy and use right away
 * Hooks with LuckPerms to display user prefixes and suffixes
-* Private messaging and replying commands
+* Private messaging and replying commands - including group private messages
 * Define who can send and receive messages in channels
 * Define shortcut commands to let players quickly switch channels
 * Machine learning powered profanity filter
@@ -41,6 +41,7 @@ of use cases by allowing you to define channels and manage who can send and rece
 | `/socialspy`      | `/socialspy`                      | `/ss`                                              | Lets you view other users' private messages              | `huskchat.command.socialspy`                                |
 | `/localspy`       | `/localspy`                       | `/ls`                                              | Lets you view messages sent in other local chat channels | `huskchat.command.localspy`                                 |
 | `/broadcast`      | `/broadcast`                      | `/alert`                                           | Lets you send a broadcast across the server              | `huskchat.command.broadcast`                                |
+| `/optoutmsg`      | `/optoutmsg`                      | N/A                                                | Lets you "opt-out" of a group private message you are in | `huskchat.command.optoutmsg`                                |
 | Shortcut commands | `/<shortcut_command> <message>`   | N/A                                                | Quickly send a message in or switch to a chat channel    | Channel send permission, e.g. `huskchat.channel.staff.send` |
 
 ## Channels & Out-of-box experience
