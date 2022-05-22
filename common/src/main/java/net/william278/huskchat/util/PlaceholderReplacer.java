@@ -48,5 +48,4 @@ public class PlaceholderReplacer {
         // parser no longer sees this as a formatting code.
         return string.replace("__", "_\\_");
     }
-
 }
