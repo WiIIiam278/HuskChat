@@ -1,5 +1,6 @@
 package net.william278.huskchat.velocity.listener;
 
+import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.event.player.ServerConnectedEvent;
@@ -14,7 +15,7 @@ public class VelocityListener extends PlayerListener {
 
     private static final HuskChatVelocity plugin = HuskChatVelocity.getInstance();
 
-    @Subscribe
+    @Subscribe(order = PostOrder.LAST)
     public void onPlayerChat(PlayerChatEvent e) {
         if (e.getMessage().startsWith("/") || !e.getResult().isAllowed()) {
             return;
