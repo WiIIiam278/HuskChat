@@ -182,6 +182,7 @@ public class Settings {
             }
 
             for (String channel : channels) {
+                if (!filters.containsKey(channel)) continue;
                 filters.get(channel).add(new AdvertisingFilterer());
             }
         }
@@ -193,6 +194,7 @@ public class Settings {
             }
 
             for (String channel : channels) {
+                if (!filters.containsKey(channel)) continue;
                 filters.get(channel).add(new CapsFilter(configFile.getDouble("chat_filters.caps_filter.max_caps_percentage", 0.4)));
             }
         }
@@ -204,6 +206,7 @@ public class Settings {
             }
 
             for (String channel : channels) {
+                if (!filters.containsKey(channel)) continue;
                 filters.get(channel).add(new SpamFilter(configFile.getInt("chat_filters.spam_filter.period_seconds", 4),
                         configFile.getInt("chat_filters.spam_filter.messages_per_period", 3)));
             }
@@ -216,6 +219,7 @@ public class Settings {
             }
 
             for (String channel : channels) {
+                if (!filters.containsKey(channel)) continue;
                 filters.get(channel).add(new RepeatFilter(configFile.getInt("chat_filters.repeat_filter.previous_messages_to_check", 2)));
             }
         }
@@ -227,6 +231,7 @@ public class Settings {
             }
 
             for (String channel : channels) {
+                if (!filters.containsKey(channel)) continue;
                 filters.get(channel).add(new ProfanityFilterer(ProfanityFilterer.ProfanityFilterMode.valueOf(
                         configFile.getString("chat_filters.profanity_filter.mode", "TOLERANCE").toUpperCase()),
                         configFile.getDouble("chat_filters.profanity_filter.tolerance", 0.78d),
@@ -241,6 +246,7 @@ public class Settings {
             }
 
             for (String channel : channels) {
+                if (!filters.containsKey(channel)) continue;
                 filters.get(channel).add(new AsciiFilter());
             }
         }
@@ -264,6 +270,7 @@ public class Settings {
             }
 
             for (String channel : channels) {
+                if (!filters.containsKey(channel)) continue;
                 filters.get(channel).add(new EmojiReplacer(emojiSequences, caseInsensitive));
             }
         }
