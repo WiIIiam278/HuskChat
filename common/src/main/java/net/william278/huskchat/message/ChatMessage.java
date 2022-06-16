@@ -97,7 +97,7 @@ public class ChatMessage {
                     } // No message recipients if the channel is exclusively passed through; let the backend handle it
                 }
 
-                implementor.getEventDispatcher().fireChatMessageEvent(sender, message, targetChannelId).thenAccept(event -> {
+                implementor.getEventDispatcher().dispatchChatMessageEvent(sender, message, targetChannelId).thenAccept(event -> {
                     if (event.isCancelled()) return;
 
                     sender = event.getSender();

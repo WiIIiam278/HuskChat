@@ -2,7 +2,7 @@ package net.william278.huskchat.velocity.event;
 
 import net.william278.huskchat.event.EventBase;
 
-public class BaseEvent implements EventBase {
+public class VelocityEvent implements EventBase {
     private boolean cancelled = false;
 
     @Override

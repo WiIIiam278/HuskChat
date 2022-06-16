@@ -10,25 +10,25 @@ import net.william278.huskchat.player.Player;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
-public class EventDispatcherVelocity implements EventDispatcher {
+public class VelocityEventDispatcher implements EventDispatcher {
     private final ProxyServer server;
 
-    public EventDispatcherVelocity(ProxyServer server) {
+    public VelocityEventDispatcher(ProxyServer server) {
         this.server = server;
     }
 
     @Override
-    public CompletableFuture<IChatMessageEvent> fireChatMessageEvent(Player player, String message, String channelId) {
+    public CompletableFuture<IChatMessageEvent> dispatchChatMessageEvent(Player player, String message, String channelId) {
         return server.getEventManager().fire(new ChatMessageEvent(player, message, channelId));
     }
 
     @Override
-    public CompletableFuture<IPrivateMessageEvent> firePrivateMessageEvent(Player sender, ArrayList<Player> receivers, String message) {
+    public CompletableFuture<IPrivateMessageEvent> dispatchPrivateMessageEvent(Player sender, ArrayList<Player> receivers, String message) {
         return server.getEventManager().fire(new PrivateMessageEvent(sender, receivers, message));
     }
 
     @Override
-    public CompletableFuture<IBroadcastMessageEvent> fireBroadcastMessageEvent(String message) {
+    public CompletableFuture<IBroadcastMessageEvent> dispatchBroadcastMessageEvent(String message) {
         return server.getEventManager().fire(new BroadcastMessageEvent(message));
     }
 }

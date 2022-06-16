@@ -10,30 +10,30 @@ import net.william278.huskchat.player.Player;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
-public class EventDispatcherBungee implements EventDispatcher {
+public class BungeeEventDispatcher implements EventDispatcher {
     private ProxyServer server;
 
-    public EventDispatcherBungee(ProxyServer server) {
+    public BungeeEventDispatcher(ProxyServer server) {
         this.server = server;
     }
 
     // In order to keep compatibility with the Velocity implementation, the Bungee events also return CompletableFuture
     @Override
-    public CompletableFuture<IChatMessageEvent> fireChatMessageEvent(Player sender, String message, String channelId) {
+    public CompletableFuture<IChatMessageEvent> dispatchChatMessageEvent(Player sender, String message, String channelId) {
         CompletableFuture<IChatMessageEvent> completableFuture = new CompletableFuture<>();
         completableFuture.complete(server.getPluginManager().callEvent(new ChatMessageEvent(sender, message, channelId)));
         return completableFuture;
     }
 
     @Override
-    public CompletableFuture<IPrivateMessageEvent> firePrivateMessageEvent(Player sender, ArrayList<Player> receivers, String message) {
+    public CompletableFuture<IPrivateMessageEvent> dispatchPrivateMessageEvent(Player sender, ArrayList<Player> receivers, String message) {
         CompletableFuture<IPrivateMessageEvent> completableFuture = new CompletableFuture<>();
         completableFuture.complete(server.getPluginManager().callEvent(new PrivateMessageEvent(sender, receivers, message)));
         return completableFuture;
     }
 
     @Override
-    public CompletableFuture<IBroadcastMessageEvent> fireBroadcastMessageEvent(String message) {
+    public CompletableFuture<IBroadcastMessageEvent> dispatchBroadcastMessageEvent(String message) {
         CompletableFuture<IBroadcastMessageEvent> completableFuture = new CompletableFuture<>();
         completableFuture.complete(server.getPluginManager().callEvent(new BroadcastMessageEvent(message)));
         return completableFuture;

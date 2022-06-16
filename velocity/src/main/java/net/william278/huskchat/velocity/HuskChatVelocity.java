@@ -17,7 +17,6 @@ import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.command.*;
 import net.william278.huskchat.config.Settings;
-import net.william278.huskchat.event.EventDispatcher;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.getter.DefaultDataGetter;
 import net.william278.huskchat.getter.LuckPermsDataGetter;
@@ -26,7 +25,7 @@ import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 import net.william278.huskchat.util.Logger;
 import net.william278.huskchat.velocity.command.VelocityCommand;
-import net.william278.huskchat.velocity.event.EventDispatcherVelocity;
+import net.william278.huskchat.velocity.event.VelocityEventDispatcher;
 import net.william278.huskchat.velocity.message.VelocityMessageManager;
 import net.william278.huskchat.velocity.listener.VelocityListener;
 import net.william278.huskchat.velocity.player.VelocityPlayer;
@@ -65,7 +64,7 @@ public class HuskChatVelocity implements HuskChat {
     private final org.slf4j.Logger logger;
     private final ProxyServer server;
     private final Path dataDirectory;
-    private final EventDispatcherVelocity eventDispatcher;
+    private final VelocityEventDispatcher eventDispatcher;
 
     // Get the data folder
     public File getDataFolder() {
@@ -86,7 +85,7 @@ public class HuskChatVelocity implements HuskChat {
         this.logger = logger;
         this.dataDirectory = dataDirectory;
         this.metricsFactory = metricsFactory;
-        this.eventDispatcher = new EventDispatcherVelocity(server);
+        this.eventDispatcher = new VelocityEventDispatcher(server);
         pluginContainer.getDescription().getVersion().ifPresent(versionString -> VERSION = versionString);
         pluginContainer.getDescription().getDescription().ifPresent(descriptionString -> DESCRIPTION = descriptionString);
     }
@@ -163,7 +162,7 @@ public class HuskChatVelocity implements HuskChat {
     }
 
     @Override
-    public EventDispatcherVelocity getEventDispatcher() {
+    public VelocityEventDispatcher getEventDispatcher() {
         return eventDispatcher;
     }
 

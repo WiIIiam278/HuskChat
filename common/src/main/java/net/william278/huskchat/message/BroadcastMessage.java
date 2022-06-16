@@ -22,7 +22,7 @@ public class BroadcastMessage {
      * Dispatch the broadcast message to be sent
      */
     public void dispatch() {
-        implementor.getEventDispatcher().fireBroadcastMessageEvent(message).thenAccept(event -> {
+        implementor.getEventDispatcher().dispatchBroadcastMessageEvent(message).thenAccept(event -> {
             if (event.isCancelled()) return;
 
             message = event.getMessage();

@@ -110,14 +110,12 @@ public class PrivateMessage {
             }
         }
 
-        implementor.getEventDispatcher().firePrivateMessageEvent(sender, targetPlayers, finalMessage.get()).thenAccept(event -> {
+        implementor.getEventDispatcher().dispatchPrivateMessageEvent(sender, targetPlayers, finalMessage.get()).thenAccept(event -> {
             if (event.isCancelled()) return;
 
             sender = event.getSender();
-            ArrayList<Player> receivers = event.getReceivers();
+            ArrayList<Player> receivers = event.getRecipients();
             finalMessage.set(event.getMessage());
-
-            implementor.getEventDispatcher().firePrivateMessageEvent(sender, receivers, finalMessage.get());
 
             // Show that the message has been sent
             PlayerCache.setLastMessenger(sender.getUuid(), receivers);

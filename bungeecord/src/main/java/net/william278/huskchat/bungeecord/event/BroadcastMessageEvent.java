@@ -1,8 +1,9 @@
 package net.william278.huskchat.bungeecord.event;
 
 import net.william278.huskchat.event.IBroadcastMessageEvent;
+import org.jetbrains.annotations.NotNull;
 
-public class BroadcastMessageEvent extends BaseEvent implements IBroadcastMessageEvent {
+public class BroadcastMessageEvent extends BungeeEvent implements IBroadcastMessageEvent {
     private String message;
 
     public BroadcastMessageEvent(String message) {
@@ -15,7 +16,7 @@ public class BroadcastMessageEvent extends BaseEvent implements IBroadcastMessag
     }
 
     @Override
-    public void setMessage(String message) {
+    public void setMessage(@NotNull String message) {
         this.message = message;
     }
 }
