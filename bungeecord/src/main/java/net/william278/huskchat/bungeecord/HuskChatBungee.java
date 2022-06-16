@@ -11,6 +11,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.bungeecord.command.BungeeCommand;
+import net.william278.huskchat.bungeecord.event.EventDispatcherBungee;
 import net.william278.huskchat.bungeecord.listener.BungeeListener;
 import net.william278.huskchat.bungeecord.message.BungeeMessageManager;
 import net.william278.huskchat.bungeecord.player.BungeePlayer;
@@ -45,6 +46,12 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
         return instance;
     }
 
+    private static EventDispatcherBungee eventDispatcher;
+
+    public EventDispatcherBungee getEventDispatcher() {
+        return eventDispatcher;
+    }
+
     // Message manager
     public static BungeeMessageManager messageManager;
 
@@ -55,6 +62,8 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
     public void onLoad() {
         // Set instance for easy cross-class referencing
         instance = this;
+
+        eventDispatcher = new EventDispatcherBungee(getProxy());
     }
 
     @Override

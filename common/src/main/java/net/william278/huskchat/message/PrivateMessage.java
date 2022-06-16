@@ -10,13 +10,26 @@ import net.william278.huskchat.player.PlayerCache;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 /**
  * Represents a private message to be sent to a target user
  */
-public record PrivateMessage(Player sender, List<String> targetUsernames,
-                             String message, HuskChat implementor) {
+public class PrivateMessage {
+    private Player sender;
+    private List<String> targetUsernames;
+    private String message;
+    private HuskChat implementor;
+
+    public PrivateMessage(Player sender, List<String> targetUsernames,
+                          String message, HuskChat implementor) {
+        this.sender = sender;
+        this.targetUsernames = targetUsernames;
+        this.message = message;
+        this.implementor = implementor;
+    }
+
     /**
      * Dispatch the private message to be sent
      */
@@ -71,7 +84,7 @@ public record PrivateMessage(Player sender, List<String> targetUsernames,
 
         // Validate that the message has recipients
         if (targetPlayers.isEmpty()) {
-            if (targetUsernames().size() > 1) {
+            if (targetUsernames.size() > 1) {
                 implementor.getMessageManager().sendMessage(sender, "error_players_not_found");
             } else {
                 implementor.getMessageManager().sendMessage(sender, "error_player_not_found");
@@ -79,7 +92,7 @@ public record PrivateMessage(Player sender, List<String> targetUsernames,
             return;
         }
 
-        String finalMessage = message;
+        AtomicReference<String> finalMessage = new AtomicReference<>(message);
 
         // If the message is to be filtered, then perform filter checks (unless they have the bypass permission)
         if (!sender.hasPermission("huskchat.bypass_filters")) {
@@ -87,67 +100,77 @@ public record PrivateMessage(Player sender, List<String> targetUsernames,
                 if (sender.hasPermission(filter.getFilterIgnorePermission())) {
                     continue;
                 }
-                if (!filter.isAllowed(sender, finalMessage)) {
+                if (!filter.isAllowed(sender, finalMessage.get())) {
                     implementor.getMessageManager().sendMessage(sender, filter.getFailureErrorMessageId());
                     return;
                 }
                 if (filter instanceof ReplacerFilter replacer) {
-                    finalMessage = replacer.replace(finalMessage);
+                    finalMessage.set(replacer.replace(finalMessage.get()));
                 }
             }
         }
 
-        // Show that the message has been sent
-        PlayerCache.setLastMessenger(sender.getUuid(), targetPlayers);
-        implementor.getMessageManager().sendFormattedOutboundPrivateMessage(sender, targetPlayers, finalMessage);
+        implementor.getEventDispatcher().firePrivateMessageEvent(sender, targetPlayers, finalMessage.get()).thenAccept(event -> {
+            if (event.isCancelled()) return;
 
-        // Show the received message
-        for (Player target : targetPlayers) {
-            final ArrayList<Player> receivedMessageFrom = new ArrayList<>(targetPlayers);
-            receivedMessageFrom.removeIf(player -> player.getUuid().equals(target.getUuid()));
-            receivedMessageFrom.add(0, sender);
+            sender = event.getSender();
+            ArrayList<Player> receivers = event.getReceivers();
+            finalMessage.set(event.getMessage());
 
-            PlayerCache.setLastMessenger(target.getUuid(), receivedMessageFrom);
-        }
-        implementor.getMessageManager().sendFormattedInboundPrivateMessage(targetPlayers, sender, finalMessage);
+            implementor.getEventDispatcher().firePrivateMessageEvent(sender, receivers, finalMessage.get());
 
-        // Show message to social spies
-        if (Settings.doSocialSpyCommand) {
-            if (!(sender.hasPermission("huskchat.command.socialspy.bypass") || targetPlayers.stream().findFirst().get().hasPermission("huskchat.command.socialspy.bypass"))) {
-                final HashMap<Player, PlayerCache.SpyColor> spies = PlayerCache.getSocialSpyMessageReceivers(targetPlayers, implementor);
-                for (Player spy : spies.keySet()) {
-                    if (spy.getUuid().equals(sender.getUuid())) {
-                        continue;
-                    }
-                    if (!spy.hasPermission("huskchat.command.socialspy")) {
-                        try {
-                            PlayerCache.removeSocialSpy(spy);
-                        } catch (IOException e) {
-                            implementor.getLoggingAdapter().log(Level.SEVERE, "Failed to remove social spy after failed permission check", e);
+            // Show that the message has been sent
+            PlayerCache.setLastMessenger(sender.getUuid(), receivers);
+            implementor.getMessageManager().sendFormattedOutboundPrivateMessage(sender, receivers, finalMessage.get());
+
+            // Show the received message
+            for (Player target : receivers) {
+                final ArrayList<Player> receivedMessageFrom = new ArrayList<>(receivers);
+                receivedMessageFrom.removeIf(player -> player.getUuid().equals(target.getUuid()));
+                receivedMessageFrom.add(0, sender);
+
+                PlayerCache.setLastMessenger(target.getUuid(), receivedMessageFrom);
+            }
+            implementor.getMessageManager().sendFormattedInboundPrivateMessage(receivers, sender, finalMessage.get());
+
+            // Show message to social spies
+            if (Settings.doSocialSpyCommand) {
+                if (!(sender.hasPermission("huskchat.command.socialspy.bypass") || receivers.stream().findFirst().get().hasPermission("huskchat.command.socialspy.bypass"))) {
+                    final HashMap<Player, PlayerCache.SpyColor> spies = PlayerCache.getSocialSpyMessageReceivers(receivers, implementor);
+                    for (Player spy : spies.keySet()) {
+                        if (spy.getUuid().equals(sender.getUuid())) {
+                            continue;
                         }
-                        continue;
+                        if (!spy.hasPermission("huskchat.command.socialspy")) {
+                            try {
+                                PlayerCache.removeSocialSpy(spy);
+                            } catch (IOException e) {
+                                implementor.getLoggingAdapter().log(Level.SEVERE, "Failed to remove social spy after failed permission check", e);
+                            }
+                            continue;
+                        }
+                        final PlayerCache.SpyColor color = spies.get(spy);
+                        implementor.getMessageManager().sendFormattedSocialSpyMessage(spy, color, sender, receivers, finalMessage.get());
                     }
-                    final PlayerCache.SpyColor color = spies.get(spy);
-                    implementor.getMessageManager().sendFormattedSocialSpyMessage(spy, color, sender, targetPlayers, finalMessage);
                 }
+
             }
 
-        }
+            // Log the private message to console, if that is enabled
+            if (Settings.logPrivateMessages) {
+                // Log all recipients of the message
+                final StringJoiner formattedPlayers = new StringJoiner(", ");
+                for (Player player : receivers) {
+                    formattedPlayers.add(player.getName());
+                }
 
-        // Log the private message to console, if that is enabled
-        if (Settings.logPrivateMessages) {
-            // Log all recipients of the message
-            final StringJoiner formattedPlayers = new StringJoiner(", ");
-            for (Player player : targetPlayers) {
-                formattedPlayers.add(player.getName());
+                String logFormat = Settings.messageLogFormat;
+                logFormat = logFormat.replaceAll("%sender%", sender.getName());
+                logFormat = logFormat.replaceAll("%receiver%", formattedPlayers.toString());
+
+                implementor.getLoggingAdapter().log(Level.INFO, logFormat + finalMessage);
             }
-
-            String logFormat = Settings.messageLogFormat;
-            logFormat = logFormat.replaceAll("%sender%", sender.getName());
-            logFormat = logFormat.replaceAll("%receiver%", formattedPlayers.toString());
-
-            implementor.getLoggingAdapter().log(Level.INFO, logFormat + finalMessage);
-        }
+        });
     }
 
 }

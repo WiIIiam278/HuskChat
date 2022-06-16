@@ -1,5 +1,6 @@
 package net.william278.huskchat;
 
+import net.william278.huskchat.event.EventDispatcher;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.message.MessageManager;
 import net.william278.huskchat.player.Player;
@@ -12,6 +13,8 @@ import java.util.UUID;
 public interface HuskChat {
 
     MessageManager getMessageManager();
+
+    EventDispatcher getEventDispatcher();
 
     void reloadSettings();
 

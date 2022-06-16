@@ -9,21 +9,34 @@ import java.util.logging.Level;
 /**
  * Represents a broadcast message to be sent to everyone
  */
-public record BroadcastMessage(String message, HuskChat implementor) {
+public class BroadcastMessage {
+    private String message;
+    private HuskChat implementor;
+
+    public BroadcastMessage(String message, HuskChat implementor) {
+        this.message = message;
+        this.implementor = implementor;
+    }
 
     /**
      * Dispatch the broadcast message to be sent
      */
     public void dispatch() {
-        // Dispatch message to all players
-        for (Player player : implementor.getOnlinePlayers()) {
-            implementor.getMessageManager().sendFormattedBroadcastMessage(player, message);
-        }
+        implementor.getEventDispatcher().fireBroadcastMessageEvent(message).thenAccept(event -> {
+            if (event.isCancelled()) return;
 
-        // Log to console if enabled
-        if (Settings.logBroadcasts) {
-            implementor.getLoggingAdapter().log(Level.INFO, Settings.broadcastLogFormat + message);
-        }
+            message = event.getMessage();
+
+            // Dispatch message to all players
+            for (Player player : implementor.getOnlinePlayers()) {
+                implementor.getMessageManager().sendFormattedBroadcastMessage(player, message);
+            }
+
+            // Log to console if enabled
+            if (Settings.logBroadcasts) {
+                implementor.getLoggingAdapter().log(Level.INFO, Settings.broadcastLogFormat + message);
+            }
+        });
     }
 
 }
