@@ -17,6 +17,7 @@ import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.command.*;
 import net.william278.huskchat.config.Settings;
+import net.william278.huskchat.discord.WebhookDispatcher;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.getter.DefaultDataGetter;
 import net.william278.huskchat.getter.LuckPermsDataGetter;
@@ -31,6 +32,7 @@ import net.william278.huskchat.velocity.listener.VelocityListener;
 import net.william278.huskchat.velocity.player.VelocityPlayer;
 import net.william278.huskchat.velocity.util.VelocityLogger;
 import org.bstats.velocity.Metrics;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -75,7 +77,6 @@ public class HuskChatVelocity implements HuskChat {
     public ProxyServer getProxyServer() {
         return server;
     }
-
 
 
     @Inject
@@ -149,6 +150,11 @@ public class HuskChatVelocity implements HuskChat {
             }
         }
 
+        // Initialize webhook dispatcher
+        if (Settings.doDiscordIntegration) {
+            webhookDispatcher = new WebhookDispatcher(Settings.webhookUrls);
+        }
+
         // Initialise metrics
         metricsFactory.make(this, METRICS_ID);
 
@@ -156,14 +162,26 @@ public class HuskChatVelocity implements HuskChat {
         getLoggingAdapter().info("Enabled HuskChat version " + getMetaVersion());
     }
 
+    @NotNull
     @Override
     public MessageManager getMessageManager() {
         return messageManager;
     }
 
+    @NotNull
     @Override
     public VelocityEventDispatcher getEventDispatcher() {
         return eventDispatcher;
+    }
+
+    private static WebhookDispatcher webhookDispatcher;
+
+    @Override
+    public Optional<WebhookDispatcher> getWebhookDispatcher() {
+        if (webhookDispatcher != null) {
+            return Optional.of(webhookDispatcher);
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -189,16 +207,19 @@ public class HuskChatVelocity implements HuskChat {
         }
     }
 
+    @NotNull
     @Override
     public String getMetaVersion() {
         return VERSION;
     }
 
+    @NotNull
     @Override
     public String getMetaDescription() {
         return DESCRIPTION;
     }
 
+    @NotNull
     @Override
     public String getMetaPlatform() {
         return "Velocity";
@@ -235,6 +256,7 @@ public class HuskChatVelocity implements HuskChat {
         return velocityPlayers;
     }
 
+    @NotNull
     @Override
     public Logger getLoggingAdapter() {
         return VelocityLogger.get(logger);

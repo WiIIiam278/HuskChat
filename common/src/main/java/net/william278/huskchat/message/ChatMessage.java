@@ -3,7 +3,6 @@ package net.william278.huskchat.message;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.config.Settings;
-import net.william278.huskchat.event.IChatMessageEvent;
 import net.william278.huskchat.filter.ChatFilter;
 import net.william278.huskchat.filter.replacer.ReplacerFilter;
 import net.william278.huskchat.player.ConsolePlayer;
@@ -162,6 +161,10 @@ public class ChatMessage {
                         implementor.getLoggingAdapter().log(Level.INFO, logFormat + message);
                     }
 
+                    // Dispatch message to a Discord webhook if enabled
+                    if (Settings.doDiscordIntegration) {
+                        implementor.getWebhookDispatcher().ifPresent(dispatcher -> dispatcher.dispatchWebhook(this));
+                    }
                 });
                 return;
             }

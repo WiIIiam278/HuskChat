@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 public class BungeeEventDispatcher implements EventDispatcher {
-    private ProxyServer server;
+    private final ProxyServer server;
 
     public BungeeEventDispatcher(ProxyServer server) {
         this.server = server;

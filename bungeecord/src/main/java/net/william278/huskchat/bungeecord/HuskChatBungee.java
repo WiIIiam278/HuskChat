@@ -19,6 +19,7 @@ import net.william278.huskchat.bungeecord.util.BungeeLogger;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.command.*;
 import net.william278.huskchat.config.Settings;
+import net.william278.huskchat.discord.WebhookDispatcher;
 import net.william278.huskchat.getter.BungeePermsDataGetter;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.getter.DefaultDataGetter;
@@ -28,6 +29,7 @@ import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 import net.william278.huskchat.util.Logger;
 import org.bstats.bungeecord.Metrics;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,8 +50,19 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
 
     private static BungeeEventDispatcher eventDispatcher;
 
+    @NotNull
     public BungeeEventDispatcher getEventDispatcher() {
         return eventDispatcher;
+    }
+
+    private static WebhookDispatcher webhookDispatcher;
+
+    @Override
+    public Optional<WebhookDispatcher> getWebhookDispatcher() {
+        if (webhookDispatcher != null) {
+            return Optional.of(webhookDispatcher);
+        }
+        return Optional.empty();
     }
 
     // Message manager
@@ -128,6 +141,11 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
             }
         }
 
+        // Initialize webhook dispatcher
+        if (Settings.doDiscordIntegration) {
+            webhookDispatcher = new WebhookDispatcher(Settings.webhookUrls);
+        }
+
         // Initialise metrics
         new Metrics(this, METRICS_ID);
 
@@ -150,6 +168,7 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
         }
     }
 
+    @NotNull
     @Override
     public MessageManager getMessageManager() {
         return messageManager;
@@ -169,16 +188,19 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
         }
     }
 
+    @NotNull
     @Override
     public String getMetaVersion() {
         return getDescription().getVersion();
     }
 
+    @NotNull
     @Override
     public String getMetaDescription() {
         return getDescription().getDescription();
     }
 
+    @NotNull
     @Override
     public String getMetaPlatform() {
         return ProxyServer.getInstance().getName();
@@ -219,6 +241,7 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
         return crossPlatform;
     }
 
+    @NotNull
     @Override
     public Logger getLoggingAdapter() {
         return BungeeLogger.get();

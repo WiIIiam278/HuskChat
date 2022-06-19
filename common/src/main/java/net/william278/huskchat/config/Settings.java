@@ -4,7 +4,10 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.filter.*;
 import net.william278.huskchat.filter.replacer.EmojiReplacer;
+import org.jetbrains.annotations.NotNull;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -60,6 +63,10 @@ public class Settings {
 
     // Chat filters
     public static Map<String, List<ChatFilter>> chatFilters = new HashMap<>();
+
+    // Discord integration
+    public static boolean doDiscordIntegration;
+    public static Map<String, URL> webhookUrls = new HashMap<>();
 
     /**
      * Use {@link Settings#load(YamlDocument)}
@@ -119,6 +126,10 @@ public class Settings {
 
         // Chat filters
         chatFilters = fetchChatFilters(configFile);
+
+        // Discord integration
+        doDiscordIntegration = configFile.getBoolean("discord.enabled", false);
+        webhookUrls = fetchWebhookUrls(configFile);
     }
 
     /**
@@ -276,6 +287,26 @@ public class Settings {
         }
 
         return filters;
+    }
+
+    /**
+     * Returns a map of Discord webhook URLs for each channel
+     * @param configFile The configuration file
+     * @return A map of webhook URLs for each channel
+     */
+    private static HashMap<String, URL> fetchWebhookUrls(@NotNull YamlDocument configFile) {
+        HashMap<String, URL> webhookUrls = new HashMap<>();
+        try {
+            for (String channelID : configFile.getSection("discord.channel_webhooks").getRoutesAsStrings(false)) {
+                if (channels.stream().map(channel -> channel.id).noneMatch(id -> id.equals(channelID))) {
+                    continue;
+                }
+                webhookUrls.put(channelID, new URL(configFile.getString("discord.channel_webhooks." + channelID)));
+            }
+        } catch (MalformedURLException e) {
+            doDiscordIntegration = false;
+        }
+        return webhookUrls;
     }
 
     /**

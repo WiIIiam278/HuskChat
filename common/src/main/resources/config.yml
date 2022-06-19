@@ -186,5 +186,11 @@ message_replacers:
       ':-(': '☹'
       ':fire:': '🔥'
 
+# Discord webhook options, which lets you send messages to a Discord channel
+discord:
+  enabled: false
+  channel_webhooks:
+    global: 'https://discord.com/api/webhooks/channel_id/secret'
+
 # Version of the config file
 config-version: 1
