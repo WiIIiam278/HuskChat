@@ -12,7 +12,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.regex.Pattern;
 
 public class WebhookDispatcher {
 
@@ -29,29 +28,25 @@ public class WebhookDispatcher {
         this.channelWebhooks = channelWebhooks;
     }
 
-    public CompletableFuture<Void> dispatchWebhook(@NotNull ChatMessage message) {
-        return CompletableFuture.runAsync(() -> {
-            getChannelWebhook(message.targetChannelId).ifPresent(webhookUrl -> {
-                System.out.println("dispatching webhook to " + webhookUrl.toString());
-                try {
-                    final HttpURLConnection webhookConnection = (HttpURLConnection) webhookUrl.openConnection();
-                    webhookConnection.setRequestMethod("POST");
-                    webhookConnection.setDoOutput(true);
+    public void dispatchWebhook(@NotNull ChatMessage message) {
+        CompletableFuture.runAsync(() -> getChannelWebhook(message.targetChannelId).ifPresent(webhookUrl -> {
+            try {
+                final HttpURLConnection webhookConnection = (HttpURLConnection) webhookUrl.openConnection();
+                webhookConnection.setRequestMethod("POST");
+                webhookConnection.setDoOutput(true);
 
-                    final byte[] jsonMessage = getChatMessageJson(message);
-                    final int messageLength = jsonMessage.length;
-                    webhookConnection.setFixedLengthStreamingMode(messageLength);
-                    webhookConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-                    webhookConnection.connect();
-                    try (OutputStream messageOutputStream = webhookConnection.getOutputStream()) {
-                        messageOutputStream.write(jsonMessage);
-                    }
-                    System.out.println("webhook response code: " + webhookConnection.getResponseCode());
-                } catch (Exception e) {
-                    e.printStackTrace();
+                final byte[] jsonMessage = getChatMessageJson(message);
+                final int messageLength = jsonMessage.length;
+                webhookConnection.setFixedLengthStreamingMode(messageLength);
+                webhookConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                webhookConnection.connect();
+                try (OutputStream messageOutputStream = webhookConnection.getOutputStream()) {
+                    messageOutputStream.write(jsonMessage);
                 }
-            });
-        });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }));
     }
 
     private byte[] getChatMessageJson(@NotNull ChatMessage message) {
@@ -72,12 +67,12 @@ public class WebhookDispatcher {
                     }
                   ]
                 }"""
-                .replaceAll(Pattern.quote("{SENDER_UUID}"), message.sender.getUuid().toString())
-                .replaceAll(Pattern.quote("{SENDER_CHANNEL}"), message.targetChannelId)
-                .replaceAll(Pattern.quote("{CURRENT_TIMESTAMP}"), ZonedDateTime.now()
+                .replace("{SENDER_UUID}", message.sender.getUuid().toString())
+                .replace("{SENDER_CHANNEL}", message.targetChannelId)
+                .replace("{CURRENT_TIMESTAMP}", ZonedDateTime.now()
                         .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
-                .replaceAll(Pattern.quote("{SENDER_USERNAME}"), message.sender.getName())
-                .replaceAll(Pattern.quote("{CHAT_MESSAGE}"), message.message)
+                .replace("{SENDER_USERNAME}", message.sender.getName())
+                .replace("{CHAT_MESSAGE}", message.message)
                 .getBytes(StandardCharsets.UTF_8);
     }
 
