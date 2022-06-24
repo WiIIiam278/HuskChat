@@ -291,17 +291,20 @@ public class Settings {
 
     /**
      * Returns a map of Discord webhook URLs for each channel
+     *
      * @param configFile The configuration file
      * @return A map of webhook URLs for each channel
      */
     private static HashMap<String, URL> fetchWebhookUrls(@NotNull YamlDocument configFile) {
         HashMap<String, URL> webhookUrls = new HashMap<>();
         try {
-            for (String channelID : configFile.getSection("discord.channel_webhooks").getRoutesAsStrings(false)) {
-                if (channels.stream().map(channel -> channel.id).noneMatch(id -> id.equals(channelID))) {
-                    continue;
+            if (configFile.contains("discord.channel_webhooks")) {
+                for (String channelID : configFile.getSection("discord.channel_webhooks").getRoutesAsStrings(false)) {
+                    if (channels.stream().map(channel -> channel.id).noneMatch(id -> id.equals(channelID))) {
+                        continue;
+                    }
+                    webhookUrls.put(channelID, new URL(configFile.getString("discord.channel_webhooks." + channelID)));
                 }
-                webhookUrls.put(channelID, new URL(configFile.getString("discord.channel_webhooks." + channelID)));
             }
         } catch (MalformedURLException e) {
             doDiscordIntegration = false;
