@@ -1,5 +1,6 @@
 package net.william278.huskchat.discord;
 
+import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.message.ChatMessage;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +36,7 @@ public class WebhookDispatcher {
                 webhookConnection.setRequestMethod("POST");
                 webhookConnection.setDoOutput(true);
 
-                final byte[] jsonMessage = getChatMessageJson(message);
+                final byte[] jsonMessage = getChatMessageJson(Settings.webhookMessageFormat, message);
                 final int messageLength = jsonMessage.length;
                 webhookConnection.setFixedLengthStreamingMode(messageLength);
                 webhookConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
@@ -49,24 +50,8 @@ public class WebhookDispatcher {
         }));
     }
 
-    private byte[] getChatMessageJson(@NotNull ChatMessage message) {
-        return """
-                {
-                  "avatar_url": "https://www.spigotmc.org/data/resource_icons/94/94496.jpg",
-                  "username": "HuskChat",
-                  "content": null,
-                  "embeds": [
-                    {
-                      "description": "{CHAT_MESSAGE}",
-                      "color": 64410,
-                      "footer": {
-                        "text": "{SENDER_USERNAME} • {SENDER_CHANNEL}",
-                        "icon_url": "https://crafatar.com/avatars/{SENDER_UUID}?size=64"
-                      },
-                      "timestamp": "{CURRENT_TIMESTAMP}"
-                    }
-                  ]
-                }"""
+    private byte[] getChatMessageJson(@NotNull DiscordMessageFormat format, @NotNull ChatMessage message) {
+        return format.postMessageFormat
                 .replace("{SENDER_UUID}", message.sender.getUuid().toString())
                 .replace("{SENDER_CHANNEL}", message.targetChannelId)
                 .replace("{CURRENT_TIMESTAMP}", ZonedDateTime.now()

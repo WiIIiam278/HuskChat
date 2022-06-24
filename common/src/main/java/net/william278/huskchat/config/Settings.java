@@ -2,6 +2,7 @@ package net.william278.huskchat.config;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
 import net.william278.huskchat.channel.Channel;
+import net.william278.huskchat.discord.DiscordMessageFormat;
 import net.william278.huskchat.filter.*;
 import net.william278.huskchat.filter.replacer.EmojiReplacer;
 import org.jetbrains.annotations.NotNull;
@@ -67,6 +68,7 @@ public class Settings {
     // Discord integration
     public static boolean doDiscordIntegration;
     public static Map<String, URL> webhookUrls = new HashMap<>();
+    public static DiscordMessageFormat webhookMessageFormat;
 
     /**
      * Use {@link Settings#load(YamlDocument)}
@@ -88,38 +90,54 @@ public class Settings {
         channelLogFormat = configFile.getString("channel_log_format", "[CHAT] [%channel%] %sender%: ");
         channels.addAll(fetchChannels(configFile));
         serverDefaultChannels = getServerDefaultChannels(configFile);
-        channelCommandAliases = (configFile.contains("channel_command_aliases")) ? getCommandsFromList(configFile.getStringList("channel_command_aliases")) : Collections.singletonList("channel");
+        channelCommandAliases = (configFile.contains("channel_command_aliases")) ?
+                getCommandsFromList(configFile.getStringList("channel_command_aliases")) :
+                Collections.singletonList("channel");
 
         // Message command options
         doMessageCommand = configFile.getBoolean("message_command.enabled", true);
         doGroupMessages = configFile.getBoolean("message_command.group_messages.enabled", true);
         maxGroupMessageSize = configFile.getInt("message_command.group_messages.max_size", 5);
-        inboundMessageFormat = configFile.getString("message_command.format.inbound", "&#00fb9a&%name% &8→ &#00fb9a&You&8: &f");
-        outboundMessageFormat = configFile.getString("message_command.format.outbound", "&#00fb9a&You &8→ &#00fb9a&%name%&8 &f");
-        groupInboundMessageFormat = configFile.getString("message_command.format.group_inbound", "&#00fb9a&%name% &8→ &#00fb9a&You[₍₊%group_amount_subscript%₎](gray show_text=&7%group_members%)&8: &f");
-        groupOutboundMessageFormat = configFile.getString("message_command.format.group_outbound", "&#00fb9a&You &8→ &#00fb9a&%name%[₍₊%group_amount_subscript%₎](gray show_text=&7%group_members%)&8: &f");
+        inboundMessageFormat = configFile.getString("message_command.format.inbound",
+                "&#00fb9a&%name% &8→ &#00fb9a&You&8: &f");
+        outboundMessageFormat = configFile.getString("message_command.format.outbound",
+                "&#00fb9a&You &8→ &#00fb9a&%name%&8 &f");
+        groupInboundMessageFormat = configFile.getString("message_command.format.group_inbound",
+                "&#00fb9a&%name% &8→ &#00fb9a&You[₍₊%group_amount_subscript%₎](gray show_text=&7%group_members%)&8: &f");
+        groupOutboundMessageFormat = configFile.getString("message_command.format.group_outbound",
+                "&#00fb9a&You &8→ &#00fb9a&%name%[₍₊%group_amount_subscript%₎](gray show_text=&7%group_members%)&8: &f");
         logPrivateMessages = configFile.getBoolean("message_command.log_to_console", true);
         censorPrivateMessages = configFile.getBoolean("message_command.censor", false);
         messageLogFormat = configFile.getString("message_command.log_format", "[MSG] [%sender% -> %receiver%]: ");
         messageCommandRestrictedServers = configFile.getStringList("message_command.restricted_servers");
-        messageCommandAliases = (configFile.contains("message_command.msg_aliases")) ? getCommandsFromList(configFile.getStringList("message_command.msg_aliases")) : Collections.singletonList("msg");
-        replyCommandAliases = (configFile.contains("message_command.reply_aliases")) ? getCommandsFromList(configFile.getStringList("message_command.reply_aliases")) : Collections.singletonList("reply");
+        messageCommandAliases = (configFile.contains("message_command.msg_aliases")) ?
+                getCommandsFromList(configFile.getStringList("message_command.msg_aliases")) :
+                Collections.singletonList("msg");
+        replyCommandAliases = (configFile.contains("message_command.reply_aliases")) ?
+                getCommandsFromList(configFile.getStringList("message_command.reply_aliases")) :
+                Collections.singletonList("reply");
 
         // Social spy
         doSocialSpyCommand = configFile.getBoolean("social_spy.enabled", true);
         socialSpyFormat = configFile.getString("social_spy.format", "&e[Spy] &7%sender% &8→ &7%receiver%:%spy_color% ");
         socialSpyGroupFormat = configFile.getString("social_spy.group_format", "&e[Spy] &7%sender_name% &8→ &7%receiver_name%[₍₊%group_amount_subscript%₎](gray show_text=&7%group_members%):%spy_color% ");
-        socialSpyCommandAliases = (configFile.contains("social_spy.socialspy_aliases")) ? getCommandsFromList(configFile.getStringList("social_spy.socialspy_aliases")) : Collections.singletonList("socialspy");
+        socialSpyCommandAliases = (configFile.contains("social_spy.socialspy_aliases")) ?
+                getCommandsFromList(configFile.getStringList("social_spy.socialspy_aliases")) :
+                Collections.singletonList("socialspy");
 
         // Local spy
         doLocalSpyCommand = configFile.getBoolean("local_spy.enabled", true);
         localSpyFormat = configFile.getString("local_spy.format", "&e[Spy] &7[%channel%] %name%&8:%spy_color% ");
         excludedLocalSpyChannels = (configFile.contains("local_spy.excluded_local_channels")) ? configFile.getStringList("local_spy.excluded_local_channels") : new ArrayList<>();
-        localSpyCommandAliases = (configFile.contains("local_spy.localspy_aliases")) ? getCommandsFromList(configFile.getStringList("local_spy.localspy_aliases")) : Collections.singletonList("localspy");
+        localSpyCommandAliases = (configFile.contains("local_spy.localspy_aliases")) ?
+                getCommandsFromList(configFile.getStringList("local_spy.localspy_aliases")) :
+                Collections.singletonList("localspy");
 
         // Broadcast command
         doBroadcastCommand = configFile.getBoolean("broadcast_command.enabled", true);
-        broadcastCommandAliases = (configFile.contains("broadcast_command.broadcast_aliases")) ? getCommandsFromList(configFile.getStringList("broadcast_command.broadcast_aliases")) : Collections.singletonList("broadcast");
+        broadcastCommandAliases = (configFile.contains("broadcast_command.broadcast_aliases")) ?
+                getCommandsFromList(configFile.getStringList("broadcast_command.broadcast_aliases")) :
+                Collections.singletonList("broadcast");
         broadcastMessageFormat = configFile.getString("broadcast_command.format", "&6[Broadcast]&e ");
         logBroadcasts = configFile.getBoolean("broadcast_command.log_to_console", true);
         broadcastLogFormat = configFile.getString("broadcast_command.log_format", "[BROADCAST]: ");
@@ -129,6 +147,8 @@ public class Settings {
 
         // Discord integration
         doDiscordIntegration = configFile.getBoolean("discord.enabled", false);
+        webhookMessageFormat = DiscordMessageFormat.getMessageFormat(configFile.getString("discord.format_style", "inline"))
+                .orElse(DiscordMessageFormat.INLINE);
         webhookUrls = fetchWebhookUrls(configFile);
     }
 
