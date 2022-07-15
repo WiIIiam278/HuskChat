@@ -44,11 +44,6 @@ public class ConsolePlayer implements Player {
         return true;
     }
 
-    @Override
-    public void passThroughChat(String message) {
-        implementor.getLoggingAdapter().log(Level.INFO, message);
-    }
-
     /**
      * Adapt the proxy console player into a cross-platform one
      *

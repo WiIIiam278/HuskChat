@@ -44,3 +44,4 @@ error_last_message_not_group: '[Error:](#ff3300) [The last message you received 
 error_no_messages_opt_out: '[Error:](#ff3300) [You have not yet sent or received group messages.](#ff7e5e)'
 removed_from_group_message: '[Removed you from the group message between:](#00fb9a) %1%'
 list_conjunction: 'and'
+passthrough_shortcut_command_error: '[Error:](#ff3300) [Sending messages to passthrough channels using shortcut commands is not supported. Please switch to the channel first.](#ff7e5e)'

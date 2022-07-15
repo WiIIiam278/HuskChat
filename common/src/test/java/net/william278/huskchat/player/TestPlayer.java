@@ -48,9 +48,4 @@ public class TestPlayer implements Player {
     public boolean hasPermission(String node) {
         return true;
     }
-
-    @Override
-    public void passThroughChat(String message) {
-        // Ignore (test player)
-    }
 }

@@ -53,14 +53,11 @@ public class ChannelCommand extends CommandBase {
 
     public HashSet<String> getChannelsIdsWithSendPermission(Player player) {
         final HashSet<String> channelsWithPermission = new HashSet<>();
-        for (Channel channel : Settings.channels) {
-            if (channel.sendPermission != null) {
-                if (!player.hasPermission(channel.sendPermission)) {
-                    continue;
-                }
+        Settings.channels.forEach((id, channel) -> {
+            if (channel.sendPermission == null || player.hasPermission(channel.sendPermission)) {
+                channelsWithPermission.add(channel.id);
             }
-            channelsWithPermission.add(channel.id);
-        }
+        });
         return channelsWithPermission;
     }
 

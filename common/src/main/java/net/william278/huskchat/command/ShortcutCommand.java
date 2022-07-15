@@ -1,6 +1,8 @@
 package net.william278.huskchat.command;
 
 import net.william278.huskchat.HuskChat;
+import net.william278.huskchat.channel.Channel;
+import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.message.ChatMessage;
 import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
@@ -38,6 +40,14 @@ public class ShortcutCommand extends CommandBase {
                 for (String arg : args) {
                     message.add(arg);
                 }
+
+                Channel channel = Settings.channels.get(channelId);
+
+                if (channel.broadcastScope.isPassThrough) {
+                    implementor.getMessageManager().sendMessage(player, "passthrough_shortcut_command_error");
+                    return;
+                }
+
                 new ChatMessage(channelId, player, message.toString(), implementor).dispatch();
             }
         } else {

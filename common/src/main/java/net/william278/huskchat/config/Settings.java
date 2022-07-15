@@ -18,7 +18,7 @@ public class Settings {
     // Channel config
     public static String defaultChannel;
     public static HashMap<String, String> serverDefaultChannels = new HashMap<>();
-    public static HashSet<Channel> channels = new HashSet<>();
+    public static HashMap<String, Channel> channels = new HashMap<>();
     public static String channelLogFormat;
     public static List<String> channelCommandAliases = new ArrayList<>();
 
@@ -79,7 +79,7 @@ public class Settings {
         // Channels
         defaultChannel = configFile.getString("default_channel", "global");
         channelLogFormat = configFile.getString("channel_log_format", "[CHAT] [%channel%] %sender%: ");
-        channels.addAll(fetchChannels(configFile));
+        channels.putAll(fetchChannels(configFile));
         serverDefaultChannels = getServerDefaultChannels(configFile);
         channelCommandAliases = (configFile.contains("channel_command_aliases")) ? getCommandsFromList(configFile.getStringList("channel_command_aliases")) : Collections.singletonList("channel");
 
@@ -125,11 +125,11 @@ public class Settings {
      * Returns {@link Channel} data from the proxy {@link YamlDocument}
      *
      * @param configFile The proxy {@link YamlDocument}
-     * @return {@link HashSet} of {@link Channel} data listed in the config file
+     * @return {@link HashMap} of {@link Channel} data listed in the config file
      * @throws IllegalArgumentException if a channel contains an invalid broadcast scope
      */
-    private static HashSet<Channel> fetchChannels(YamlDocument configFile) throws IllegalArgumentException {
-        final HashSet<Channel> channels = new HashSet<>();
+    private static HashMap<String, Channel> fetchChannels(YamlDocument configFile) throws IllegalArgumentException {
+        final HashMap<String, Channel> channels = new HashMap<>();
         for (String channelID : configFile.getSection("channels").getRoutesAsStrings(false)) {
             // Get channel format and scope and create channel object
             final String format = configFile.getString("channels." + channelID + ".format", "%fullname%&r: ");
@@ -152,7 +152,7 @@ public class Settings {
             channel.logMessages = configFile.getBoolean("channels." + channelID + ".log_to_console", true);
             channel.filter = configFile.getBoolean("channels." + channelID + ".filtered", true);
 
-            channels.add(channel);
+            channels.put(channelID, channel);
         }
         return channels;
     }
