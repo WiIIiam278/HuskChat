@@ -120,6 +120,7 @@ chat_filters:
   advertising_filter:
     enabled: true
     private_messages: false
+    broadcast_messages: false
     channels:
       - global
       - local
@@ -128,6 +129,7 @@ chat_filters:
     enabled: true
     max_caps_percentage: 0.4
     private_messages: false
+    broadcast_messages: false
     channels:
       - global
       - local
@@ -137,6 +139,7 @@ chat_filters:
     period_seconds: 4
     messages_per_period: 3
     private_messages: false
+    broadcast_messages: false
     channels:
       - global
       - local
@@ -147,6 +150,7 @@ chat_filters:
     mode: AUTOMATIC # Filter rule - AUTOMATIC or TOLERANCE.
     tolerance: 0.78 # If using TOLERANCE mode, the algorithm will determine a profanity probability and compare with this to filter.
     private_messages: false
+    broadcast_messages: false
     channels:
       - global
       - local
@@ -154,6 +158,7 @@ chat_filters:
     enabled: true
     previous_messages_to_check: 2
     private_messages: false
+    broadcast_messages: false
     channels:
       - global
       - local
@@ -161,6 +166,7 @@ chat_filters:
   ascii_filter:
     enabled: false
     private_messages: false
+    broadcast_messages: false
     channels:
       - global
       - local
@@ -172,6 +178,7 @@ message_replacers:
     enabled: true
     case_insensitive: false
     private_messages: true
+    broadcast_messages: true
     channels:
       - global
       - local

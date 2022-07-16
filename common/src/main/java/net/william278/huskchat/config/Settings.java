@@ -172,13 +172,18 @@ public class Settings {
         }
 
         filters.put("private_messages", new ArrayList<>());
+        filters.put("broadcast_messages", new ArrayList<>());
 
         // Filters
         if (configFile.getBoolean("chat_filters.advertising_filter.enabled", true)) {
             List<String> channels = configFile.getStringList("chat_filters.advertising_filter.channels");
 
-            if (configFile.getBoolean("chat_filters.advertising_filter.private_messages", true)) {
+            if (configFile.getBoolean("chat_filters.advertising_filter.private_messages", false)) {
                 channels.add("private_messages");
+            }
+
+            if (configFile.getBoolean("chat_filters.advertising_filter.broadcast_messages", false)) {
+                channels.add("broadcast_messages");
             }
 
             for (String channel : channels) {
@@ -189,8 +194,12 @@ public class Settings {
         if (configFile.getBoolean("chat_filters.caps_filter.enabled", true)) {
             List<String> channels = configFile.getStringList("chat_filters.caps_filter.channels");
 
-            if (configFile.getBoolean("chat_filters.caps_filter.private_messages", true)) {
+            if (configFile.getBoolean("chat_filters.caps_filter.private_messages", false)) {
                 channels.add("private_messages");
+            }
+
+            if (configFile.getBoolean("chat_filters.caps_filter.broadcast_messages", false)) {
+                channels.add("broadcast_messages");
             }
 
             for (String channel : channels) {
@@ -201,8 +210,12 @@ public class Settings {
         if (configFile.getBoolean("chat_filters.spam_filter.enabled", true)) {
             List<String> channels = configFile.getStringList("chat_filters.spam_filter.channels");
 
-            if (configFile.getBoolean("chat_filters.spam_filter.private_messages", true)) {
+            if (configFile.getBoolean("chat_filters.spam_filter.private_messages", false)) {
                 channels.add("private_messages");
+            }
+
+            if (configFile.getBoolean("chat_filters.spam_filter.broadcast_messages", false)) {
+                channels.add("broadcast_messages");
             }
 
             for (String channel : channels) {
@@ -214,8 +227,12 @@ public class Settings {
         if (configFile.getBoolean("chat_filters.repeat_filter.enabled", true)) {
             List<String> channels = configFile.getStringList("chat_filters.repeat_filter.channels");
 
-            if (configFile.getBoolean("chat_filters.repeat_filter.private_messages", true)) {
+            if (configFile.getBoolean("chat_filters.repeat_filter.private_messages", false)) {
                 channels.add("private_messages");
+            }
+
+            if (configFile.getBoolean("chat_filters.repeat_filter.broadcast_messages", false)) {
+                channels.add("broadcast_messages");
             }
 
             for (String channel : channels) {
@@ -226,8 +243,12 @@ public class Settings {
         if (configFile.getBoolean("chat_filters.profanity_filter.enabled", false)) {
             List<String> channels = configFile.getStringList("chat_filters.profanity_filter.channels");
 
-            if (configFile.getBoolean("chat_filters.profanity_filter.private_messages", true)) {
+            if (configFile.getBoolean("chat_filters.profanity_filter.private_messages", false)) {
                 channels.add("private_messages");
+            }
+
+            if (configFile.getBoolean("chat_filters.profanity_filter.broadcast_messages", false)) {
+                channels.add("broadcast_messages");
             }
 
             for (String channel : channels) {
@@ -241,8 +262,12 @@ public class Settings {
         if (configFile.getBoolean("chat_filters.ascii_filter.enabled", false)) {
             List<String> channels = configFile.getStringList("chat_filters.ascii_filter.channels");
 
-            if (configFile.getBoolean("chat_filters.ascii_filter.private_messages", true)) {
+            if (configFile.getBoolean("chat_filters.ascii_filter.private_messages", false)) {
                 channels.add("private_messages");
+            }
+
+            if (configFile.getBoolean("chat_filters.ascii_filter.broadcast_messages", false)) {
+                channels.add("broadcast_messages");
             }
 
             for (String channel : channels) {
@@ -267,6 +292,10 @@ public class Settings {
 
             if (configFile.getBoolean("chat_filters.emoji_replacer.private_messages", true)) {
                 channels.add("private_messages");
+            }
+
+            if (configFile.getBoolean("chat_filters.emoji_replacer.broadcast_messages", true)) {
+                channels.add("broadcast_messages");
             }
 
             for (String channel : channels) {

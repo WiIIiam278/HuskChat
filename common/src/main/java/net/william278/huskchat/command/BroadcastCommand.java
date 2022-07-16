@@ -25,7 +25,7 @@ public class BroadcastCommand extends CommandBase {
                 for (String argument : args) {
                     message.add(argument);
                 }
-                new BroadcastMessage(message.toString(), implementor).dispatch();
+                new BroadcastMessage(player, message.toString(), implementor).dispatch();
             } else {
                 implementor.getMessageManager().sendMessage(player, "error_invalid_syntax", "/broadcast <message>");
             }
