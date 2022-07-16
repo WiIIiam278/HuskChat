@@ -1,5 +1,5 @@
 dependencies {
-    implementation project(path: ':common', configuration: 'shadow')
+    implementation project(path: ':common')
 
     implementation 'org.bstats:bstats-bungeecord:3.0.0'
     implementation 'de.themoep:minedown:1.7.1-SNAPSHOT'

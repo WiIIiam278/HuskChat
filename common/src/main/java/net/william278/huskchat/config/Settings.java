@@ -2,9 +2,13 @@ package net.william278.huskchat.config;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
 import net.william278.huskchat.channel.Channel;
+import net.william278.huskchat.discord.DiscordMessageFormat;
 import net.william278.huskchat.filter.*;
 import net.william278.huskchat.filter.replacer.EmojiReplacer;
+import org.jetbrains.annotations.NotNull;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -61,6 +65,11 @@ public class Settings {
     // Chat filters
     public static Map<String, List<ChatFilter>> chatFilters = new HashMap<>();
 
+    // Discord integration
+    public static boolean doDiscordIntegration;
+    public static Map<String, URL> webhookUrls = new HashMap<>();
+    public static DiscordMessageFormat webhookMessageFormat;
+
     /**
      * Use {@link Settings#load(YamlDocument)}
      */
@@ -81,44 +90,66 @@ public class Settings {
         channelLogFormat = configFile.getString("channel_log_format", "[CHAT] [%channel%] %sender%: ");
         channels.putAll(fetchChannels(configFile));
         serverDefaultChannels = getServerDefaultChannels(configFile);
-        channelCommandAliases = (configFile.contains("channel_command_aliases")) ? getCommandsFromList(configFile.getStringList("channel_command_aliases")) : Collections.singletonList("channel");
+        channelCommandAliases = (configFile.contains("channel_command_aliases")) ?
+                getCommandsFromList(configFile.getStringList("channel_command_aliases")) :
+                Collections.singletonList("channel");
 
         // Message command options
         doMessageCommand = configFile.getBoolean("message_command.enabled", true);
         doGroupMessages = configFile.getBoolean("message_command.group_messages.enabled", true);
         maxGroupMessageSize = configFile.getInt("message_command.group_messages.max_size", 5);
-        inboundMessageFormat = configFile.getString("message_command.format.inbound", "&#00fb9a&%name% &8→ &#00fb9a&You&8: &f");
-        outboundMessageFormat = configFile.getString("message_command.format.outbound", "&#00fb9a&You &8→ &#00fb9a&%name%&8 &f");
-        groupInboundMessageFormat = configFile.getString("message_command.format.group_inbound", "&#00fb9a&%name% &8→ &#00fb9a&You[₍₊%group_amount_subscript%₎](gray show_text=&7%group_members%)&8: &f");
-        groupOutboundMessageFormat = configFile.getString("message_command.format.group_outbound", "&#00fb9a&You &8→ &#00fb9a&%name%[₍₊%group_amount_subscript%₎](gray show_text=&7%group_members%)&8: &f");
+        inboundMessageFormat = configFile.getString("message_command.format.inbound",
+                "&#00fb9a&%name% &8→ &#00fb9a&You&8: &f");
+        outboundMessageFormat = configFile.getString("message_command.format.outbound",
+                "&#00fb9a&You &8→ &#00fb9a&%name%&8 &f");
+        groupInboundMessageFormat = configFile.getString("message_command.format.group_inbound",
+                "&#00fb9a&%name% &8→ &#00fb9a&You[₍₊%group_amount_subscript%₎](gray show_text=&7%group_members%)&8: &f");
+        groupOutboundMessageFormat = configFile.getString("message_command.format.group_outbound",
+                "&#00fb9a&You &8→ &#00fb9a&%name%[₍₊%group_amount_subscript%₎](gray show_text=&7%group_members%)&8: &f");
         logPrivateMessages = configFile.getBoolean("message_command.log_to_console", true);
         censorPrivateMessages = configFile.getBoolean("message_command.censor", false);
         messageLogFormat = configFile.getString("message_command.log_format", "[MSG] [%sender% -> %receiver%]: ");
         messageCommandRestrictedServers = configFile.getStringList("message_command.restricted_servers");
-        messageCommandAliases = (configFile.contains("message_command.msg_aliases")) ? getCommandsFromList(configFile.getStringList("message_command.msg_aliases")) : Collections.singletonList("msg");
-        replyCommandAliases = (configFile.contains("message_command.reply_aliases")) ? getCommandsFromList(configFile.getStringList("message_command.reply_aliases")) : Collections.singletonList("reply");
+        messageCommandAliases = (configFile.contains("message_command.msg_aliases")) ?
+                getCommandsFromList(configFile.getStringList("message_command.msg_aliases")) :
+                Collections.singletonList("msg");
+        replyCommandAliases = (configFile.contains("message_command.reply_aliases")) ?
+                getCommandsFromList(configFile.getStringList("message_command.reply_aliases")) :
+                Collections.singletonList("reply");
 
         // Social spy
         doSocialSpyCommand = configFile.getBoolean("social_spy.enabled", true);
         socialSpyFormat = configFile.getString("social_spy.format", "&e[Spy] &7%sender% &8→ &7%receiver%:%spy_color% ");
         socialSpyGroupFormat = configFile.getString("social_spy.group_format", "&e[Spy] &7%sender_name% &8→ &7%receiver_name%[₍₊%group_amount_subscript%₎](gray show_text=&7%group_members%):%spy_color% ");
-        socialSpyCommandAliases = (configFile.contains("social_spy.socialspy_aliases")) ? getCommandsFromList(configFile.getStringList("social_spy.socialspy_aliases")) : Collections.singletonList("socialspy");
+        socialSpyCommandAliases = (configFile.contains("social_spy.socialspy_aliases")) ?
+                getCommandsFromList(configFile.getStringList("social_spy.socialspy_aliases")) :
+                Collections.singletonList("socialspy");
 
         // Local spy
         doLocalSpyCommand = configFile.getBoolean("local_spy.enabled", true);
         localSpyFormat = configFile.getString("local_spy.format", "&e[Spy] &7[%channel%] %name%&8:%spy_color% ");
         excludedLocalSpyChannels = (configFile.contains("local_spy.excluded_local_channels")) ? configFile.getStringList("local_spy.excluded_local_channels") : new ArrayList<>();
-        localSpyCommandAliases = (configFile.contains("local_spy.localspy_aliases")) ? getCommandsFromList(configFile.getStringList("local_spy.localspy_aliases")) : Collections.singletonList("localspy");
+        localSpyCommandAliases = (configFile.contains("local_spy.localspy_aliases")) ?
+                getCommandsFromList(configFile.getStringList("local_spy.localspy_aliases")) :
+                Collections.singletonList("localspy");
 
         // Broadcast command
         doBroadcastCommand = configFile.getBoolean("broadcast_command.enabled", true);
-        broadcastCommandAliases = (configFile.contains("broadcast_command.broadcast_aliases")) ? getCommandsFromList(configFile.getStringList("broadcast_command.broadcast_aliases")) : Collections.singletonList("broadcast");
+        broadcastCommandAliases = (configFile.contains("broadcast_command.broadcast_aliases")) ?
+                getCommandsFromList(configFile.getStringList("broadcast_command.broadcast_aliases")) :
+                Collections.singletonList("broadcast");
         broadcastMessageFormat = configFile.getString("broadcast_command.format", "&6[Broadcast]&e ");
         logBroadcasts = configFile.getBoolean("broadcast_command.log_to_console", true);
         broadcastLogFormat = configFile.getString("broadcast_command.log_format", "[BROADCAST]: ");
 
         // Chat filters
         chatFilters = fetchChatFilters(configFile);
+
+        // Discord integration
+        doDiscordIntegration = configFile.getBoolean("discord.enabled", false);
+        webhookMessageFormat = DiscordMessageFormat.getMessageFormat(configFile.getString("discord.format_style", "inline"))
+                .orElse(DiscordMessageFormat.INLINE);
+        webhookUrls = fetchWebhookUrls(configFile);
     }
 
     /**
@@ -172,13 +203,18 @@ public class Settings {
         }
 
         filters.put("private_messages", new ArrayList<>());
+        filters.put("broadcast_messages", new ArrayList<>());
 
         // Filters
         if (configFile.getBoolean("chat_filters.advertising_filter.enabled", true)) {
             List<String> channels = configFile.getStringList("chat_filters.advertising_filter.channels");
 
-            if (configFile.getBoolean("chat_filters.advertising_filter.private_messages", true)) {
+            if (configFile.getBoolean("chat_filters.advertising_filter.private_messages", false)) {
                 channels.add("private_messages");
+            }
+
+            if (configFile.getBoolean("chat_filters.advertising_filter.broadcast_messages", false)) {
+                channels.add("broadcast_messages");
             }
 
             for (String channel : channels) {
@@ -189,8 +225,12 @@ public class Settings {
         if (configFile.getBoolean("chat_filters.caps_filter.enabled", true)) {
             List<String> channels = configFile.getStringList("chat_filters.caps_filter.channels");
 
-            if (configFile.getBoolean("chat_filters.caps_filter.private_messages", true)) {
+            if (configFile.getBoolean("chat_filters.caps_filter.private_messages", false)) {
                 channels.add("private_messages");
+            }
+
+            if (configFile.getBoolean("chat_filters.caps_filter.broadcast_messages", false)) {
+                channels.add("broadcast_messages");
             }
 
             for (String channel : channels) {
@@ -201,8 +241,12 @@ public class Settings {
         if (configFile.getBoolean("chat_filters.spam_filter.enabled", true)) {
             List<String> channels = configFile.getStringList("chat_filters.spam_filter.channels");
 
-            if (configFile.getBoolean("chat_filters.spam_filter.private_messages", true)) {
+            if (configFile.getBoolean("chat_filters.spam_filter.private_messages", false)) {
                 channels.add("private_messages");
+            }
+
+            if (configFile.getBoolean("chat_filters.spam_filter.broadcast_messages", false)) {
+                channels.add("broadcast_messages");
             }
 
             for (String channel : channels) {
@@ -214,8 +258,12 @@ public class Settings {
         if (configFile.getBoolean("chat_filters.repeat_filter.enabled", true)) {
             List<String> channels = configFile.getStringList("chat_filters.repeat_filter.channels");
 
-            if (configFile.getBoolean("chat_filters.repeat_filter.private_messages", true)) {
+            if (configFile.getBoolean("chat_filters.repeat_filter.private_messages", false)) {
                 channels.add("private_messages");
+            }
+
+            if (configFile.getBoolean("chat_filters.repeat_filter.broadcast_messages", false)) {
+                channels.add("broadcast_messages");
             }
 
             for (String channel : channels) {
@@ -226,8 +274,12 @@ public class Settings {
         if (configFile.getBoolean("chat_filters.profanity_filter.enabled", false)) {
             List<String> channels = configFile.getStringList("chat_filters.profanity_filter.channels");
 
-            if (configFile.getBoolean("chat_filters.profanity_filter.private_messages", true)) {
+            if (configFile.getBoolean("chat_filters.profanity_filter.private_messages", false)) {
                 channels.add("private_messages");
+            }
+
+            if (configFile.getBoolean("chat_filters.profanity_filter.broadcast_messages", false)) {
+                channels.add("broadcast_messages");
             }
 
             for (String channel : channels) {
@@ -241,8 +293,12 @@ public class Settings {
         if (configFile.getBoolean("chat_filters.ascii_filter.enabled", false)) {
             List<String> channels = configFile.getStringList("chat_filters.ascii_filter.channels");
 
-            if (configFile.getBoolean("chat_filters.ascii_filter.private_messages", true)) {
+            if (configFile.getBoolean("chat_filters.ascii_filter.private_messages", false)) {
                 channels.add("private_messages");
+            }
+
+            if (configFile.getBoolean("chat_filters.ascii_filter.broadcast_messages", false)) {
+                channels.add("broadcast_messages");
             }
 
             for (String channel : channels) {
@@ -269,6 +325,10 @@ public class Settings {
                 channels.add("private_messages");
             }
 
+            if (configFile.getBoolean("chat_filters.emoji_replacer.broadcast_messages", true)) {
+                channels.add("broadcast_messages");
+            }
+
             for (String channel : channels) {
                 if (!filters.containsKey(channel)) continue;
                 filters.get(channel).add(new EmojiReplacer(emojiSequences, caseInsensitive));
@@ -276,6 +336,29 @@ public class Settings {
         }
 
         return filters;
+    }
+
+    /**
+     * Returns a map of Discord webhook URLs for each channel
+     *
+     * @param configFile The configuration file
+     * @return A map of webhook URLs for each channel
+     */
+    private static HashMap<String, URL> fetchWebhookUrls(@NotNull YamlDocument configFile) {
+        HashMap<String, URL> webhookUrls = new HashMap<>();
+        try {
+            if (configFile.contains("discord.channel_webhooks")) {
+                for (String channelID : configFile.getSection("discord.channel_webhooks").getRoutesAsStrings(false)) {
+                    if (channels.stream().map(channel -> channel.id).noneMatch(id -> id.equals(channelID))) {
+                        continue;
+                    }
+                    webhookUrls.put(channelID, new URL(configFile.getString("discord.channel_webhooks." + channelID)));
+                }
+            }
+        } catch (MalformedURLException e) {
+            doDiscordIntegration = false;
+        }
+        return webhookUrls;
     }
 
     /**

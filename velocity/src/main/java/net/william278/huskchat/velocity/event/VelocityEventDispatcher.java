@@ -28,7 +28,7 @@ public class VelocityEventDispatcher implements EventDispatcher {
     }
 
     @Override
-    public CompletableFuture<IBroadcastMessageEvent> dispatchBroadcastMessageEvent(String message) {
-        return server.getEventManager().fire(new BroadcastMessageEvent(message));
+    public CompletableFuture<IBroadcastMessageEvent> dispatchBroadcastMessageEvent(Player sender, String message) {
+        return server.getEventManager().fire(new BroadcastMessageEvent(sender, message));
     }
 }

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 public class BungeeEventDispatcher implements EventDispatcher {
-    private ProxyServer server;
+    private final ProxyServer server;
 
     public BungeeEventDispatcher(ProxyServer server) {
         this.server = server;
@@ -33,9 +33,9 @@ public class BungeeEventDispatcher implements EventDispatcher {
     }
 
     @Override
-    public CompletableFuture<IBroadcastMessageEvent> dispatchBroadcastMessageEvent(String message) {
+    public CompletableFuture<IBroadcastMessageEvent> dispatchBroadcastMessageEvent(Player sender, String message) {
         CompletableFuture<IBroadcastMessageEvent> completableFuture = new CompletableFuture<>();
-        completableFuture.complete(server.getPluginManager().callEvent(new BroadcastMessageEvent(message)));
+        completableFuture.complete(server.getPluginManager().callEvent(new BroadcastMessageEvent(sender, message)));
         return completableFuture;
     }
 }

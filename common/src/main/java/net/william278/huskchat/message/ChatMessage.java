@@ -148,6 +148,10 @@ public class ChatMessage {
                 implementor.getLoggingAdapter().log(Level.INFO, logFormat + message);
             }
 
+            // Dispatch message to a Discord webhook if enabled
+            if (Settings.doDiscordIntegration) {
+                implementor.getWebhookDispatcher().ifPresent(dispatcher -> dispatcher.dispatchWebhook(this));
+            }
         });
     }
 
