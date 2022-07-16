@@ -28,7 +28,7 @@ public enum DiscordMessageFormat {
             {
               "avatar_url": "https://crafatar.com/avatars/{SENDER_UUID}?size=128",
               "username": "[{SENDER_CHANNEL}] {SENDER_USERNAME}",
-              "content": {CHAT_MESSAGE}
+              "content": "{CHAT_MESSAGE}"
             }""");
 
     public final String postMessageFormat;

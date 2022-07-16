@@ -349,7 +349,7 @@ public class Settings {
         try {
             if (configFile.contains("discord.channel_webhooks")) {
                 for (String channelID : configFile.getSection("discord.channel_webhooks").getRoutesAsStrings(false)) {
-                    if (channels.stream().map(channel -> channel.id).noneMatch(id -> id.equals(channelID))) {
+                    if (!channels.containsKey(channelID)) {
                         continue;
                     }
                     webhookUrls.put(channelID, new URL(configFile.getString("discord.channel_webhooks." + channelID)));
