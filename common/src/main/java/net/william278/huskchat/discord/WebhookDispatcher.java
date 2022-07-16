@@ -50,6 +50,14 @@ public class WebhookDispatcher {
         }));
     }
 
+    /**
+     * Get the discord chat message json for the given message.
+     *
+     * @param format  The discord message format to use
+     * @param message The message to format
+     * @return the json message as a byte array
+     * @implNote Quotes message will be escaped before dispatch
+     */
     private byte[] getChatMessageJson(@NotNull DiscordMessageFormat format, @NotNull ChatMessage message) {
         return format.postMessageFormat
                 .replace("{SENDER_UUID}", message.sender.getUuid().toString())
@@ -57,7 +65,9 @@ public class WebhookDispatcher {
                 .replace("{CURRENT_TIMESTAMP}", ZonedDateTime.now()
                         .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
                 .replace("{SENDER_USERNAME}", message.sender.getName())
-                .replace("{CHAT_MESSAGE}", message.message)
+                .replace("{CHAT_MESSAGE}", message.message
+                        .replace("\\", "\\\\")
+                        .replace("\"", "\\\""))
                 .getBytes(StandardCharsets.UTF_8);
     }
 
