@@ -135,11 +135,11 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
         }
 
         // Register shortcut commands
-        for (Channel channel : Settings.channels) {
+        Settings.channels.forEach((id, channel) -> {
             for (String command : channel.shortcutCommands) {
                 new BungeeCommand(new ShortcutCommand(command, channel.id, this));
             }
-        }
+        });
 
         // Initialize webhook dispatcher
         if (Settings.doDiscordIntegration) {

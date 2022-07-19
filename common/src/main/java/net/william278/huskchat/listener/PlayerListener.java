@@ -20,7 +20,7 @@ public abstract class PlayerListener {
             PlayerCache.switchPlayerChannel(player, Settings.serverDefaultChannels.get(newServer),
                     implementor.getMessageManager());
         } else {
-            for (Channel channel : Settings.channels) {
+            for (Channel channel : Settings.channels.values()) {
                 if (channel.id.equalsIgnoreCase(PlayerCache.getPlayerChannel(player.getUuid()))) {
                     for (String restrictedServer : channel.restrictedServers) {
                         if (restrictedServer.equalsIgnoreCase(newServer)) {

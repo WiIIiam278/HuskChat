@@ -9,6 +9,8 @@ import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 import net.william278.huskchat.bungeecord.HuskChatBungee;
 import net.william278.huskchat.bungeecord.player.BungeePlayer;
+import net.william278.huskchat.channel.Channel;
+import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.listener.PlayerListener;
 import net.william278.huskchat.message.ChatMessage;
 import net.william278.huskchat.player.PlayerCache;
@@ -22,8 +24,19 @@ public class BungeeListener extends PlayerListener implements Listener {
         if (e.isCommand() || e.isProxyCommand() || e.isCancelled()) {
             return;
         }
-        e.setCancelled(true);
+
         ProxiedPlayer player = (ProxiedPlayer) e.getSender();
+        Channel channel = Settings.channels.get(PlayerCache.getPlayerChannel(player.getUniqueId()));
+
+        if (channel.broadcastScope.isPassThrough) {
+            if (!ChatMessage.passesFilters(plugin, BungeePlayer.adaptCrossPlatform(player), new StringBuilder(e.getMessage()), channel)) {
+                e.setCancelled(true);
+            }
+
+            return;
+        }
+
+        e.setCancelled(true);
         ProxyServer.getInstance().getScheduler().runAsync(plugin, () -> new ChatMessage(PlayerCache.getPlayerChannel(player.getUniqueId()),
                 BungeePlayer.adaptCrossPlatform(player), e.getMessage(), plugin).dispatch());
     }

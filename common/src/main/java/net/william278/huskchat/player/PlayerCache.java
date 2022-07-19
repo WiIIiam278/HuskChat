@@ -40,20 +40,20 @@ public class PlayerCache {
      * @param messageManager Instance of the {@link MessageManager} to display switch information via
      */
     public static void switchPlayerChannel(Player player, String channelID, MessageManager messageManager) {
-        for (Channel channel : Settings.channels) {
-            if (channel.id.equalsIgnoreCase(channelID)) {
-                if (channel.sendPermission != null) {
-                    if (!player.hasPermission(channel.sendPermission)) {
-                        messageManager.sendMessage(player, "error_no_permission_send", channel.id);
-                        return;
-                    }
-                }
-                setPlayerChannel(player.getUuid(), channel.id);
-                messageManager.sendMessage(player, "channel_switched", channel.id);
+        Channel channel = Settings.channels.get(channelID);
+        if (channel == null) {
+            messageManager.sendMessage(player, "error_invalid_channel");
+            return;
+        }
+
+        if (channel.sendPermission != null) {
+            if (!player.hasPermission(channel.sendPermission)) {
+                messageManager.sendMessage(player, "error_no_permission_send", channel.id);
                 return;
             }
         }
-        messageManager.sendMessage(player, "error_invalid_channel");
+        setPlayerChannel(player.getUuid(), channel.id);
+        messageManager.sendMessage(player, "channel_switched", channel.id);
     }
 
 

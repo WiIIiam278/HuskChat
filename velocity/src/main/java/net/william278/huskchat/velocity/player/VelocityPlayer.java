@@ -60,11 +60,6 @@ public class VelocityPlayer implements Player {
         return player.hasPermission(permission);
     }
 
-    @Override
-    public void passThroughChat(String message) {
-        player.spoofChatInput(message);
-    }
-
     /**
      * Adapts a cross-platform {@link Player} to a Velocity {@link com.velocitypowered.api.proxy.Player} object
      *

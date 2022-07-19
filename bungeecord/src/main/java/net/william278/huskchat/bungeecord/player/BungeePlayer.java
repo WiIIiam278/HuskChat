@@ -48,11 +48,6 @@ public class BungeePlayer implements Player {
         return player.hasPermission(s);
     }
 
-    @Override
-    public void passThroughChat(String s) {
-        player.chat(s);
-    }
-
     /**
      * Adapts a cross-platform {@link Player} to a bungee {@link CommandSender} object
      *

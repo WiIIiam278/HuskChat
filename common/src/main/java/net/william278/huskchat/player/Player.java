@@ -49,11 +49,4 @@ public interface Player {
      * @return {@code true} if the player has the node; {@code false} otherwise
      */
     boolean hasPermission(String node);
-
-    /**
-     * Have the player passthrough a chat message to the backend server
-     *
-     * @param message The message to pass to the backend server
-     */
-    void passThroughChat(String message);
 }
