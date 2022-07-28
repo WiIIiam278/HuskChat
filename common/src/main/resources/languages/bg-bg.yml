@@ -1,6 +1,6 @@
 #  ------------------------------
 # |      HuskChat Messages      |
-# |     en-gb, by William278    |
+# |     bg-bg, by Pukejoy_1     |
 #  ------------------------------
 # If you'd like to use a different language, you can change it in the config.yml
 # Change the appearance/text of messages in the plugin using this config.
@@ -44,3 +44,4 @@ error_last_message_not_group: '[Грешка:](#ff3300) [Последното с
 error_no_messages_opt_out: '[Грешка:](#ff3300) [Вие все още не сте изпращали нито пък получавали групови съобщения.](#ff7e5e)'
 removed_from_group_message: '[Премахнати сте от груповите съобщения между:](#00fb9a) %1%'
 list_conjunction: 'и'
+passthrough_shortcut_command_error: '[Грешка:](#ff3300) [Изпращането на съобщения през преходни канали използвайки съкратени команди не е поддържано. Моля превключете към каналът първо.](#ff7e5e)'
