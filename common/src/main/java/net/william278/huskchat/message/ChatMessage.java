@@ -35,20 +35,21 @@ public class ChatMessage {
 
     /**
      * Dispatch the message to be sent
+     * @return true if the (Player)ChatEvent should be cancelled in the proxy-specific code
      */
-    public void dispatch() {
+    public boolean dispatch() {
         AtomicReference<Channel> channel = new AtomicReference<>(Settings.channels.get(targetChannelId));
 
         if (channel.get() == null) {
             implementor.getMessageManager().sendMessage(sender, "error_no_channel");
-            return;
+            return true;
         }
 
         // Verify that the player has permission to send in the channel
         if (channel.get().sendPermission != null) {
             if (!sender.hasPermission(channel.get().sendPermission)) {
                 implementor.getMessageManager().sendMessage(sender, "error_no_permission_send", channel.get().id);
-                return;
+                return true;
             }
         }
 
@@ -56,7 +57,7 @@ public class ChatMessage {
         for (String restrictedServer : channel.get().restrictedServers) {
             if (restrictedServer.equalsIgnoreCase(sender.getServerName())) {
                 implementor.getMessageManager().sendMessage(sender, "error_channel_restricted_server", channel.get().id);
-                return;
+                return true;
             }
         }
 
@@ -68,12 +69,12 @@ public class ChatMessage {
         if (sender instanceof ConsolePlayer && (broadcastScope == Channel.BroadcastScope.LOCAL ||
                 broadcastScope == Channel.BroadcastScope.LOCAL_PASSTHROUGH)) {
             implementor.getLoggingAdapter().log(Level.INFO, implementor.getMessageManager().getRawMessage("error_console_local_scope"));
-            return;
+            return true;
         }
 
         StringBuilder msg = new StringBuilder(message);
         if (!ChatMessage.passesFilters(implementor, sender, msg, channel.get())) {
-            return;
+            return true;
         }
         message = msg.toString();
 
@@ -85,6 +86,9 @@ public class ChatMessage {
             } // No message recipients if the channel is exclusively passed through; let the backend handle it
         }
 
+        // The events API has no effect on messages in passthrough channels.
+        // Local/global passthrough channels will have their proxy-side message affected,
+        // and non-passthrough messages will also be affected by the API.
         implementor.getEventDispatcher().dispatchChatMessageEvent(sender, message, targetChannelId).thenAccept(event -> {
             if (event.isCancelled()) return;
 
@@ -153,6 +157,9 @@ public class ChatMessage {
                 implementor.getWebhookDispatcher().ifPresent(dispatcher -> dispatcher.dispatchWebhook(this));
             }
         });
+
+        // Non-passthrough messages should always be cancelled in the proxy-specific code
+        return !broadcastScope.isPassThrough;
     }
 
     // This is a static method to allow for filters to be applied to passthrough channels due to those not going through this class

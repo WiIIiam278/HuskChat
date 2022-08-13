@@ -24,19 +24,13 @@ public class VelocityListener extends PlayerListener {
         }
 
         final Player player = VelocityPlayer.adaptCrossPlatform(e.getPlayer());
-        Channel channel = Settings.channels.get(PlayerCache.getPlayerChannel(player.getUuid()));
 
-        if (channel.broadcastScope.isPassThrough) {
-            if (!ChatMessage.passesFilters(plugin, player, new StringBuilder(e.getMessage()), channel)) {
-                e.setResult(PlayerChatEvent.ChatResult.denied());
-            }
-
-            return;
-        }
-
-        e.setResult(PlayerChatEvent.ChatResult.denied());
-        new ChatMessage(PlayerCache.getPlayerChannel(player.getUuid()),
+        boolean shouldCancel = new ChatMessage(PlayerCache.getPlayerChannel(player.getUuid()),
                 player, e.getMessage(), plugin).dispatch();
+
+        if (shouldCancel) {
+            e.setResult(PlayerChatEvent.ChatResult.denied());
+        }
     }
 
     @Subscribe
