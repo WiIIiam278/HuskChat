@@ -26,19 +26,12 @@ public class BungeeListener extends PlayerListener implements Listener {
         }
 
         ProxiedPlayer player = (ProxiedPlayer) e.getSender();
-        Channel channel = Settings.channels.get(PlayerCache.getPlayerChannel(player.getUniqueId()));
 
-        if (channel.broadcastScope.isPassThrough) {
-            if (!ChatMessage.passesFilters(plugin, BungeePlayer.adaptCrossPlatform(player), new StringBuilder(e.getMessage()), channel)) {
-                e.setCancelled(true);
-            }
-
-            return;
+        boolean shouldCancel = new ChatMessage(PlayerCache.getPlayerChannel(player.getUniqueId()),
+                BungeePlayer.adaptCrossPlatform(player), e.getMessage(), plugin).dispatch();
+        if (shouldCancel) {
+            e.setCancelled(true);
         }
-
-        e.setCancelled(true);
-        ProxyServer.getInstance().getScheduler().runAsync(plugin, () -> new ChatMessage(PlayerCache.getPlayerChannel(player.getUniqueId()),
-                BungeePlayer.adaptCrossPlatform(player), e.getMessage(), plugin).dispatch());
     }
 
     @EventHandler(priority = EventPriority.HIGH)
