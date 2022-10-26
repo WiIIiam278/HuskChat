@@ -93,14 +93,13 @@ public class VelocityMessageManager extends MessageManager {
 
     @Override
     public void sendFormattedChannelMessage(Player target, Player sender, Channel channel, String message) {
-        final TextComponent.Builder componentBuilder = Component.text()
-                .append(new MineDown(PlaceholderReplacer.replace(sender, channel.format, plugin))
-                        .toComponent());
+        final TextComponent.Builder componentBuilder = Component.text();
+
         if (sender.hasPermission("huskchat.formatted_chat")) {
-            componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING)
+            componentBuilder.append(new MineDown(PlaceholderReplacer.replace(sender, channel.format, plugin) + message)
                     .toComponent());
         } else {
-            componentBuilder.append(Component.text(message));
+            componentBuilder.append(new MineDown(PlaceholderReplacer.replace(sender, channel.format, plugin) + MineDown.escape(message)).toComponent());
         }
         VelocityPlayer.adaptVelocity(target).ifPresent(user -> user.sendMessage(componentBuilder.build()));
     }
