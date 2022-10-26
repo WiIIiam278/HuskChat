@@ -200,5 +200,10 @@ discord:
   channel_webhooks:
     global: 'https://discord.com/api/webhooks/channel_id/secret'
 
+# If you want %servername% to show something other than the server name,
+# set it here and uncomment this section
+#server_name_replacement:
+#  lobby: hub
+
 # Version of the config file
 config-version: 1

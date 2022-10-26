@@ -1,6 +1,7 @@
 package net.william278.huskchat.config;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
+import dev.dejvokep.boostedyaml.block.implementation.Section;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.discord.DiscordMessageFormat;
 import net.william278.huskchat.filter.*;
@@ -69,6 +70,8 @@ public class Settings {
     public static boolean doDiscordIntegration;
     public static Map<String, URL> webhookUrls = new HashMap<>();
     public static DiscordMessageFormat webhookMessageFormat;
+
+    public static Map<String, String> serverNameReplacement = new HashMap<>();
 
     /**
      * Use {@link Settings#load(YamlDocument)}
@@ -150,6 +153,14 @@ public class Settings {
         webhookMessageFormat = DiscordMessageFormat.getMessageFormat(configFile.getString("discord.format_style", "inline"))
                 .orElse(DiscordMessageFormat.INLINE);
         webhookUrls = fetchWebhookUrls(configFile);
+
+        // Server name replacement
+        Section serverNameReplacementSection = configFile.getSection("server_name_replacement");
+        if (serverNameReplacementSection != null) {
+            for (String s : serverNameReplacementSection.getRoutesAsStrings(false)) {
+                serverNameReplacement.put(s, serverNameReplacementSection.getString(s));
+            }
+        }
     }
 
     /**

@@ -1,6 +1,7 @@
 package net.william278.huskchat.util;
 
 import net.william278.huskchat.HuskChat;
+import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.player.Player;
 
 import java.text.SimpleDateFormat;
@@ -19,7 +20,9 @@ public class PlaceholderReplacer {
         placeholders.put("%suffix%", implementingPlugin.getDataGetter().getPlayerSuffix(player).isPresent() ? implementingPlugin.getDataGetter().getPlayerSuffix(player).get() : "");
         placeholders.put("%ping%", Integer.toString(player.getPing()));
         placeholders.put("%uuid%", player.getUuid().toString());
-        placeholders.put("%servername%", player.getServerName());
+        placeholders.put("%servername%", Settings.serverNameReplacement.getOrDefault(
+                        player.getServerName(), player.getServerName()
+                ));
         placeholders.put("%serverplayercount%", Integer.toString(player.getPlayersOnServer()));
 
         // Time related placeholders
