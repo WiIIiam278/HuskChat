@@ -20,9 +20,7 @@ public class PlaceholderReplacer {
         placeholders.put("%suffix%", implementingPlugin.getDataGetter().getPlayerSuffix(player).isPresent() ? implementingPlugin.getDataGetter().getPlayerSuffix(player).get() : "");
         placeholders.put("%ping%", Integer.toString(player.getPing()));
         placeholders.put("%uuid%", player.getUuid().toString());
-        placeholders.put("%servername%", Settings.serverNameReplacement.getOrDefault(
-                        player.getServerName(), player.getServerName()
-                ));
+        placeholders.put("%servername%", Settings.serverNameReplacement.getOrDefault(player.getServerName(), player.getServerName()));
         placeholders.put("%serverplayercount%", Integer.toString(player.getPlayersOnServer()));
 
         // Time related placeholders
