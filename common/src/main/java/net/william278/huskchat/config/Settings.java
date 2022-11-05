@@ -422,14 +422,6 @@ public class Settings {
      * Clears the chat filters and disposes of the existing ProfanityFilter
      */
     private static void clearChatFilters() {
-        for (String filter : chatFilters.keySet()) {
-            for (ChatFilter chatFilter : chatFilters.get(filter)) {
-                if (chatFilter instanceof ProfanityFilterer p) {
-                    p.dispose();
-                    break;
-                }
-            }
-        }
         chatFilters = new HashMap<>();
     }
 
