@@ -1,13 +1,17 @@
 dependencies {
     implementation project(path: ':common')
 
-    implementation 'commons-io:commons-io:2.11.0'
-
-    compileOnly 'me.clip:placeholderapi:2.11.2'
     compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+    compileOnly 'commons-io:commons-io:2.11.0'
+    compileOnly 'me.clip:placeholderapi:2.11.2'
     compileOnly 'org.jetbrains:annotations:23.0.0'
 }
 
 shadowJar {
+    relocate 'dev.dejvokep.boostedyaml', 'net.william278.huskchat.libraries.boostedyaml'
+    relocate 'net.william278.profanitycheckerapi', 'net.william278.huskchat.libraries.profanitycheckerapi'
+    relocate 'jep', 'net.william278.huskchat.libraries.profanitycheckerapi.jep'
     relocate 'org.apache', 'net.william278.huskchat.libraries'
+    relocate 'org.jetbrains', 'net.william278.huskchat.libraries'
+    relocate 'org.intellij', 'net.william278.huskchat.libraries'
 }

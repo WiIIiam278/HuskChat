@@ -1,22 +1,26 @@
 dependencies {
     implementation project(path: ':common')
 
+    compileOnly 'commons-io:commons-io:2.11.0'
+    compileOnly 'dev.dejvokep:boosted-yaml:1.3'
+    compileOnly 'net.alpenblock:BungeePerms:4.0-dev-140'
+
     implementation 'org.bstats:bstats-bungeecord:3.0.0'
     implementation 'de.themoep:minedown:1.7.1-SNAPSHOT'
-    implementation 'commons-io:commons-io:2.11.0'
-    implementation 'com.github.WiIIiam278:ProfanityCheckerAPI:1.1'
-    implementation 'dev.dejvokep:boosted-yaml:1.3'
 
     compileOnly 'net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT'
 }
 
 shadowJar {
-    relocate 'de.themoep', 'net.william278.huskchat.libraries'
-    relocate 'org.bstats', 'net.william278.huskchat.libraries.bstats'
-    relocate 'org.apache', 'net.william278.huskchat.libraries'
+    relocate 'dev.dejvokep.boostedyaml', 'net.william278.huskchat.libraries.boostedyaml'
     relocate 'net.william278.profanitycheckerapi', 'net.william278.huskchat.libraries.profanitycheckerapi'
     relocate 'jep', 'net.william278.huskchat.libraries.profanitycheckerapi.jep'
-    relocate 'dev.dejvokep.boosted-yaml', 'net.william278.huskchat.libraries.boosted-yaml'
+    relocate 'org.apache', 'net.william278.huskchat.libraries'
+    relocate 'org.jetbrains', 'net.william278.huskchat.libraries'
+    relocate 'org.intellij', 'net.william278.huskchat.libraries'
+
+    relocate 'de.themoep', 'net.william278.huskchat.libraries'
+    relocate 'org.bstats', 'net.william278.huskchat.libraries.bstats'
 
     dependencies {
         //noinspection GroovyAssignabilityCheck
