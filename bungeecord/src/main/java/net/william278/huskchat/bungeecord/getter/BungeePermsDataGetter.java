@@ -1,8 +1,9 @@
-package net.william278.huskchat.getter;
+package net.william278.huskchat.bungeecord.getter;
 
 import net.alpenblock.bungeeperms.BungeePerms;
 import net.alpenblock.bungeeperms.PermissionsManager;
 import net.alpenblock.bungeeperms.User;
+import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.player.Player;
 
 import java.util.Optional;
