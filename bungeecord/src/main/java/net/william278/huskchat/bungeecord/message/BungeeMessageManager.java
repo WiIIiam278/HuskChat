@@ -166,7 +166,8 @@ public class BungeeMessageManager extends MessageManager {
                                              Channel channel, String message) {
         final ComponentBuilder componentBuilder = new ComponentBuilder()
                 .append(new MineDown(PlaceholderReplacer.replace(sender, Settings.localSpyFormat, plugin)
-                        .replace("%spy_color%", spyColor.colorCode)).toComponent())
+                        .replace("%spy_color%", spyColor.colorCode)
+                        .replace("%channel%", channel.id)).toComponent())
                 .append(message);
         BungeePlayer.adaptBungee(spy).ifPresent(bungeePlayer -> bungeePlayer.sendMessage(componentBuilder.create()));
     }

@@ -167,7 +167,9 @@ public class VelocityMessageManager extends MessageManager {
                                              Channel channel, String message) {
         final TextComponent.Builder componentBuilder = Component.text()
                 .append(new MineDown(PlaceholderReplacer.replace(sender, Settings.localSpyFormat, plugin)
-                        .replace("%spy_color%", spyColor.colorCode) + MineDown.escape(message)).toComponent());
+                        .replace("%spy_color%", spyColor.colorCode)
+                        .replace("%channel%", channel.id) +
+                        MineDown.escape(message)).toComponent());
         VelocityPlayer.adaptVelocity(spy).ifPresent(user -> user.sendMessage(componentBuilder.build()));
     }
 
