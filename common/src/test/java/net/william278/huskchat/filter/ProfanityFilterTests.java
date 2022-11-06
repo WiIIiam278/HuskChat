@@ -13,8 +13,8 @@ public class ProfanityFilterTests {
     @Test
     public void givenSentenceContainingProfanity_testIsProfane() {
         final Player dummyPlayer = new TestPlayer();
-        Assertions.assertTrue(filterer.isAllowed(dummyPlayer, "This is a fucking test sentence"));
-        Assertions.assertTrue(filterer.isAllowed(dummyPlayer, "Shit"));
+        Assertions.assertFalse(filterer.isAllowed(dummyPlayer, "This is a fucking test sentence"));
+        Assertions.assertFalse(filterer.isAllowed(dummyPlayer, "Shit"));
     }
 
     @Test
@@ -27,13 +27,19 @@ public class ProfanityFilterTests {
     @Test
     public void givenObfuscatedProfanity_testIsProfane() {
         final Player dummyPlayer = new TestPlayer();
-        Assertions.assertTrue(filterer.isAllowed(dummyPlayer, "Sh1tface"));
-        Assertions.assertTrue(filterer.isAllowed(dummyPlayer, "Sh1tf4ce"));
+        Assertions.assertFalse(filterer.isAllowed(dummyPlayer, "Sh1tface"));
+        Assertions.assertFalse(filterer.isAllowed(dummyPlayer, "Sh1tf4ce"));
     }
 
     @Test
     public void givenScunthorpe_testIsNotProfane() {
         final Player dummyPlayer = new TestPlayer();
-        Assertions.assertFalse(filterer.isAllowed(dummyPlayer, "Scunthorpe"));
+        Assertions.assertTrue(filterer.isAllowed(dummyPlayer, "Scunthorpe"));
+    }
+
+    @Test
+    public void givenLeetSpeak_testIsNotProfane() {
+        final Player dummyPlayer = new TestPlayer();
+        Assertions.assertTrue(filterer.isAllowed(dummyPlayer, "1337"));
     }
 }
