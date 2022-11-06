@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ProfanityFilterer extends ChatFilter {
 
+    private final static long PROFANITY_CHECK_TIMEOUT = 1000L;
     private final double thresholdValue;
     @NotNull
     private final ProfanityFilterMode profanityFilterMode;
@@ -43,8 +44,8 @@ public class ProfanityFilterer extends ChatFilter {
     public boolean isAllowed(Player player, String message) {
         try (ProfanityChecker checker = new ProfanityChecker()) {
             return profanityFilterMode == ProfanityFilterMode.TOLERANCE
-                    ? checker.getTextProfanityLikelihood(message) < thresholdValue
-                    : !checker.isTextProfane(message);
+                    ? checker.getTextProfanityLikelihoodBypassTimed(message, PROFANITY_CHECK_TIMEOUT) < thresholdValue
+                    : !checker.isTextProfaneBypassTimed(message, PROFANITY_CHECK_TIMEOUT);
         } catch (UnsatisfiedLinkError e) {
             e.printStackTrace();
             return false;
