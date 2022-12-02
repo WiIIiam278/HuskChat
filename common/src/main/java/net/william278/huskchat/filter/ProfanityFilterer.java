@@ -35,17 +35,20 @@ public class ProfanityFilterer extends ChatFilter {
             System.out.println("Initialized the profanity checker and hooked into the jep interpreter");
         } catch (UnsatisfiedLinkError | IllegalStateException e) {
             throw new RuntimeException("Failed to initialize ProfanityChecker (" + e.getMessage() + ")" +
-                                       "Please ensure that the jep library is installed and the library path is correct. " +
-                                       "Consult the HuskChat docs for more information on this error.", e);
+                    "Please ensure that the jep library is installed and the library path is correct. " +
+                    "Consult the HuskChat docs for more information on this error.", e);
         }
     }
 
     @Override
     public boolean isAllowed(Player player, String message) {
-        try (ProfanityChecker checker = new ProfanityChecker()) {
-            return profanityFilterMode == ProfanityFilterMode.TOLERANCE
-                    ? checker.getTextProfanityLikelihoodBypassTimed(message, PROFANITY_CHECK_TIMEOUT) < thresholdValue
-                    : !checker.isTextProfaneBypassTimed(message, PROFANITY_CHECK_TIMEOUT);
+        try (final ProfanityChecker checker = new ProfanityChecker()) {
+            return switch (profanityFilterMode) {
+                case TOLERANCE -> checker
+                        .getTextProfanityLikelihoodBypassTimed(message, PROFANITY_CHECK_TIMEOUT) < thresholdValue;
+                case AUTOMATIC -> !checker
+                        .isTextProfaneBypassTimed(message, PROFANITY_CHECK_TIMEOUT);
+            };
         } catch (UnsatisfiedLinkError e) {
             e.printStackTrace();
             return false;
