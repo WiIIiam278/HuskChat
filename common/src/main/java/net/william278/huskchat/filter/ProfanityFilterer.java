@@ -11,8 +11,6 @@ import org.jetbrains.annotations.Nullable;
  * machine learning algorithm to determine the probability that a string contains profanity
  */
 public class ProfanityFilterer extends ChatFilter {
-
-    private final static long PROFANITY_CHECK_TIMEOUT = 1000L;
     private final double thresholdValue;
     @NotNull
     private final ProfanityFilterMode profanityFilterMode;
@@ -44,10 +42,8 @@ public class ProfanityFilterer extends ChatFilter {
     public boolean isAllowed(Player player, String message) {
         try (final ProfanityChecker checker = new ProfanityChecker()) {
             return switch (profanityFilterMode) {
-                case TOLERANCE -> checker
-                        .getTextProfanityLikelihoodBypassTimed(message, PROFANITY_CHECK_TIMEOUT) < thresholdValue;
-                case AUTOMATIC -> !checker
-                        .isTextProfaneBypassTimed(message, PROFANITY_CHECK_TIMEOUT);
+                case TOLERANCE -> checker.getTextProfanityLikelihood(message) < thresholdValue;
+                case AUTOMATIC -> !checker.isTextProfane(message);
             };
         } catch (UnsatisfiedLinkError e) {
             e.printStackTrace();
