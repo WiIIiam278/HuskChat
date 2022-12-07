@@ -40,7 +40,10 @@ command. By default, HuskChat has the following channels setup, perfect for a ty
 [Channels are fully customizable](https://william278.net/docs/huskchat/Channels), including formatting, permission-restricting, broadcast scope, shortcut command amd more.
 
 ## Building
-To build HuskHomes, simply run the following in the root of the repository:
+To build HuskHomes, you'll need python (>=`v3.6`) with associated packages installed; `jep` and `alt-profanity-check`. 
+You can install these with `pip install jep` and `pip install alt-profanity-check`. These are needed to run the profanity filter tests.
+
+Then, simply run the following in the root of the repository:
 ```
 ./gradlew clean build
 ```
