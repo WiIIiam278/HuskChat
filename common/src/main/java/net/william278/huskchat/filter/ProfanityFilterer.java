@@ -2,6 +2,7 @@ package net.william278.huskchat.filter;
 
 import net.william278.huskchat.player.Player;
 import net.william278.profanitycheckerapi.ProfanityChecker;
+import net.william278.profanitycheckerapi.ProfanityCheckerBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,40 +12,39 @@ import org.jetbrains.annotations.Nullable;
  * machine learning algorithm to determine the probability that a string contains profanity
  */
 public class ProfanityFilterer extends ChatFilter {
-    private final double thresholdValue;
+    
     @NotNull
-    private final ProfanityFilterMode profanityFilterMode;
+    private final ProfanityCheckerBuilder builder;
 
     public ProfanityFilterer(@NotNull ProfanityFilterMode filterMode, double thresholdValue,
                              @Nullable String libraryPath) {
-        this.thresholdValue = thresholdValue;
-        this.profanityFilterMode = filterMode;
-        initialize(libraryPath);
+        this.builder = ProfanityChecker.builder();
+        if (libraryPath != null) {
+            builder.withLibraryPath(libraryPath);
+        }
+        if (filterMode == ProfanityFilterMode.TOLERANCE) {
+            builder.withThresholdChecking(thresholdValue);
+        }
+        initialize();
     }
 
     /**
      * Pre-initializes the {@link ProfanityChecker}, by generating an instance of the class
-     *
-     * @param libraryPath The path to the jep library
      */
-    private void initialize(@Nullable String libraryPath) {
-        try (ProfanityChecker ignored = libraryPath != null && !libraryPath.isBlank()
-                ? new ProfanityChecker(libraryPath) : new ProfanityChecker()) {
+    private void initialize() {
+        try (final ProfanityChecker ignored = builder.build()) {
             System.out.println("Initialized the profanity checker and hooked into the jep interpreter");
         } catch (UnsatisfiedLinkError | IllegalStateException e) {
             throw new RuntimeException("Failed to initialize ProfanityChecker (" + e.getMessage() + ")" +
-                    "Please ensure that the jep library is installed and the library path is correct. " +
-                    "Consult the HuskChat docs for more information on this error.", e);
+                                       "Please ensure that the jep library is installed and the library path is correct. " +
+                                       "Consult the HuskChat docs for more information on this error.", e);
         }
     }
 
     @Override
     public boolean isAllowed(Player player, String message) {
-        try (final ProfanityChecker checker = new ProfanityChecker()) {
-            return switch (profanityFilterMode) {
-                case TOLERANCE -> checker.getTextProfanityLikelihood(message) < thresholdValue;
-                case AUTOMATIC -> !checker.isTextProfane(message);
-            };
+        try (final ProfanityChecker checker = builder.build()) {
+            return checker.isProfane(message);
         } catch (UnsatisfiedLinkError e) {
             e.printStackTrace();
             return false;
