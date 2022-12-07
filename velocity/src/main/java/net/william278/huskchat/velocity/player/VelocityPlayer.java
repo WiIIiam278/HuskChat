@@ -1,8 +1,10 @@
 package net.william278.huskchat.velocity.player;
 
 import com.velocitypowered.api.proxy.ServerConnection;
+import net.kyori.adventure.audience.Audience;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.velocity.HuskChatVelocity;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -60,6 +62,12 @@ public class VelocityPlayer implements Player {
         return player.hasPermission(permission);
     }
 
+    @NotNull
+    @Override
+    public Audience getAudience() {
+        return player;
+    }
+
     /**
      * Adapts a cross-platform {@link Player} to a Velocity {@link com.velocitypowered.api.proxy.Player} object
      *
@@ -76,6 +84,7 @@ public class VelocityPlayer implements Player {
      * @param player {@link com.velocitypowered.api.proxy.Player} to adapt
      * @return The {@link Player} object
      */
+    @NotNull
     public static VelocityPlayer adaptCrossPlatform(com.velocitypowered.api.proxy.Player player) {
         VelocityPlayer velocityPlayer = new VelocityPlayer();
         velocityPlayer.player = player;

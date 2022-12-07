@@ -6,20 +6,21 @@ import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
 import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
 import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.bungeecord.command.BungeeCommand;
 import net.william278.huskchat.bungeecord.event.BungeeEventDispatcher;
+import net.william278.huskchat.bungeecord.getter.BungeePermsDataGetter;
 import net.william278.huskchat.bungeecord.listener.BungeeListener;
-import net.william278.huskchat.bungeecord.message.BungeeMessageManager;
 import net.william278.huskchat.bungeecord.player.BungeePlayer;
 import net.william278.huskchat.bungeecord.util.BungeeLogger;
 import net.william278.huskchat.command.*;
 import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.discord.WebhookDispatcher;
-import net.william278.huskchat.bungeecord.getter.BungeePermsDataGetter;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.getter.DefaultDataGetter;
 import net.william278.huskchat.getter.LuckPermsDataGetter;
@@ -47,35 +48,31 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
         return instance;
     }
 
-    private static BungeeEventDispatcher eventDispatcher;
+    // Adventure audiences
+    private BungeeAudiences audiences;
 
-    @NotNull
-    public BungeeEventDispatcher getEventDispatcher() {
-        return eventDispatcher;
-    }
+    // Event dispatcher
+    private BungeeEventDispatcher eventDispatcher;
 
-    private static WebhookDispatcher webhookDispatcher;
-
-    @Override
-    public Optional<WebhookDispatcher> getWebhookDispatcher() {
-        if (webhookDispatcher != null) {
-            return Optional.of(webhookDispatcher);
-        }
-        return Optional.empty();
-    }
+    // Webhook dispatcher
+    private WebhookDispatcher webhookDispatcher;
 
     // Message manager
-    public static BungeeMessageManager messageManager;
+    public MessageManager messageManager;
 
     // Player data fetcher
-    public static DataGetter playerDataGetter;
+    public DataGetter playerDataGetter;
 
     @Override
     public void onLoad() {
         // Set instance for easy cross-class referencing
         instance = this;
 
+        // Create the event dispatcher
         eventDispatcher = new BungeeEventDispatcher(getProxy());
+
+        // Create audiences
+        audiences = BungeeAudiences.create(this);
     }
 
     @Override
@@ -160,11 +157,7 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
 
     @Override
     public void reloadMessages() {
-        try {
-            messageManager = new BungeeMessageManager();
-        } catch (IOException e) {
-            getLoggingAdapter().log(Level.SEVERE, "Failed to load messages file");
-        }
+        this.messageManager = new MessageManager(this);
     }
 
     @NotNull
@@ -211,6 +204,19 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
     }
 
     @Override
+    public Optional<WebhookDispatcher> getWebhookDispatcher() {
+        if (webhookDispatcher != null) {
+            return Optional.of(webhookDispatcher);
+        }
+        return Optional.empty();
+    }
+
+    @NotNull
+    public BungeeEventDispatcher getEventDispatcher() {
+        return eventDispatcher;
+    }
+
+    @Override
     public Optional<Player> getPlayer(UUID uuid) {
         final ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
         if (player != null) {
@@ -240,10 +246,20 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
         return crossPlatform;
     }
 
+    @Override
+    public Audience getConsoleAudience() {
+        return audiences.console();
+    }
+
     @NotNull
     @Override
     public Logger getLoggingAdapter() {
         return BungeeLogger.get();
+    }
+
+    @NotNull
+    public BungeeAudiences getAudience() {
+        return audiences;
     }
 
     @Override
@@ -267,5 +283,4 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
         }
         return optionalPlayer;
     }
-
 }

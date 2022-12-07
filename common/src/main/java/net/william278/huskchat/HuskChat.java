@@ -1,5 +1,6 @@
 package net.william278.huskchat;
 
+import net.kyori.adventure.audience.Audience;
 import net.william278.huskchat.discord.WebhookDispatcher;
 import net.william278.huskchat.event.EventDispatcher;
 import net.william278.huskchat.getter.DataGetter;
@@ -8,6 +9,8 @@ import net.william278.huskchat.player.Player;
 import net.william278.huskchat.util.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
@@ -39,13 +42,19 @@ public interface HuskChat {
 
     Optional<Player> getPlayer(UUID uuid);
 
+    Optional<Player> matchPlayer(String username);
+
     Collection<Player> getOnlinePlayers();
 
     Collection<Player> getOnlinePlayersOnServer(Player player);
 
+    Audience getConsoleAudience();
+
     @NotNull
     Logger getLoggingAdapter();
 
-    Optional<Player> matchPlayer(String username);
+    File getDataFolder();
+
+    InputStream getResourceAsStream(String path);
 
 }

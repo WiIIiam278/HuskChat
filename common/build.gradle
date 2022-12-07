@@ -2,6 +2,8 @@ dependencies {
     implementation 'commons-io:commons-io:2.11.0'
     implementation 'dev.dejvokep:boosted-yaml:1.3'
     implementation 'net.william278:ProfanityCheckerAPI:2.0.1'
+    implementation 'net.kyori:adventure-api:4.12.0'
+    implementation 'de.themoep:minedown-adventure:1.7.1-SNAPSHOT'
 
     compileOnly 'net.luckperms:api:5.4'
 
@@ -16,6 +18,8 @@ shadowJar {
     relocate 'org.apache', 'net.william278.huskchat.libraries'
     relocate 'org.jetbrains', 'net.william278.huskchat.libraries'
     relocate 'org.intellij', 'net.william278.huskchat.libraries'
+    relocate 'net.kyori', 'net.william278.huskchat.libraries'
+    relocate 'de.themoep', 'net.william278.huskchat.libraries'
 }
 
 test {

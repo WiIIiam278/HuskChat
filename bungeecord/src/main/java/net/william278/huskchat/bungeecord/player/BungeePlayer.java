@@ -1,9 +1,12 @@
 package net.william278.huskchat.bungeecord.player;
 
+import net.kyori.adventure.audience.Audience;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.william278.huskchat.bungeecord.HuskChatBungee;
 import net.william278.huskchat.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -46,6 +49,12 @@ public class BungeePlayer implements Player {
     @Override
     public boolean hasPermission(String s) {
         return player.hasPermission(s);
+    }
+
+    @NotNull
+    @Override
+    public Audience getAudience() {
+        return HuskChatBungee.getInstance().getAudience().player(player);
     }
 
     /**

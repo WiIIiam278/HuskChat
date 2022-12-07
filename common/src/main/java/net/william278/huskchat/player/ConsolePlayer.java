@@ -1,9 +1,10 @@
 package net.william278.huskchat.player;
 
+import net.kyori.adventure.audience.Audience;
 import net.william278.huskchat.HuskChat;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class ConsolePlayer implements Player {
 
@@ -42,6 +43,12 @@ public class ConsolePlayer implements Player {
     @Override
     public boolean hasPermission(String node) {
         return true;
+    }
+
+    @NotNull
+    @Override
+    public Audience getAudience() {
+        return implementor.getConsoleAudience();
     }
 
     /**

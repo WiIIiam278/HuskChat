@@ -13,8 +13,8 @@ import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
 import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
 import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
+import net.kyori.adventure.audience.Audience;
 import net.william278.huskchat.HuskChat;
-import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.command.*;
 import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.discord.WebhookDispatcher;
@@ -27,15 +27,16 @@ import net.william278.huskchat.player.PlayerCache;
 import net.william278.huskchat.util.Logger;
 import net.william278.huskchat.velocity.command.VelocityCommand;
 import net.william278.huskchat.velocity.event.VelocityEventDispatcher;
-import net.william278.huskchat.velocity.message.VelocityMessageManager;
 import net.william278.huskchat.velocity.listener.VelocityListener;
 import net.william278.huskchat.velocity.player.VelocityPlayer;
 import net.william278.huskchat.velocity.util.VelocityLogger;
 import org.bstats.velocity.Metrics;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.logging.Level;
@@ -58,10 +59,10 @@ public class HuskChatVelocity implements HuskChat {
     }
 
     // Message manager
-    public static VelocityMessageManager messageManager;
+    public MessageManager messageManager;
 
     // Player data fetcher
-    public static DataGetter playerDataGetter;
+    public DataGetter playerDataGetter;
 
     private final org.slf4j.Logger logger;
     private final ProxyServer server;
@@ -69,8 +70,16 @@ public class HuskChatVelocity implements HuskChat {
     private final VelocityEventDispatcher eventDispatcher;
 
     // Get the data folder
+    @NotNull
+    @Override
     public File getDataFolder() {
         return dataDirectory.toFile();
+    }
+
+    @Nullable
+    @Override
+    public InputStream getResourceAsStream(String path) {
+        return HuskChat.class.getClassLoader().getResourceAsStream(path);
     }
 
     // Get the proxy server
@@ -200,11 +209,7 @@ public class HuskChatVelocity implements HuskChat {
 
     @Override
     public void reloadMessages() {
-        try {
-            messageManager = new VelocityMessageManager();
-        } catch (IOException e) {
-            getLoggingAdapter().log(Level.SEVERE, "Failed to load messages file");
-        }
+        this.messageManager = new MessageManager(this);
     }
 
     @NotNull
@@ -254,6 +259,11 @@ public class HuskChatVelocity implements HuskChat {
             }
         });
         return velocityPlayers;
+    }
+
+    @Override
+    public Audience getConsoleAudience() {
+        return getProxyServer().getConsoleCommandSource();
     }
 
     @NotNull

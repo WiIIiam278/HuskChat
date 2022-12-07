@@ -1,5 +1,10 @@
 package net.william278.huskchat.player;
 
+import de.themoep.minedown.adventure.MineDown;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.UUID;
 
 /**
@@ -49,4 +54,30 @@ public interface Player {
      * @return {@code true} if the player has the node; {@code false} otherwise
      */
     boolean hasPermission(String node);
+
+    /**
+     * Get the audience for this player
+     *
+     * @return the audience for this player
+     */
+    @NotNull
+    Audience getAudience();
+
+    /**
+     * Send a message to the player
+     *
+     * @param mineDown the message to send
+     */
+    default void sendMessage(@NotNull MineDown mineDown) {
+        getAudience().sendMessage(mineDown.toComponent());
+    }
+
+    /**
+     * Send a message to the player
+     *
+     * @param component the message to send
+     */
+    default void sendMessage(@NotNull Component component) {
+        getAudience().sendMessage(component);
+    }
 }
