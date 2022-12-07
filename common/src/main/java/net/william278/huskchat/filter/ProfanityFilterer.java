@@ -44,7 +44,7 @@ public class ProfanityFilterer extends ChatFilter {
     @Override
     public boolean isAllowed(Player player, String message) {
         try (final ProfanityChecker checker = builder.build()) {
-            return checker.isProfane(message);
+            return !checker.isProfane(message);
         } catch (UnsatisfiedLinkError e) {
             e.printStackTrace();
             return false;

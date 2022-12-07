@@ -27,8 +27,8 @@ public class ProfanityFilterTests {
     @Test
     public void givenObfuscatedProfanity_testIsProfane() {
         final Player dummyPlayer = new TestPlayer();
-        Assertions.assertFalse(filterer.isAllowed(dummyPlayer, "Sh1tface"));
-        Assertions.assertFalse(filterer.isAllowed(dummyPlayer, "Sh1tf4ce"));
+        Assertions.assertFalse(filterer.isAllowed(dummyPlayer, "You're a fuck1ng idiot"));
+        Assertions.assertFalse(filterer.isAllowed(dummyPlayer, "Shut the h3ll up"));
     }
 
     @Test
