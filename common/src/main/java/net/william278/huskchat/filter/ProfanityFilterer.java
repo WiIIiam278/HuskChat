@@ -19,7 +19,7 @@ public class ProfanityFilterer extends ChatFilter {
     public ProfanityFilterer(@NotNull ProfanityFilterMode filterMode, double thresholdValue,
                              @Nullable String libraryPath) {
         this.builder = ProfanityChecker.builder();
-        if (libraryPath != null) {
+        if (libraryPath != null && !libraryPath.isBlank()) {
             builder.withLibraryPath(libraryPath);
         }
         if (filterMode == ProfanityFilterMode.TOLERANCE) {
