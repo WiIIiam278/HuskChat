@@ -1,5 +1,8 @@
 package net.william278.huskchat.player;
 
+import net.kyori.adventure.audience.Audience;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.UUID;
 
 public class TestPlayer implements Player {
@@ -47,5 +50,11 @@ public class TestPlayer implements Player {
     @Override
     public boolean hasPermission(String node) {
         return true;
+    }
+
+    @NotNull
+    @Override
+    public Audience getAudience() {
+        return Audience.empty();
     }
 }
