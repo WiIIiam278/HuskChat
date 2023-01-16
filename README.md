@@ -26,7 +26,7 @@ It's designed to be easy to configure with an elegant out-of-box setup, while al
 - `/msg`, `/r` (including group messages)
 - `/socialspy`, `/localspy`
 - `/broadcast`
-- [Full list & permissions](https://william278.net/docs/huskchat/Commands-and-Permissions)
+- [Full list & permissions](https://william278.net/docs/huskchat/Commands)
 
 ## Channels
 Channels are what players talk in and can be switched between using the /channel command or specialised channel shortcut
