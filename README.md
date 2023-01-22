@@ -1,43 +1,52 @@
-# [![HuskChat Banner](images/banner-graphic.png)](https://github.com/WiIIiam278/HuskChat)
-[![GitHub CI](https://img.shields.io/github/actions/workflow/status/WiIIiam278/HuskChat/java_ci.yml?branch=master&logo=github)](https://github.com/WiIIiam278/HuskChat/actions/workflows/java_ci.yml)
-[![JitPack API](https://img.shields.io/jitpack/version/net.william278/HuskChat?color=%2300fb9a&label=api&logo=gradle)](https://jitpack.io/#net.william278/HuskChat)
-[![Support Discord](https://img.shields.io/discord/818135932103557162.svg?label=&logo=discord&logoColor=fff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/tVYhJfyDWG)
+<p align="center">
+    <img src="images/banner.png" alt="HuskChat" />
+    <a href="https://github.com/WiIIiam278/HuskChat/actions/workflows/java_ci.yml">
+        <img src="https://img.shields.io/github/actions/workflow/status/WiIIiam278/HuskChat/java_ci.yml?branch=master&logo=github"/>
+    </a> 
+    <a href="https://jitpack.io/#net.william278/HuskChat">
+        <img src="https://img.shields.io/jitpack/version/net.william278/HuskChat?color=%2300fb9a&label=api&logo=gradle" />
+    </a> 
+    <a href="https://discord.gg/tVYhJfyDWG">
+        <img src="https://img.shields.io/discord/818135932103557162.svg?label=&logo=discord&logoColor=fff&color=7389D8&labelColor=6A7EC2" />
+    </a> 
+    <br/>
+    <b>
+        <a href="https://www.spigotmc.org/resources/huskchat.94496/">Spigot</a>
+    </b> —
+    <b>
+        <a href="https://william278.net/docs/huskchat/setup">Setup</a>
+    </b> — 
+    <b>
+        <a href="https://william278.net/docs/huskchat/">Docs</a>
+    </b> — 
+    <b>
+        <a href="https://github.com/WiIIiam278/HuskChat/issues">Issues</a>
+    </b>
+</p>
+<br/>
 
-[Documentation, Guides & API](https://william278.net/docs/huskchat/) · [Resource Page](https://www.spigotmc.org/resources/huskchat.94496/) · [Bug Reports](https://github.com/WiIIiam278/HuskChat/issues)
-
-**HuskChat** is a no-frills, simple and customisable cross-server chat system for Minecraft networks running BungeeCord and Velocity frontend servers.&dagger; 
+**HuskChat** is a no-frills, simple and customisable cross-server chat system for Minecraft networks running BungeeCord and Velocity frontend servers.
 
 It's designed to be easy to configure with an elegant out-of-box setup, while also being highly configurable, suiting a variety of use cases by allowing you to define channels and manage who can send and receive messages within them.
 
-&dagger; _This plugin does not support Chat Reporting. Velocity 1.19.2+ users will need to use a fork that disables signed chat message enforcing for the time being. ([more&hellip;](https://github.com/WiIIiam278/HuskChat/issues/72))_
+_Velocity 1.19 users: Please [See here](https://github.com/WiIIiam278/HuskChat/issues/72) for how to fix players getting kicked for message signing issues!_
 
 ## Features
-* Works great out of the box, install on your Velocity or BungeeCord-based proxy and use right away
-* Hooks with LuckPerms to display user prefixes and suffixes
-* Private messaging and replying commands - including group private messages
-* Define who can send and receive messages in channels
-* Define shortcut commands to let players quickly switch channels
-* Machine learning powered profanity filter
-* Customisable spam limiting filter, anti-advertising & special emoji
-* Utilise modern 1.16+ formatting, with RGB and Gradient support via [MineDown](https://github.com/Phoenix616/MineDown)
+**⭐ Works great out of the box** &mdash; Install on your Velocity or BungeeCord-based proxy and use right away
 
-## Commands
-- `/channel` (and make shortcuts for each channel)
-- `/msg`, `/r` (including group messages)
-- `/socialspy`, `/localspy`
-- `/broadcast`
-- [Full list & permissions](https://william278.net/docs/huskchat/Commands)
+**⭐ Display user roles** &mdash; Hooks with LuckPerms to display user prefixes and suffixes
 
-## Channels
-Channels are what players talk in and can be switched between using the /channel command or specialised channel shortcut
-command. By default, HuskChat has the following channels setup, perfect for a typical proxy server setup:
+**⭐ Private messaging** &mdash; Private messages&mdash;including group DMs&mdash and replying, admin spy features
 
-* `local` - Local scoped channel with `/local`, `/l` shortcut commands, for sending messages to players on the same server.
-* `global` (default channel) - Global scoped channel with `/global`, `/g` shortcut commands, for sending messages across the network.
-* `staff` - Global scoped channel with `/staff`, `/sc` shortcut commands. Great for letting staff communicate easily. Players need the `huskchat.channel.staff.send` and `huskchat.channel.staff.receive` permissions to send and receive messages in this channel respectively.
-* `helpop` - Global scoped channel with `/helpop` shortcut command. Great for letting players easily contact staff. Players need the `huskchat.channel.helpop.receive` permission to receive messages in this channel.
+**⭐ Fine-tune channels** &mdash; Set channel send/receive permissions, send to a discord webhook, filter [& more](https://william278.net/docs/huskchat/channels)!
 
-[Channels are fully customizable](https://william278.net/docs/huskchat/Channels), including formatting, permission-restricting, broadcast scope, shortcut command amd more.
+**⭐ Quick and easy to use** &mdash; Super simple set of [commands](https://william278.net/docs/huskchat/commands). Define channel shortcut commands, too!
+
+**⭐ Advanced profanity checking** &mdash;  Machine learning powered profanity filter
+
+**⭐ Filters & replacers** &mdash; Customisable spam limiting filter, anti-advertising & special emoji
+
+**⭐ Modern formatting** &mdash;  Utilise modern 1.16+ formatting, with RGB and Gradient support via [MineDown](https://github.com/Phoenix616/MineDown)
 
 ## Building
 To build HuskHomes, you'll need python (>=`v3.6`) with associated packages installed; `jep` and `alt-profanity-check`. 
@@ -49,28 +58,22 @@ Then, simply run the following in the root of the repository:
 ```
 
 ## License
-HuskHomes is licensed under [Apache-2.0 License](https://github.com/WiIIiam278/HuskChat/blob/master/LICENSE).
+HuskHomes is licensed under the Apache 2.0 license.
 
-## Translation
+- [License](https://github.com/WiIIiam278/HuskChat/blob/master/LICENSE)
+
+## Translations
 Translations of the plugin locales are welcome to help make the plugin more accessible. Please submit a pull request with your translations as a `.yml` file.
 
 - [Locales Directory](https://github.com/WiIIiam278/HuskChat/tree/master/common/src/main/resources/languages)
 - [English Locales](https://github.com/WiIIiam278/HuskChat/tree/master/common/src/main/resources/languages/en-gb.yml)
 
-## bStats
-This plugin uses bStats to provide me with metrics about its usage:
-* [View BungeeCord metrics](https://bstats.org/plugin/bungeecord/HuskChat/11882)
-* [View Velocity metrics](https://bstats.org/plugin/velocity/HuskChat%20-%20Velocity/14187)
-
-You can turn metric collection off by navigating to `plugins/bStats/config.yml` and editing the config to disable plugin
-metrics.
-
 ## Links
-- [Documentation, Guides & API](https://william278.net/docs/huskchat/)
-- [Resource Page](https://www.spigotmc.org/resources/huskchat.94496/)
-- [Bug Reports](https://github.com/WiIIiam278/HuskChat/issues)
-- [Discord Support](https://discord.gg/tVYhJfyDWG)
-
+- [Docs](https://william278.net/docs/huskchat/) &mdash; Read the plugin documentation!
+- [Spigot](https://www.spigotmc.org/resources/huskchat.94496/) &mdash; View the Spigot resource page (Also: [Polymart](https://polymart.org/resource/huskchat.1217), [Modrinth](https://modrinth.com/plugin/huskchat))
+- [Issues](https://github.com/WiIIiam278/HuskChat/issues) &mdash; View plugin metrics
+- [Discord](https://discord.gg/tVYhJfyDWG) &mdash; View plugin metrics
+- [bStats](https://bstats.org/plugin/bungeecord/HuskChat/11882) &mdash; View plugin metrics ([(Velocity)](https://bstats.org/plugin/velocity/HuskChat%20-%20Velocity/14187))
 
 ---
-&copy; [William278](https://william278.net/), 2022. Licensed under the Apache-2.0 License.
+&copy; [William278](https://william278.net/), 2023. Licensed under the Apache-2.0 License.
