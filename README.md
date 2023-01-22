@@ -73,7 +73,7 @@ Translations of the plugin locales are welcome to help make the plugin more acce
 - [Spigot](https://www.spigotmc.org/resources/huskchat.94496/) &mdash; View the Spigot resource page (Also: [Polymart](https://polymart.org/resource/huskchat.1217), [Modrinth](https://modrinth.com/plugin/huskchat))
 - [Issues](https://github.com/WiIIiam278/HuskChat/issues) &mdash; View plugin metrics
 - [Discord](https://discord.gg/tVYhJfyDWG) &mdash; View plugin metrics
-- [bStats](https://bstats.org/plugin/bungeecord/HuskChat/11882) &mdash; View plugin metrics ([Velocity](https://bstats.org/plugin/velocity/HuskChat%20-%20Velocity/14187))
+- [bStats](https://bstats.org/plugin/bungeecord/HuskChat/11882) &mdash; View plugin metrics (Also: [Velocity](https://bstats.org/plugin/velocity/HuskChat%20-%20Velocity/14187))
 
 ---
 &copy; [William278](https://william278.net/), 2023. Licensed under the Apache-2.0 License.
