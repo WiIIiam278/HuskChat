@@ -1,16 +1,16 @@
 dependencies {
     implementation project(path: ':common')
 
+    implementation 'org.bstats:bstats-bungeecord:3.0.0'
+    implementation 'net.kyori:adventure-platform-bungeecord:4.2.0'
+
+    compileOnly 'net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT'
     compileOnly 'commons-io:commons-io:2.11.0'
     compileOnly 'dev.dejvokep:boosted-yaml:1.3'
     compileOnly 'net.alpenblock:BungeePerms:4.0-dev-140'
     compileOnly 'net.kyori:adventure-api:4.12.0'
-    compileOnly 'de.themoep:minedown-adventure:1.7.1-SNAPSHOT'
-
-    implementation 'org.bstats:bstats-bungeecord:3.0.0'
-    implementation 'net.kyori:adventure-platform-bungeecord:4.1.2'
-
-    compileOnly 'net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT'
+    compileOnly 'de.themoep:minedown-adventure:1.7.2-SNAPSHOT'
+    compileOnly 'org.jetbrains:annotations:24.0.0'
 }
 
 shadowJar {
