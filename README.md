@@ -29,7 +29,7 @@
 
 It's designed to be easy to configure with an elegant out-of-box setup, while also being highly configurable, suiting a variety of use cases by allowing you to define channels and manage who can send and receive messages within them.
 
-> ⚠️ _Velocity 1.19 users: Please [See here](https://github.com/WiIIiam278/HuskChat/issues/72) for how to fix players getting kicked for message signing issues!_
+> ⚠️ _Velocity 1.19 users: Please [see here](https://github.com/WiIIiam278/HuskChat/issues/72) for how to fix players getting kicked for message signing issues!_
 
 ## Features
 **⭐ Works great out of the box** &mdash; Install on your Velocity or BungeeCord-based proxy and use right away
@@ -49,7 +49,7 @@ It's designed to be easy to configure with an elegant out-of-box setup, while al
 **⭐ Modern formatting** &mdash;  Utilise modern 1.16+ formatting, with RGB and Gradient support via [MineDown](https://github.com/Phoenix616/MineDown)
 
 ## Building
-To build HuskHomes, you'll need python (>=`v3.6`) with associated packages installed; `jep` and `alt-profanity-check`. 
+To build HuskChat, you'll need python (>=`v3.6`) with associated packages installed; `jep` and `alt-profanity-check`. 
 You can install these with `pip install jep` and `pip install alt-profanity-check`. These are needed to run the profanity filter tests.
 
 Then, simply run the following in the root of the repository:
@@ -58,7 +58,7 @@ Then, simply run the following in the root of the repository:
 ```
 
 ## License
-HuskHomes is licensed under the Apache 2.0 license.
+HuskChat is licensed under the Apache 2.0 license.
 
 - [License](https://github.com/WiIIiam278/HuskChat/blob/master/LICENSE)
 
