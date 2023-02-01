@@ -74,7 +74,7 @@ public class VelocityPlayer implements Player {
      * @param player {@link Player} to adapt
      * @return The {@link com.velocitypowered.api.proxy.Player} object, {@code null} if they are offline
      */
-    public static Optional<com.velocitypowered.api.proxy.Player> adaptVelocity(Player player) {
+    public static Optional<com.velocitypowered.api.proxy.Player> adaptVelocity(@NotNull Player player) {
         return plugin.getProxyServer().getPlayer(player.getUuid());
     }
 
