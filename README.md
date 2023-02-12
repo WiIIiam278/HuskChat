@@ -71,8 +71,8 @@ Translations of the plugin locales are welcome to help make the plugin more acce
 ## Links
 - [Docs](https://william278.net/docs/huskchat/) &mdash; Read the plugin documentation!
 - [Spigot](https://www.spigotmc.org/resources/huskchat.94496/) &mdash; View the Spigot resource page (Also: [Polymart](https://polymart.org/resource/huskchat.1217), [Modrinth](https://modrinth.com/plugin/huskchat))
-- [Issues](https://github.com/WiIIiam278/HuskChat/issues) &mdash; View plugin metrics
-- [Discord](https://discord.gg/tVYhJfyDWG) &mdash; View plugin metrics
+- [Issues](https://github.com/WiIIiam278/HuskChat/issues) &mdash; File a bug report or feature request
+- [Discord](https://discord.gg/tVYhJfyDWG) &mdash; Get help, ask questions
 - [bStats](https://bstats.org/plugin/bungeecord/HuskChat/11882) &mdash; View plugin metrics (Also: [Velocity](https://bstats.org/plugin/velocity/HuskChat%20-%20Velocity/14187))
 
 ---
