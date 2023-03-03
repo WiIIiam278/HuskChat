@@ -5,7 +5,7 @@ dependencies {
     implementation 'de.themoep:minedown-adventure:1.7.2-SNAPSHOT'
 
     compileOnly 'net.luckperms:api:5.4'
-    compileOnly 'org.jetbrains:annotations:24.0.0'
+    compileOnly 'org.jetbrains:annotations:24.0.1'
     compileOnly 'net.kyori:adventure-api:4.12.0'
 
     testImplementation 'net.william278:ProfanityCheckerAPI:2.0.1'
