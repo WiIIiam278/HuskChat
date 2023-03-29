@@ -1,7 +1,7 @@
 dependencies {
     implementation project(path: ':common')
 
-    implementation 'org.bstats:bstats-velocity:3.0.0'
+    implementation 'org.bstats:bstats-velocity:3.0.2'
 
     compileOnly 'com.velocitypowered:velocity-api:3.1.1'
     compileOnly 'commons-io:commons-io:2.11.0'
