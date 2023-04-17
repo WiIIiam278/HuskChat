@@ -1,3 +1,5 @@
+<!--suppress ALL -->
+<h4>
 <p align="center">
     <img src="images/banner.png" alt="HuskChat" />
     <a href="https://github.com/WiIIiam278/HuskChat/actions/workflows/java_ci.yml">
@@ -24,6 +26,7 @@
     </b>
 </p>
 <br/>
+</h4>
 
 **HuskChat** is a no-frills, simple and customisable cross-server chat system for Minecraft networks running BungeeCord and Velocity frontend servers.
 
