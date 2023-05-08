@@ -72,7 +72,7 @@ subprojects {
         clean.delete "$rootDir/target"
     }
 
-    if (['bungee', 'velocity'].contains(project.name)) {
+    if (['velocity'].contains(project.name)) {
         java {
             withSourcesJar()
             withJavadocJar()
@@ -117,8 +117,8 @@ subprojects {
 
             publications {
                 mavenJava(MavenPublication) {
-                    groupId = 'net.william278.huskchat'
-                    artifactId = "huskchat-${project.name.toLowerCase()}"
+                    groupId = 'net.william278'
+                    artifactId = 'huskchat'
                     version = "$rootProject.version"
                     artifact shadowJar
                     artifact javadocJar
