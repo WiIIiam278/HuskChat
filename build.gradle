@@ -78,10 +78,10 @@ subprojects {
             withJavadocJar()
         }
         sourcesJar {
-            destinationDirectory.set(file("$rootDir/target"))
+            destinationDirectory.set(file("$rootDir/target/${project.name.toLowerCase()}"))
         }
         javadocJar {
-            destinationDirectory.set(file("$rootDir/target"))
+            destinationDirectory.set(file("$rootDir/target/${project.name.toLowerCase()}"))
         }
         shadowJar.dependsOn(sourcesJar, javadocJar)
 
