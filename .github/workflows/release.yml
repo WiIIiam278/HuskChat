@@ -1,12 +1,13 @@
-# Builds, tests and publishes the project on release
-name: Java CI
+# Publishes a release to Modrinth and CurseForge when a release is published on GitHub.
+name: Release Test & Publish
 
 on:
-  push:
-    branches: [ "master" ]
+  release:
+    types: [ published ]
 
 permissions:
   contents: read
+  checks: write
 
 env:
   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.8/x64/lib/python3.10/site-packages/jep/
