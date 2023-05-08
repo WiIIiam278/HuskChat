@@ -72,16 +72,16 @@ subprojects {
         clean.delete "$rootDir/target"
     }
 
-    if (['bungee', 'velocity'].contains(project.name)) {
+    if (['plugin'].contains(project.name)) {
         java {
             withSourcesJar()
             withJavadocJar()
         }
         sourcesJar {
-            destinationDirectory.set(file("$rootDir/target/${project.name.toLowerCase()}"))
+            destinationDirectory.set(file("$rootDir/target"))
         }
         javadocJar {
-            destinationDirectory.set(file("$rootDir/target/${project.name.toLowerCase()}"))
+            destinationDirectory.set(file("$rootDir/target"))
         }
         shadowJar.dependsOn(sourcesJar, javadocJar)
 
@@ -117,12 +117,12 @@ subprojects {
 
             publications {
                 mavenJava(MavenPublication) {
-                    groupId = 'net.william278.huskchat'
-                    artifactId = "huskchat-${project.name.toLowerCase()}"
+                    groupId = 'net.william278'
+                    artifactId = "huskchat"
                     version = "$rootProject.version"
                     artifact shadowJar
-                    artifact javadocJar
                     artifact sourcesJar
+                    artifact javadocJar
                 }
             }
         }
