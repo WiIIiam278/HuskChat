@@ -70,15 +70,13 @@ jobs:
           hangar-version-type: Alpha
           hangar-game-versions: |
             3.2
-          hangar-loaders: |
-            velocity
           modrinth-version-type: alpha
           modrinth-game-versions: |
             1.16.5
             1.17.1
             1.18.2
             1.19.4
-          modrinth-loaders: |
+          loaders: |
             bungeecord
             velocity
           java: 16
