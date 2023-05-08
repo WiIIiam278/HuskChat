@@ -25,8 +25,8 @@ import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 import net.william278.huskchat.bungeecord.HuskChatBungee;
 import net.william278.huskchat.bungeecord.player.BungeePlayer;
-import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.command.CommandBase;
+import net.william278.huskchat.player.ConsolePlayer;
 
 import java.util.Collections;
 

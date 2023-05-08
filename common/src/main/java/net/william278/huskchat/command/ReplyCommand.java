@@ -27,7 +27,6 @@ import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 
 import java.util.*;
-import java.util.logging.Level;
 
 public class ReplyCommand extends CommandBase {
 

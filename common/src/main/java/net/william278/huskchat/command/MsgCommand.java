@@ -22,11 +22,9 @@ package net.william278.huskchat.command;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.message.PrivateMessage;
-import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
 
 import java.util.*;
-import java.util.logging.Level;
 
 public class MsgCommand extends CommandBase {
 

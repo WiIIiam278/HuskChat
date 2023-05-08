@@ -23,9 +23,10 @@ import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class OptOutMsgCommand extends CommandBase {
     private final static String PERMISSION = "huskchat.command.optoutmsg";

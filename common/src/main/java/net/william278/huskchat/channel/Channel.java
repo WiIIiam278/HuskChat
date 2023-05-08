@@ -19,8 +19,6 @@
 
 package net.william278.huskchat.channel;
 
-import net.william278.huskchat.config.Settings;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
