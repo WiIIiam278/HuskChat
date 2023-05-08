@@ -2,7 +2,7 @@
   "id": "huskchat",
   "name": "HuskChat",
   "version": "${version}",
-  "description": "A simple & customizable no-frills Minecraft proxy chat system",
+  "description": "${description}",
   "url": "https://william278.net",
   "authors": [
     "William278"

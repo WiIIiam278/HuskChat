@@ -1,6 +1,0 @@
-name: HuskChat
-version: ${version}
-author: William278
-main: net.william278.huskchat.bungeecord.HuskChatBungee
-description: A simple & customizable no-frills Minecraft proxy chat system
-softdepends: [ LuckPerms ]

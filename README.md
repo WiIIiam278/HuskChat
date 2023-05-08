@@ -1,8 +1,8 @@
 <!--suppress ALL -->
 <p align="center">
     <img src="images/banner.png" alt="HuskChat" />
-    <a href="https://github.com/WiIIiam278/HuskChat/actions/workflows/java_ci.yml">
-        <img src="https://img.shields.io/github/actions/workflow/status/WiIIiam278/HuskChat/java_ci.yml?branch=master&logo=github"/>
+    <a href="https://github.com/WiIIiam278/HuskChat/actions/workflows/ci.yml">
+        <img src="https://img.shields.io/github/actions/workflow/status/WiIIiam278/HuskChat/ci.yml?branch=master&logo=github"/>
     </a> 
     <a href="https://jitpack.io/#net.william278/HuskChat">
         <img src="https://img.shields.io/jitpack/version/net.william278/HuskChat?color=%2300fb9a&label=api&logo=gradle" />
