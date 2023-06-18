@@ -6,7 +6,7 @@ import net.william278.papiproxybridge.api.PlaceholderAPI;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public class PAPIProxyBridgeParser implements PlaceholderParser{
+public class PAPIProxyBridgeParser implements Placeholders {
     @Override
     public CompletableFuture<String> parsePlaceholders(String stringToParse, Player player) {
         final PlaceholderAPI api = PlaceholderAPI.getInstance();

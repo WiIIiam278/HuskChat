@@ -43,7 +43,7 @@ import net.william278.huskchat.getter.LuckPermsDataGetter;
 import net.william278.huskchat.message.MessageManager;
 import net.william278.huskchat.placeholderparser.DefaultParser;
 import net.william278.huskchat.placeholderparser.PAPIProxyBridgeParser;
-import net.william278.huskchat.placeholderparser.PlaceholderParser;
+import net.william278.huskchat.placeholderparser.Placeholders;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 import net.william278.huskchat.util.Logger;
@@ -91,7 +91,7 @@ public class HuskChatVelocity implements HuskChat {
     private final Path dataDirectory;
     private final VelocityEventDispatcher eventDispatcher;
 
-    private PlaceholderParser placeholderParser;
+    private Placeholders placeholders;
 
     // Get the data folder
     @NotNull
@@ -153,10 +153,10 @@ public class HuskChatVelocity implements HuskChat {
 
         // Setup PlaceholderParser
         Optional<PluginContainer> papiBridge = getProxyServer().getPluginManager().getPlugin("papiproxybridge");
-        if(papiBridge.isPresent()) {
-            placeholderParser = new PAPIProxyBridgeParser();
+        if (papiBridge.isPresent()) {
+            placeholders = new PAPIProxyBridgeParser();
         } else {
-            placeholderParser = new DefaultParser();
+            placeholders = new DefaultParser();
         }
 
         // Register events
@@ -265,8 +265,8 @@ public class HuskChatVelocity implements HuskChat {
 
 
     @Override
-    public PlaceholderParser getParser() {
-        return placeholderParser;
+    public Placeholders getParser() {
+        return placeholders;
     }
 
     @Override

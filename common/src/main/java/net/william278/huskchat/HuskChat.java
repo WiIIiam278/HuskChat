@@ -24,7 +24,7 @@ import net.william278.huskchat.discord.WebhookDispatcher;
 import net.william278.huskchat.event.EventDispatcher;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.message.MessageManager;
-import net.william278.huskchat.placeholderparser.PlaceholderParser;
+import net.william278.huskchat.placeholderparser.Placeholders;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.util.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -58,7 +58,7 @@ public interface HuskChat {
     @NotNull
     String getMetaPlatform();
 
-    PlaceholderParser getParser();
+    Placeholders getParser();
 
     DataGetter getDataGetter();
 

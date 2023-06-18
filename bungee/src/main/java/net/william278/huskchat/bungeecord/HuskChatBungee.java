@@ -46,7 +46,7 @@ import net.william278.huskchat.getter.LuckPermsDataGetter;
 import net.william278.huskchat.message.MessageManager;
 import net.william278.huskchat.placeholderparser.DefaultParser;
 import net.william278.huskchat.placeholderparser.PAPIProxyBridgeParser;
-import net.william278.huskchat.placeholderparser.PlaceholderParser;
+import net.william278.huskchat.placeholderparser.Placeholders;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 import net.william278.huskchat.util.Logger;
@@ -86,7 +86,7 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
     public DataGetter playerDataGetter;
 
     // Placeholder Parser
-    public PlaceholderParser placeholderParser;
+    public Placeholders placeholders;
 
     @Override
     public void onLoad() {
@@ -131,11 +131,11 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
         }
 
         // Setup placeholder parser
-        Plugin papibridge = ProxyServer.getInstance().getPluginManager().getPlugin("PAPIProxyBridge");
-        if (luckPerms != null) {
-            placeholderParser = new PAPIProxyBridgeParser();
+        Plugin papiBridge = ProxyServer.getInstance().getPluginManager().getPlugin("PAPIProxyBridge");
+        if (papiBridge != null) {
+            placeholders = new PAPIProxyBridgeParser();
         } else {
-            placeholderParser = new DefaultParser();
+            placeholders = new DefaultParser();
         }
 
         // Register events
@@ -232,8 +232,8 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
     }
 
     @Override
-    public PlaceholderParser getParser() {
-        return placeholderParser;
+    public Placeholders getParser() {
+        return placeholders;
     }
 
     @Override
