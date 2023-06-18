@@ -26,13 +26,15 @@
 </p>
 <br/>
 
-**HuskChat** is a no-frills, simple and customisable cross-server chat system for Minecraft networks running BungeeCord and Velocity frontend servers.
+**HuskChat-Placeholders** is a no-frills, simple and customisable cross-server chat system for Minecraft networks running BungeeCord and Velocity frontend servers, now hooking into PAPIProxyBridge to support PlaceholderAPI placeholders!
 
 It's designed to be easy to configure with an elegant out-of-box setup, while also being highly configurable, suiting a variety of use cases by allowing you to define channels and manage who can send and receive messages within them.
 
 > ⚠️ _Velocity 1.19 users: Please [see here](https://github.com/WiIIiam278/HuskChat/issues/72) for how to fix players getting kicked for message signing issues!_
 
 ## Features
+**⭐ Use PlaceholderAPI** &mdash; Use more than 500+ Placeholders from [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/) using [PAPIProxyBridge](https://www.spigotmc.org/resources/papiproxybridge.108415/)
+
 **⭐ Works great out of the box** &mdash; Install on your Velocity or BungeeCord-based proxy and use right away
 
 **⭐ Display user roles** &mdash; Hooks with LuckPerms to display user prefixes and suffixes

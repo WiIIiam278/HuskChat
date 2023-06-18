@@ -26,11 +26,19 @@ import net.william278.huskchat.player.Player;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 
 public class PlaceholderReplacer {
 
     public static String replace(Player player, String message, HuskChat implementingPlugin) {
         final HashMap<String, String> placeholders = new HashMap<>();
+
+        // Set placeholders
+        String finalMessage = message;
+        CompletableFuture<String> completableFuture = CompletableFuture
+                .supplyAsync(() -> implementingPlugin.getParser().parsePlaceholders(finalMessage, player))
+                .thenApplyAsync(result -> result.join());
+        message = completableFuture.join();
 
         // Player related placeholders
         placeholders.put("%name%", escape(implementingPlugin.getDataGetter().getPlayerName(player)));
