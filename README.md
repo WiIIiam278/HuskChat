@@ -4,8 +4,8 @@
     <a href="https://github.com/WiIIiam278/HuskChat/actions/workflows/ci.yml">
         <img src="https://img.shields.io/github/actions/workflow/status/WiIIiam278/HuskChat/ci.yml?branch=master&logo=github"/>
     </a> 
-    <a href="https://jitpack.io/#net.william278/HuskChat">
-        <img src="https://img.shields.io/jitpack/version/net.william278/HuskChat?color=%2300fb9a&label=api&logo=gradle" />
+    <a href="https://repo.william278.net/#/releases/net/william278/huskchat/">
+        <img src="https://repo.william278.net/api/badge/latest/releases/net/william278/huskchat?color=00fb9a&name=Maven&prefix=v" />
     </a> 
     <a href="https://discord.gg/tVYhJfyDWG">
         <img src="https://img.shields.io/discord/818135932103557162.svg?label=&logo=discord&logoColor=fff&color=7389D8&labelColor=6A7EC2" />
@@ -30,7 +30,7 @@
 
 It's designed to be easy to configure with an elegant out-of-box setup, while also being highly configurable, suiting a variety of use cases by allowing you to define channels and manage who can send and receive messages within them.
 
-> ⚠️ _Velocity 1.19 users: Please [see here](https://github.com/WiIIiam278/HuskChat/issues/72) for how to fix players getting kicked for message signing issues!_
+> ⚠️ _Velocity 1.19+ users: Please [see here](https://github.com/WiIIiam278/HuskChat/issues/72) for how to fix players getting kicked for message signing issues!_
 
 ## Features
 **⭐ Works great out of the box** &mdash; Install on your Velocity or BungeeCord-based proxy and use right away
