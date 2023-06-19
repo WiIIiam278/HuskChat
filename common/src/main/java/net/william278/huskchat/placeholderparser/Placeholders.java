@@ -27,7 +27,7 @@ import java.util.concurrent.CompletableFuture;
 
 public interface Placeholders {
 
-    public static String replace(String stringToParse, Player player, HuskChat implementingPlugin) {
+    public static String replace(Player player,String stringToParse, HuskChat implementingPlugin) {
 
         // Set placeholders
         for(Placeholders parser : implementingPlugin.getParsers()) {

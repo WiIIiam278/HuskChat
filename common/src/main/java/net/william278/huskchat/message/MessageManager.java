@@ -27,6 +27,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.config.Settings;
+import net.william278.huskchat.placeholderparser.Placeholders;
 import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
@@ -136,7 +137,7 @@ public class MessageManager {
 
     public void sendFormattedChannelMessage(Player target, Player sender, Channel channel, String message) {
         final TextComponent.Builder componentBuilder = Component.text()
-                .append(new MineDown(PlaceholderReplacer.replace(sender, channel.format, plugin)).toComponent());
+                .append(new MineDown(Placeholders.replace(sender, channel.format, plugin)).toComponent());
         if (sender.hasPermission("huskchat.formatted_chat")) {
             componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
         } else {
@@ -148,10 +149,10 @@ public class MessageManager {
     public void sendFormattedOutboundPrivateMessage(Player messageSender, ArrayList<Player> messageRecipients, String message) {
         final TextComponent.Builder componentBuilder = Component.text();
         if (messageRecipients.size() == 1) {
-            componentBuilder.append(new MineDown(PlaceholderReplacer.replace(messageRecipients.get(0),
+            componentBuilder.append(new MineDown(Placeholders.replace(messageRecipients.get(0),
                     Settings.outboundMessageFormat, plugin)).toComponent());
         } else {
-            componentBuilder.append(new MineDown(PlaceholderReplacer.replace(messageRecipients.get(0), Settings.groupOutboundMessageFormat, plugin)
+            componentBuilder.append(new MineDown(Placeholders.replace(messageRecipients.get(0), Settings.groupOutboundMessageFormat, plugin)
                     .replace("%group_amount_subscript%", convertToUnicodeSubScript(messageRecipients.size() - 1))
                     .replace("%group_amount%", Integer.toString(messageRecipients.size() - 1))
                     .replace("%group_members_comma_separated%", getGroupMemberList(messageRecipients, ","))
@@ -174,10 +175,10 @@ public class MessageManager {
     public void sendFormattedInboundPrivateMessage(ArrayList<Player> messageRecipients, Player messageSender, String message) {
         final TextComponent.Builder componentBuilder = Component.text();
         if (messageRecipients.size() == 1) {
-            componentBuilder.append(new MineDown(PlaceholderReplacer.replace(messageSender, Settings.inboundMessageFormat,
+            componentBuilder.append(new MineDown(Placeholders.replace(messageSender, Settings.inboundMessageFormat,
                     plugin)).toComponent());
         } else {
-            componentBuilder.append(new MineDown(PlaceholderReplacer.replace(messageSender, Settings.groupInboundMessageFormat, plugin)
+            componentBuilder.append(new MineDown(Placeholders.replace(messageSender, Settings.groupInboundMessageFormat, plugin)
                     .replace("%group_amount_subscript%", convertToUnicodeSubScript(messageRecipients.size() - 1))
                     .replace("%group_amount%", Integer.toString(messageRecipients.size() - 1))
                     .replace("%group_members_comma_separated%", getGroupMemberList(messageRecipients, ","))
@@ -201,7 +202,7 @@ public class MessageManager {
     public void sendFormattedLocalSpyMessage(Player spy, PlayerCache.SpyColor spyColor, Player sender,
                                              Channel channel, String message) {
         final TextComponent.Builder componentBuilder = Component.text()
-                .append(new MineDown(PlaceholderReplacer.replace(sender, Settings.localSpyFormat, plugin)
+                .append(new MineDown(Placeholders.replace(sender, Settings.localSpyFormat, plugin)
                                              .replace("%spy_color%", spyColor.colorCode)
                                              .replace("%channel%", channel.id) +
                                      MineDown.escape(message)).toComponent());
@@ -214,12 +215,12 @@ public class MessageManager {
         if (receivers.size() == 1) {
             final Player receiver = receivers.get(0);
             componentBuilder.append(new MineDown(
-                    PlaceholderReplacer.replace(receiver, PlaceholderReplacer.replace(sender, Settings.socialSpyFormat.replace("%sender_", "%"), plugin)
+                    Placeholders.replace(receiver, Placeholders.replace(sender, Settings.socialSpyFormat.replace("%sender_", "%"), plugin)
                             .replace("%receiver_", "%"), plugin).replace("%spy_color%", spyColor.colorCode) + MineDown.escape(message)).toComponent());
         } else {
             final Player firstReceiver = receivers.get(0);
-            String md = PlaceholderReplacer.replace(firstReceiver,
-                            PlaceholderReplacer.replace(sender,
+            String md = Placeholders.replace(firstReceiver,
+                            Placeholders.replace(sender,
                                             Settings.socialSpyGroupFormat.replace("%sender_", "%"),
                                             plugin)
                                     .replace("%receiver_", "%"), plugin)
