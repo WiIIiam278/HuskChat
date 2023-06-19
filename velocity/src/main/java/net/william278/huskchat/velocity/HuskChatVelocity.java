@@ -91,7 +91,7 @@ public class HuskChatVelocity implements HuskChat {
     private final Path dataDirectory;
     private final VelocityEventDispatcher eventDispatcher;
 
-    private Placeholders placeholders;
+    private List<Placeholders> placeholders;
 
     // Get the data folder
     @NotNull
@@ -152,11 +152,10 @@ public class HuskChatVelocity implements HuskChat {
         }
 
         // Setup PlaceholderParser
+        placeholders.add(new DefaultParser(this));
         Optional<PluginContainer> papiBridge = getProxyServer().getPluginManager().getPlugin("papiproxybridge");
         if (papiBridge.isPresent()) {
-            placeholders = new PAPIProxyBridgeParser();
-        } else {
-            placeholders = new DefaultParser();
+            placeholders.add(new PAPIProxyBridgeParser());
         }
 
         // Register events
@@ -265,7 +264,7 @@ public class HuskChatVelocity implements HuskChat {
 
 
     @Override
-    public Placeholders getParser() {
+    public List<Placeholders> getParsers() {
         return placeholders;
     }
 

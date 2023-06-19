@@ -86,7 +86,7 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
     public DataGetter playerDataGetter;
 
     // Placeholder Parser
-    public Placeholders placeholders;
+    public List<Placeholders> placeholders;
 
     @Override
     public void onLoad() {
@@ -131,11 +131,10 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
         }
 
         // Setup placeholder parser
+        placeholders.add(new DefaultParser(this));
         Plugin papiBridge = ProxyServer.getInstance().getPluginManager().getPlugin("PAPIProxyBridge");
         if (papiBridge != null) {
-            placeholders = new PAPIProxyBridgeParser();
-        } else {
-            placeholders = new DefaultParser();
+            placeholders.add(new PAPIProxyBridgeParser());
         }
 
         // Register events
@@ -232,7 +231,7 @@ public final class HuskChatBungee extends Plugin implements HuskChat {
     }
 
     @Override
-    public Placeholders getParser() {
+    public List<Placeholders> getParsers() {
         return placeholders;
     }
 

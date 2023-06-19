@@ -32,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -58,7 +59,7 @@ public interface HuskChat {
     @NotNull
     String getMetaPlatform();
 
-    Placeholders getParser();
+    List<Placeholders> getParsers();
 
     DataGetter getDataGetter();
 

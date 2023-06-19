@@ -30,7 +30,6 @@ import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
-import net.william278.huskchat.util.PlaceholderReplacer;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
