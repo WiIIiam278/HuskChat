@@ -35,6 +35,7 @@ allprojects {
         maven { url 'https://repo.wea-ondara.net/repository/public/' }
         maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
         maven { url 'https://jitpack.io' }
+        maven { url 'https://repo.william278.net/releases/' }
     }
 
     license {
@@ -50,6 +51,7 @@ allprojects {
         }
     }
 }
+
 
 subprojects {
     version rootProject.version

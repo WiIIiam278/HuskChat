@@ -5,3 +5,4 @@ author: 'William278'
 main: 'net.william278.huskchat.bungeecord.HuskChatBungee'
 softdepends:
   - 'LuckPerms'
+  - 'PAPIProxyBridge'

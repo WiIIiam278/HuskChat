@@ -11,6 +11,10 @@
     {
       "id": "luckperms",
       "optional": true
+    },
+    {
+      "id": "papiproxybridge",
+      "optional": true
     }
   ],
   "main": "net.william278.huskchat.velocity.HuskChatVelocity"

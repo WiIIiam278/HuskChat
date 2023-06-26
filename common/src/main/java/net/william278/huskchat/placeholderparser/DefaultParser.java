@@ -17,7 +17,7 @@
  *  limitations under the License.
  */
 
-package net.william278.huskchat.util;
+package net.william278.huskchat.placeholderparser;
 
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.config.Settings;
@@ -26,10 +26,18 @@ import net.william278.huskchat.player.Player;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 
-public class PlaceholderReplacer {
+public class DefaultParser implements Placeholders {
 
-    public static String replace(Player player, String message, HuskChat implementingPlugin) {
+    private HuskChat implementingPlugin;
+    public DefaultParser(HuskChat implementingPlugin) {
+        this.implementingPlugin = implementingPlugin;
+    }
+
+    @Override
+    public CompletableFuture<String> parsePlaceholders(String message, Player player) {
+
         final HashMap<String, String> placeholders = new HashMap<>();
 
         // Player related placeholders
@@ -58,10 +66,10 @@ public class PlaceholderReplacer {
             message = message.replace(placeholder, replacement);
         }
 
-        return message;
+        return CompletableFuture.completedFuture(message);
     }
 
-    public static String escape(String string) {
+    private String escape(String string) {
         // Just escaping __ should suffice as the only special character
         // allowed in Minecraft usernames is the underscore.
         // By placing the escape character in the middle, the MineDown
