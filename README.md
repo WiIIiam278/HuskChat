@@ -66,8 +66,8 @@ HuskChat is licensed under the Apache 2.0 license.
 ## Translations
 Translations of the plugin locales are welcome to help make the plugin more accessible. Please submit a pull request with your translations as a `.yml` file.
 
-- [Locales Directory](https://github.com/WiIIiam278/HuskChat/tree/master/common/src/main/resources/languages)
-- [English Locales](https://github.com/WiIIiam278/HuskChat/tree/master/common/src/main/resources/languages/en-gb.yml)
+- [Locales Directory](https://github.com/WiIIiam278/HuskChat/tree/master/common/src/main/resources/locales)
+- [English Locales](https://github.com/WiIIiam278/HuskChat/tree/master/common/src/main/resources/locales/en-gb.yml)
 
 ## Links
 - [Docs](https://william278.net/docs/huskchat/) &mdash; Read the plugin documentation!

@@ -46,7 +46,7 @@ public class Locales {
 
     public Locales(@NotNull HuskChat plugin) {
         this.plugin = plugin;
-        final String languagePath = "languages/" + plugin.getSettings().getLanguage() + ".yml";
+        final String languagePath = "locales/" + plugin.getSettings().getLanguage() + ".yml";
         try (InputStream stream = Objects.requireNonNull(plugin.getResource(languagePath))) {
             final YamlDocument document = YamlDocument.create(new File(plugin.getDataFolder(),
                     "messages-" + plugin.getSettings().getLanguage() + ".yml"), stream);
@@ -128,15 +128,16 @@ public class Locales {
     public void sendChannelMessage(@NotNull Player target, @NotNull Player sender, @NotNull Channel channel,
                                    @NotNull String message) {
         plugin.replacePlaceholders(sender, channel.getFormat()).thenAccept(replaced -> {
-            final TextComponent.Builder componentBuilder = Component.text()
-                    .append(new MineDown(replaced).toComponent());
+            final Component format = new MineDown(replaced).toComponent();
+            final TextComponent.Builder builder = Component.text().append(format);
             if (sender.hasPermission("huskchat.formatted_chat")) {
-                componentBuilder.append(new MineDown(message)
-                        .disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
+                builder.append(new MineDown(message)
+                        .disable(MineDownParser.Option.ADVANCED_FORMATTING)
+                        .toComponent().mergeStyle(format));
             } else {
-                componentBuilder.append(Component.text(message));
+                builder.append(Component.text(message).mergeStyle(format));
             }
-            target.sendMessage(componentBuilder.build());
+            target.sendMessage(builder.build());
         });
     }
 
@@ -145,7 +146,6 @@ public class Locales {
                 ? plugin.getSettings().getOutboundMessageFormat()
                 : plugin.getSettings().getGroupOutboundMessageFormat()
         ).thenAccept(replaced -> {
-            final TextComponent.Builder builder = Component.text();
             if (recipients.size() > 1) {
                 replaced = replaced.replace("%group_amount_subscript%", superscriptNumber(recipients.size() - 1))
                         .replace("%group_amount%", Integer.toString(recipients.size() - 1))
@@ -153,11 +153,14 @@ public class Locales {
                         .replace("%group_members%", MineDown.escape(getGroupMemberList(recipients, "\n")));
             }
 
-            builder.append(new MineDown(replaced).toComponent());
+            final TextComponent.Builder builder = Component.text();
+            final Component format = new MineDown(replaced).toComponent();
+            builder.append(format);
             if (sender.hasPermission("huskchat.formatted_chat")) {
-                builder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
+                builder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING)
+                        .toComponent().mergeStyle(format));
             } else {
-                builder.append(Component.text(message));
+                builder.append(Component.text(message).mergeStyle(format));
             }
 
             if (sender instanceof ConsolePlayer) {
@@ -173,7 +176,6 @@ public class Locales {
                 ? plugin.getSettings().getInboundMessageFormat()
                 : plugin.getSettings().getGroupInboundMessageFormat()
         ).thenAccept(replaced -> {
-            final TextComponent.Builder builder = Component.text();
             if (recipients.size() > 1) {
                 replaced = replaced.replace("%group_amount_subscript%", superscriptNumber(recipients.size() - 1))
                         .replace("%group_amount%", Integer.toString(recipients.size() - 1))
@@ -181,11 +183,14 @@ public class Locales {
                         .replace("%group_members%", MineDown.escape(getGroupMemberList(recipients, "\n")));
             }
 
-            builder.append(new MineDown(replaced).toComponent());
+            final TextComponent.Builder builder = Component.text();
+            final Component format = new MineDown(replaced).toComponent();
+            builder.append(format);
             if (sender.hasPermission("huskchat.formatted_chat")) {
-                builder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
+                builder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING)
+                        .toComponent().mergeStyle(format));
             } else {
-                builder.append(Component.text(message));
+                builder.append(Component.text(message).mergeStyle(format));
             }
 
             for (final Player recipient : recipients) {
