@@ -52,7 +52,7 @@ public class OptOutMessageCommand extends CommandBase {
             StringBuilder builder = new StringBuilder();
             int lastComma = playerList.lastIndexOf(',');
             builder.append(playerList, 0, lastComma);
-            builder.append(" ").append(plugin.getLocales().getRawMessage("list_conjunction"));
+            builder.append(" ").append(plugin.getLocales().getRawLocale("list_conjunction"));
             builder.append(playerList.substring(lastComma + 1));
 
             plugin.getLocales().sendMessage(player, "removed_from_group_message", builder.toString());

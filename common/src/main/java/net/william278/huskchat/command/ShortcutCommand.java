@@ -46,7 +46,7 @@ public class ShortcutCommand extends CommandBase {
                 // Console can't chat in the same way as players can, it can only use commands.
                 // So no need to allow it to switch channels.
                 if (player instanceof ConsolePlayer) {
-                    plugin.log(Level.INFO, plugin.getLocales().getRawMessage("error_console_switch_channels"));
+                    plugin.log(Level.INFO, plugin.getLocales().getRawLocale("error_console_switch_channels"));
                     return;
                 }
                 plugin.getPlayerCache().switchPlayerChannel(player, channelId);

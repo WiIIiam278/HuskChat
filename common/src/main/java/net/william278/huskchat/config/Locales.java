@@ -30,6 +30,7 @@ import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.InputStream;
@@ -41,7 +42,7 @@ import java.util.regex.Pattern;
 public class Locales {
 
     private final HuskChat plugin;
-    private final Map<String, String> locales = new HashMap<>();
+    private final Map<String, String> locales = new LinkedHashMap<>();
 
     public Locales(@NotNull HuskChat plugin) {
         this.plugin = plugin;
@@ -58,13 +59,14 @@ public class Locales {
         }
     }
 
-    public String getRawMessage(@NotNull String messageID) {
-        return locales.get(messageID);
+    @Nullable
+    public String getRawLocale(@NotNull String id) {
+        return locales.get(id);
     }
 
     // todo use Adventure's provided serializer?
     @NotNull
-    public String extractMineDownLinks(String string) {
+    public String extractMineDownLinks(@NotNull String string) {
         String[] in = string.split("\n");
         StringBuilder out = new StringBuilder();
 
@@ -91,11 +93,11 @@ public class Locales {
         return out.toString();
     }
 
-    public void sendMessage(@NotNull Player player, @NotNull String messageId, @NotNull String... replacements) {
-        String message = getRawMessage(messageId);
+    public void sendMessage(@NotNull Player player, @NotNull String id, @NotNull String... replacements) {
+        String locale = getRawLocale(id);
 
         // Don't send empty messages
-        if (message == null || message.isEmpty()) {
+        if (locale == null || locale.isEmpty()) {
             return;
         }
 
@@ -103,16 +105,16 @@ public class Locales {
         int replacementIndexer = 1;
         for (String replacement : replacements) {
             String replacementString = "%" + replacementIndexer + "%";
-            message = message.replace(replacementString, replacement);
+            locale = locale.replace(replacementString, replacement);
             replacementIndexer = replacementIndexer + 1;
         }
 
         if (player instanceof ConsolePlayer) {
-            sendMineDownToConsole(message);
+            sendMineDownToConsole(locale);
             return;
         }
 
-        player.sendMessage(new MineDown(message));
+        player.sendMessage(new MineDown(locale));
     }
 
     public void sendCustomMessage(@NotNull Player player, @NotNull String message) {
@@ -123,7 +125,8 @@ public class Locales {
         player.sendMessage(new MineDown(message));
     }
 
-    public void sendChannelMessage(@NotNull Player target, @NotNull Player sender, @NotNull Channel channel, @NotNull String message) {
+    public void sendChannelMessage(@NotNull Player target, @NotNull Player sender, @NotNull Channel channel,
+                                   @NotNull String message) {
         plugin.replacePlaceholders(sender, channel.getFormat()).thenAccept(replaced -> {
             final TextComponent.Builder componentBuilder = Component.text()
                     .append(new MineDown(replaced).toComponent());
@@ -221,7 +224,9 @@ public class Locales {
                         .replace("%group_members_comma_separated%", getGroupMemberList(receivers, ","))
                         .replace("%group_members%", MineDown.escape(getGroupMemberList(receivers, "\n")));
             }
-            spy.sendMessage(new MineDown(replaced.replace("%spy_color%", spyColor.colorCode) + MineDown.escape(message)));
+            spy.sendMessage(new MineDown(
+                    replaced.replace("%spy_color%", spyColor.colorCode) + MineDown.escape(message)
+            ));
         }));
     }
 

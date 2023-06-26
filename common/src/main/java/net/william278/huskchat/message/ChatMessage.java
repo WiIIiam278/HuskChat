@@ -89,7 +89,7 @@ public class ChatMessage {
         // therefore the message won't get sent to anyone
         if (sender instanceof ConsolePlayer && (broadcastScope == Channel.BroadcastScope.LOCAL ||
                                                 broadcastScope == Channel.BroadcastScope.LOCAL_PASSTHROUGH)) {
-            plugin.log(Level.INFO, plugin.getLocales().getRawMessage("error_console_local_scope"));
+            plugin.log(Level.INFO, plugin.getLocales().getRawLocale("error_console_local_scope"));
             return true;
         }
 

@@ -40,7 +40,7 @@ public class LocalSpyCommand extends CommandBase {
     @Override
     public void onExecute(@NotNull Player player, @NotNull String[] args) {
         if (player instanceof ConsolePlayer) {
-            plugin.log(Level.INFO, plugin.getLocales().getRawMessage("error_in_game_only"));
+            plugin.log(Level.INFO, plugin.getLocales().getRawLocale("error_in_game_only"));
             return;
         }
         if (player.hasPermission(getPermission())) {
