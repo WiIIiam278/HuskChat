@@ -68,6 +68,8 @@ jobs:
           loaders: |
             bungeecord
             velocity
+          modrinth-dependencies: |
+            unsignedvelocity | suggests | *
           java: 16
       - name: Upload GitHub Artifact
         uses: actions/upload-artifact@v2
