@@ -22,9 +22,8 @@ package net.william278.huskchat.config;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import net.william278.huskchat.channel.Channel;
-import net.william278.huskchat.discord.DiscordMessageFormat;
 import net.william278.huskchat.filter.*;
-import net.william278.huskchat.filter.replacer.EmojiReplacer;
+import net.william278.huskchat.replacer.EmojiReplacer;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
@@ -32,84 +31,84 @@ import java.net.URL;
 import java.util.*;
 
 /**
- * Stores plugin settings and {@link Channel} data
+ * Class for loading and storing plugin settings and {@link Channel channels}
  */
 public class Settings {
 
     // Plugin language
-    public static String language;
+    private String language;
+
 
     // Channel config
-    public static String defaultChannel;
-    public static HashMap<String, String> serverDefaultChannels = new HashMap<>();
-    public static HashMap<String, Channel> channels = new HashMap<>();
-    public static String channelLogFormat;
-    public static List<String> channelCommandAliases = new ArrayList<>();
+    private String defaultChannel;
+    private HashMap<String, String> serverDefaultChannels;
+    private HashMap<String, Channel> channels;
+    private String channelLogFormat;
+    private List<String> channelCommandAliases;
+
 
     // Message command config
-    public static boolean doMessageCommand;
-
-    public static boolean doGroupMessages;
-
-    public static int maxGroupMessageSize;
-    public static List<String> messageCommandAliases = new ArrayList<>();
-    public static List<String> replyCommandAliases = new ArrayList<>();
-    public static String inboundMessageFormat;
-    public static String outboundMessageFormat;
-    public static String groupInboundMessageFormat;
-    public static String groupOutboundMessageFormat;
-    public static boolean logPrivateMessages;
-    public static boolean censorPrivateMessages;
-    public static String messageLogFormat;
-    public static List<String> messageCommandRestrictedServers = new ArrayList<>();
+    private boolean doMessageCommand;
+    private boolean doGroupMessages;
+    private int maxGroupMessageSize;
+    private List<String> messageCommandAliases;
+    private List<String> replyCommandAliases;
+    private String inboundMessageFormat;
+    private String outboundMessageFormat;
+    private String groupInboundMessageFormat;
+    private String groupOutboundMessageFormat;
+    private boolean logPrivateMessages;
+    private boolean censorPrivateMessages;
+    private String messageLogFormat;
+    private List<String> messageCommandRestrictedServers;
 
     // Social spy
-    public static boolean doSocialSpyCommand;
-    public static String socialSpyFormat;
-    public static String socialSpyGroupFormat;
-    public static List<String> socialSpyCommandAliases = new ArrayList<>();
+    private boolean doSocialSpyCommand;
+    private String socialSpyFormat;
+    private String socialSpyGroupFormat;
+    private List<String> socialSpyCommandAliases;
+
 
     // Local spy
-    public static boolean doLocalSpyCommand;
-    public static String localSpyFormat;
-    public static List<String> excludedLocalSpyChannels = new ArrayList<>();
-    public static List<String> localSpyCommandAliases = new ArrayList<>();
+    private boolean doLocalSpyCommand;
+    private String localSpyFormat;
+    private List<String> excludedLocalSpyChannels;
+    private List<String> localSpyCommandAliases;
+
 
     // Broadcast command
-    public static boolean doBroadcastCommand;
-    public static List<String> broadcastCommandAliases = new ArrayList<>();
-    public static String broadcastMessageFormat;
-    public static boolean logBroadcasts;
-    public static String broadcastLogFormat;
+    private boolean doBroadcastCommand;
+    private List<String> broadcastCommandAliases;
+    private String broadcastMessageFormat;
+    private boolean logBroadcasts;
+    private String broadcastLogFormat;
+
 
     // Chat filters
-    public static Map<String, List<ChatFilter>> chatFilters = new HashMap<>();
+    private Map<String, List<ChatFilter>> chatFilters;
+
 
     // Discord integration
-    public static boolean doDiscordIntegration;
-    public static Map<String, URL> webhookUrls = new HashMap<>();
-    public static DiscordMessageFormat webhookMessageFormat;
+    private boolean doDiscordIntegration;
+    private Map<String, URL> webhookUrls;
+    private Webhook.Format webhookFormat;
 
-    public static Map<String, String> serverNameReplacement = new HashMap<>();
+    // Server names
+    private Map<String, String> serverNameReplacement;
 
-    /**
-     * Use {@link Settings#load(YamlDocument)}
-     */
-    private Settings() {
+
+    public Settings(@NotNull YamlDocument configFile) {
+        this.loadConfig(configFile);
     }
 
-    /**
-     * Load plugin Settings from a config file
-     *
-     * @param configFile Proxy {@link YamlDocument} data
-     */
-    public static void load(YamlDocument configFile) {
+    private void loadConfig(@NotNull YamlDocument configFile) {
         // Language file
         language = configFile.getString("language", "en-gb");
 
         // Channels
         defaultChannel = configFile.getString("default_channel", "global");
         channelLogFormat = configFile.getString("channel_log_format", "[CHAT] [%channel%] %sender%: ");
+        channels = new LinkedHashMap<>();
         channels.putAll(fetchChannels(configFile));
         serverDefaultChannels = getServerDefaultChannels(configFile);
         channelCommandAliases = (configFile.contains("channel_command_aliases")) ?
@@ -135,6 +134,7 @@ public class Settings {
         messageCommandAliases = (configFile.contains("message_command.msg_aliases")) ?
                 getCommandsFromList(configFile.getStringList("message_command.msg_aliases")) :
                 Collections.singletonList("msg");
+        replyCommandAliases = new ArrayList<>();
         replyCommandAliases = (configFile.contains("message_command.reply_aliases")) ?
                 getCommandsFromList(configFile.getStringList("message_command.reply_aliases")) :
                 Collections.singletonList("reply");
@@ -169,11 +169,12 @@ public class Settings {
 
         // Discord integration
         doDiscordIntegration = configFile.getBoolean("discord.enabled", false);
-        webhookMessageFormat = DiscordMessageFormat.getMessageFormat(configFile.getString("discord.format_style", "inline"))
-                .orElse(DiscordMessageFormat.INLINE);
+        webhookFormat = Webhook.Format.getMessageFormat(configFile.getString("discord.format_style", "inline"))
+                .orElse(Webhook.Format.INLINE);
         webhookUrls = fetchWebhookUrls(configFile);
 
         // Server name replacement
+        serverNameReplacement = new LinkedHashMap<>();
         Section serverNameReplacementSection = configFile.getSection("server_name_replacement");
         if (serverNameReplacementSection != null) {
             for (String s : serverNameReplacementSection.getRoutesAsStrings(false)) {
@@ -189,7 +190,7 @@ public class Settings {
      * @return {@link HashMap} of {@link Channel} data listed in the config file
      * @throws IllegalArgumentException if a channel contains an invalid broadcast scope
      */
-    private static HashMap<String, Channel> fetchChannels(YamlDocument configFile) throws IllegalArgumentException {
+    private HashMap<String, Channel> fetchChannels(YamlDocument configFile) throws IllegalArgumentException {
         final HashMap<String, Channel> channels = new HashMap<>();
         for (String channelID : configFile.getSection("channels").getRoutesAsStrings(false)) {
             // Get channel format and scope and create channel object
@@ -199,19 +200,19 @@ public class Settings {
 
             // Read shortcut commands
             if (configFile.contains("channels." + channelID + ".shortcut_commands")) {
-                channel.shortcutCommands = getCommandsFromList(configFile.getStringList("channels." + channelID + ".shortcut_commands"));
+                channel.setShortcutCommands(getCommandsFromList(configFile.getStringList("channels." + channelID + ".shortcut_commands")));
             }
 
             // Read shortcut commands
             if (configFile.contains("channels." + channelID + ".restricted_servers")) {
-                channel.restrictedServers = configFile.getStringList("channels." + channelID + ".restricted_servers");
+                channel.setRestrictedServers(configFile.getStringList("channels." + channelID + ".restricted_servers"));
             }
 
             // Read optional parameters
-            channel.sendPermission = configFile.getString("channels." + channelID + ".permissions.send", null);
-            channel.receivePermission = configFile.getString("channels." + channelID + ".permissions.receive", null);
-            channel.logMessages = configFile.getBoolean("channels." + channelID + ".log_to_console", true);
-            channel.filter = configFile.getBoolean("channels." + channelID + ".filtered", true);
+            channel.setSendPermission(configFile.getString("channels." + channelID + ".permissions.send", null));
+            channel.setReceivePermission(configFile.getString("channels." + channelID + ".permissions.receive", null));
+            channel.setLogMessages(configFile.getBoolean("channels." + channelID + ".log_to_console", true));
+            channel.setFilter(configFile.getBoolean("channels." + channelID + ".filtered", true));
 
             channels.put(channelID, channel);
         }
@@ -224,7 +225,7 @@ public class Settings {
      * @param configFile The proxy {@link YamlDocument}
      * @return {@link ChatFilter}s to use
      */
-    private static Map<String, List<ChatFilter>> fetchChatFilters(YamlDocument configFile) {
+    private Map<String, List<ChatFilter>> fetchChatFilters(YamlDocument configFile) {
         Map<String, List<ChatFilter>> filters = new HashMap<>();
         clearChatFilters(); // Clear and dispose of any existing ProfanityChecker instances
 
@@ -374,8 +375,8 @@ public class Settings {
      * @param configFile The configuration file
      * @return A map of webhook URLs for each channel
      */
-    private static HashMap<String, URL> fetchWebhookUrls(@NotNull YamlDocument configFile) {
-        HashMap<String, URL> webhookUrls = new HashMap<>();
+    private Map<String, URL> fetchWebhookUrls(@NotNull YamlDocument configFile) {
+        final Map<String, URL> webhookUrls = new HashMap<>();
         try {
             if (configFile.contains("discord.channel_webhooks")) {
                 for (String channelID : configFile.getSection("discord.channel_webhooks").getRoutesAsStrings(false)) {
@@ -397,7 +398,7 @@ public class Settings {
      * @param configFile The proxy {@link YamlDocument}
      * @return {@link java.util.Map} of servers and their default channels
      */
-    private static HashMap<String, String> getServerDefaultChannels(YamlDocument configFile) {
+    private HashMap<String, String> getServerDefaultChannels(YamlDocument configFile) {
         final HashMap<String, String> serverDefaults = new HashMap<>();
         if (configFile.contains("server_default_channels")) {
             for (String server : configFile.getSection("server_default_channels").getRoutesAsStrings(false)) {
@@ -414,7 +415,7 @@ public class Settings {
      * @param rawCommands Raw commands prepended with {@code /}
      * @return formatted set of command strings
      */
-    private static List<String> getCommandsFromList(List<String> rawCommands) {
+    private List<String> getCommandsFromList(List<String> rawCommands) {
         List<String> commands = new ArrayList<>();
         for (String command : rawCommands) {
             commands.add(command.substring(1));
@@ -423,24 +424,9 @@ public class Settings {
     }
 
     /**
-     * Returns if a channel is excluded from local spy messages
-     *
-     * @param channel {@link Channel} to check
-     * @return {@code true} if the channel should be excluded from /localspy; {@code false} otherwise
-     */
-    public static boolean isLocalSpyChannelExcluded(Channel channel) {
-        for (String excludedChannel : excludedLocalSpyChannels) {
-            if (excludedChannel.equals(channel.id)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Clears the chat filters and disposes of the existing ProfanityFilter
      */
-    private static void clearChatFilters() {
+    private void clearChatFilters() {
         chatFilters = new HashMap<>();
     }
 
@@ -450,7 +436,7 @@ public class Settings {
      * @param aliases The alias list
      * @return The actual command aliases
      */
-    public static String[] getAliases(List<String> aliases) {
+    public String[] getAliases(List<String> aliases) {
         if (aliases.size() <= 1) {
             return new String[0];
         }
@@ -459,5 +445,187 @@ public class Settings {
             aliasList[i - 1] = aliases.get(i);
         }
         return aliasList;
+    }
+
+    @NotNull
+    public String getLanguage() {
+        return language;
+    }
+
+    @NotNull
+    public String getDefaultChannel() {
+        return defaultChannel;
+    }
+
+    @NotNull
+    public Map<String, String> getServerDefaultChannels() {
+        return serverDefaultChannels;
+    }
+
+    @NotNull
+    public Map<String, Channel> getChannels() {
+        return channels;
+    }
+
+    @NotNull
+    public String getChannelLogFormat() {
+        return channelLogFormat;
+    }
+
+    @NotNull
+    public List<String> getChannelCommandAliases() {
+        return channelCommandAliases;
+    }
+
+    public boolean isDoMessageCommand() {
+        return doMessageCommand;
+    }
+
+    public boolean doGroupMessages() {
+        return doGroupMessages;
+    }
+
+    public int getMaxGroupMessageSize() {
+        return maxGroupMessageSize;
+    }
+
+    @NotNull
+    public List<String> getMessageCommandAliases() {
+        return messageCommandAliases;
+    }
+
+    @NotNull
+    public List<String> getReplyCommandAliases() {
+        return replyCommandAliases;
+    }
+
+    @NotNull
+    public String getInboundMessageFormat() {
+        return inboundMessageFormat;
+    }
+
+    @NotNull
+    public String getOutboundMessageFormat() {
+        return outboundMessageFormat;
+    }
+
+    @NotNull
+    public String getGroupInboundMessageFormat() {
+        return groupInboundMessageFormat;
+    }
+
+    @NotNull
+    public String getGroupOutboundMessageFormat() {
+        return groupOutboundMessageFormat;
+    }
+
+    public boolean doLogPrivateMessages() {
+        return logPrivateMessages;
+    }
+
+    public boolean isCensorPrivateMessages() {
+        return censorPrivateMessages;
+    }
+
+    @NotNull
+    public String getMessageLogFormat() {
+        return messageLogFormat;
+    }
+
+    @NotNull
+    public List<String> getMessageCommandRestrictedServers() {
+        return messageCommandRestrictedServers;
+    }
+
+    public boolean doSocialSpyCommand() {
+        return doSocialSpyCommand;
+    }
+
+    @NotNull
+    public String getSocialSpyFormat() {
+        return socialSpyFormat;
+    }
+
+    @NotNull
+    public String getSocialSpyGroupFormat() {
+        return socialSpyGroupFormat;
+    }
+
+    @NotNull
+    public List<String> getSocialSpyCommandAliases() {
+        return socialSpyCommandAliases;
+    }
+
+    public boolean doLocalSpyCommand() {
+        return doLocalSpyCommand;
+    }
+
+    @NotNull
+    public String getLocalSpyFormat() {
+        return localSpyFormat;
+    }
+
+    /**
+     * Returns if a channel is excluded from local spy messages
+     *
+     * @param channel {@link Channel} to check
+     * @return {@code true} if the channel should be excluded from /localspy; {@code false} otherwise
+     */
+    public boolean isLocalSpyChannelExcluded(@NotNull Channel channel) {
+        for (String excludedChannel : excludedLocalSpyChannels) {
+            if (excludedChannel.equals(channel.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @NotNull
+    public List<String> getLocalSpyCommandAliases() {
+        return localSpyCommandAliases;
+    }
+
+    public boolean isDoBroadcastCommand() {
+        return doBroadcastCommand;
+    }
+
+    @NotNull
+    public List<String> getBroadcastCommandAliases() {
+        return broadcastCommandAliases;
+    }
+
+    @NotNull
+    public String getBroadcastMessageFormat() {
+        return broadcastMessageFormat;
+    }
+
+    public boolean doLogBroadcasts() {
+        return logBroadcasts;
+    }
+
+    @NotNull
+    public String getBroadcastLogFormat() {
+        return broadcastLogFormat;
+    }
+
+    @NotNull
+    public Map<String, List<ChatFilter>> getChatFilters() {
+        return chatFilters;
+    }
+
+    public boolean doDiscordIntegration() {
+        return doDiscordIntegration;
+    }
+
+    public Map<String, URL> getWebhookUrls() {
+        return webhookUrls;
+    }
+
+    public Webhook.Format getWebhookMessageFormat() {
+        return webhookFormat;
+    }
+
+    public Map<String, String> getServerNameReplacement() {
+        return serverNameReplacement;
     }
 }

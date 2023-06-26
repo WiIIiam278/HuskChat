@@ -17,31 +17,20 @@
  *  limitations under the License.
  */
 
-package net.william278.huskchat.bukkit;
+package net.william278.huskchat.placeholders;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import net.william278.huskchat.player.Player;
+import net.william278.papiproxybridge.api.PlaceholderAPI;
+import org.jetbrains.annotations.NotNull;
 
-//todo Hook into plugin messages and handle PlaceholderAPI integration
-public class HuskChatBukkit extends JavaPlugin {
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
-    private static HuskChatBukkit instance;
-
-    public static HuskChatBukkit getInstance() {
-        return instance;
-    }
-
+public class PAPIProxyBridgeReplacer implements PlaceholderReplacer {
     @Override
-    public void onLoad() {
-        instance = this;
-    }
-
-    @Override
-    public void onEnable() {
-        getLogger().severe("HuskChat needs to be installed on the BungeeCord or Velocity server!");
-    }
-
-    @Override
-    public void onDisable() {
-
+    public CompletableFuture<String> formatPlaceholders(@NotNull String message, @NotNull Player player) {
+        final PlaceholderAPI api = PlaceholderAPI.getInstance();
+        final UUID uuid = player.getUuid();
+        return api.formatPlaceholders(message, uuid).toCompletableFuture();
     }
 }

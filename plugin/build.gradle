@@ -4,7 +4,6 @@ plugins {
 }
 
 dependencies {
-    implementation project(path: ':bukkit', configuration: 'shadow')
     implementation project(path: ':bungee', configuration: 'shadow')
     implementation project(path: ':velocity', configuration: 'shadow')
 }

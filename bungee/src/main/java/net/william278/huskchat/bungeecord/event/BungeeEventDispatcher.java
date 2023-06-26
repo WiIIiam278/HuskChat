@@ -25,8 +25,9 @@ import net.william278.huskchat.event.IBroadcastMessageEvent;
 import net.william278.huskchat.event.IChatMessageEvent;
 import net.william278.huskchat.event.IPrivateMessageEvent;
 import net.william278.huskchat.player.Player;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class BungeeEventDispatcher implements EventDispatcher {
@@ -38,22 +39,22 @@ public class BungeeEventDispatcher implements EventDispatcher {
 
     // In order to keep compatibility with the Velocity implementation, the Bungee events also return CompletableFuture
     @Override
-    public CompletableFuture<IChatMessageEvent> dispatchChatMessageEvent(Player sender, String message, String channelId) {
-        CompletableFuture<IChatMessageEvent> completableFuture = new CompletableFuture<>();
+    public CompletableFuture<IChatMessageEvent> dispatchChatMessageEvent(@NotNull Player sender, @NotNull String message, @NotNull String channelId) {
+        final CompletableFuture<IChatMessageEvent> completableFuture = new CompletableFuture<>();
         completableFuture.complete(server.getPluginManager().callEvent(new ChatMessageEvent(sender, message, channelId)));
         return completableFuture;
     }
 
     @Override
-    public CompletableFuture<IPrivateMessageEvent> dispatchPrivateMessageEvent(Player sender, ArrayList<Player> receivers, String message) {
-        CompletableFuture<IPrivateMessageEvent> completableFuture = new CompletableFuture<>();
+    public CompletableFuture<IPrivateMessageEvent> dispatchPrivateMessageEvent(@NotNull Player sender, @NotNull List<Player> receivers, @NotNull String message) {
+        final CompletableFuture<IPrivateMessageEvent> completableFuture = new CompletableFuture<>();
         completableFuture.complete(server.getPluginManager().callEvent(new PrivateMessageEvent(sender, receivers, message)));
         return completableFuture;
     }
 
     @Override
-    public CompletableFuture<IBroadcastMessageEvent> dispatchBroadcastMessageEvent(Player sender, String message) {
-        CompletableFuture<IBroadcastMessageEvent> completableFuture = new CompletableFuture<>();
+    public CompletableFuture<IBroadcastMessageEvent> dispatchBroadcastMessageEvent(@NotNull Player sender, @NotNull String message) {
+        final CompletableFuture<IBroadcastMessageEvent> completableFuture = new CompletableFuture<>();
         completableFuture.complete(server.getPluginManager().callEvent(new BroadcastMessageEvent(sender, message)));
         return completableFuture;
     }

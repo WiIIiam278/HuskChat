@@ -23,9 +23,13 @@ import net.william278.huskchat.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public interface IBroadcastMessageEvent extends EventBase {
+
+    @NotNull
     Player getSender();
+    @NotNull
     String getMessage();
 
     void setSender(@NotNull Player sender);
     void setMessage(@NotNull String message);
+
 }

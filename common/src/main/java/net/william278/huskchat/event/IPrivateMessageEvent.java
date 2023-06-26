@@ -22,14 +22,20 @@ package net.william278.huskchat.event;
 import net.william278.huskchat.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface IPrivateMessageEvent extends EventBase {
+
+    @NotNull
     Player getSender();
-    ArrayList<Player> getRecipients();
+    @NotNull
+    List<Player> getRecipients();
+    @NotNull
     String getMessage();
 
     void setSender(@NotNull Player sender);
-    void setRecipients(@NotNull ArrayList<Player> Recipients);
+    @SuppressWarnings("unused")
+    void setRecipients(@NotNull List<Player> Recipients);
     void setMessage(@NotNull String message);
+
 }

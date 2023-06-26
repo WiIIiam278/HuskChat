@@ -20,12 +20,17 @@
 package net.william278.huskchat.event;
 
 import net.william278.huskchat.player.Player;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface EventDispatcher {
-    CompletableFuture<IChatMessageEvent> dispatchChatMessageEvent(Player player, String message, String channelId);
-    CompletableFuture<IPrivateMessageEvent> dispatchPrivateMessageEvent(Player sender, ArrayList<Player> receivers, String message);
-    CompletableFuture<IBroadcastMessageEvent> dispatchBroadcastMessageEvent(Player sender, String message);
+
+    CompletableFuture<IChatMessageEvent> dispatchChatMessageEvent(@NotNull Player player, @NotNull String message, @NotNull String channelId);
+
+    CompletableFuture<IPrivateMessageEvent> dispatchPrivateMessageEvent(@NotNull Player sender, @NotNull List<Player> receivers, @NotNull String message);
+
+    CompletableFuture<IBroadcastMessageEvent> dispatchBroadcastMessageEvent(@NotNull Player sender, @NotNull String message);
+
 }

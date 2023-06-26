@@ -17,22 +17,23 @@
  *  limitations under the License.
  */
 
-package net.william278.huskchat.util;
+package net.william278.huskchat.replacer;
 
-import java.util.logging.Level;
+import net.william278.huskchat.filter.ChatFilter;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Logger interface to allow for implementation of different logger platforms used by Bungee and Velocity
+ * A special kind of {@link ChatFilter} that can modify the contents of a message
  */
-public interface Logger {
+public abstract class ReplacerFilter extends ChatFilter {
 
-    void log(Level level, String message, Exception e);
+    /**
+     * Replace the input message from the user
+     *
+     * @param message The input message
+     * @return The output - replaced message
+     */
+    @NotNull
+    public abstract String replace(@NotNull String message);
 
-    void log(Level level, String message);
-
-    void info(String message);
-
-    void severe(String message);
-
-    void config(String message);
 }

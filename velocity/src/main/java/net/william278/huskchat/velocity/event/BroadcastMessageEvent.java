@@ -32,12 +32,14 @@ public class BroadcastMessageEvent extends VelocityEvent implements IBroadcastMe
         this.message = message;
     }
 
+    @NotNull
     @Override
     public Player getSender() {
         return sender;
     }
 
     @Override
+    @NotNull
     public String getMessage() {
         return message;
     }

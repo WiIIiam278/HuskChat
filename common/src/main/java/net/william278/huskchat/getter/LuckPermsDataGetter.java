@@ -21,9 +21,10 @@ package net.william278.huskchat.getter;
 
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
-import net.luckperms.api.cacheddata.CachedDataManager;
+import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
 import net.william278.huskchat.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -37,59 +38,79 @@ public class LuckPermsDataGetter extends DataGetter {
 
     public LuckPermsDataGetter() {
         super();
-        api = LuckPermsProvider.get();
+        this.api = LuckPermsProvider.get();
     }
 
     @Override
-    public String getPlayerFullName(Player player) {
-        User user = getUser(player.getUuid());
-        if (user == null) return player.getName();
-        final CachedDataManager cachedData = user.getCachedData();
+    public String getPlayerFullName(@NotNull Player player) {
+        return getUser(player.getUuid())
+                .map(User::getCachedData).map(data -> {
+                    final StringBuilder fullName = new StringBuilder();
 
-        StringBuilder fullName = new StringBuilder();
+                    final String prefix = data.getMetaData().getPrefix();
+                    if (prefix != null) {
+                        fullName.append(prefix);
+                    }
 
-        final String prefix = cachedData.getMetaData().getPrefix();
-        if (prefix != null) {
-            fullName.append(prefix);
-        }
-        fullName.append(player.getName());
-        final String suffix = cachedData.getMetaData().getSuffix();
-        if (suffix != null) {
-            fullName.append(suffix);
-        }
-        return fullName.toString();
+                    fullName.append(player.getName());
+
+                    final String suffix = data.getMetaData().getSuffix();
+                    if (suffix != null) {
+                        fullName.append(suffix);
+                    }
+
+                    return fullName.toString();
+                })
+                .orElse(player.getName());
     }
 
     @Override
-    public String getPlayerName(Player player) {
+    public String getPlayerName(@NotNull Player player) {
         return player.getName();
     }
 
     @Override
-    public Optional<String> getPlayerPrefix(Player player) {
-        User user = getUser(player.getUuid());
-        if (user == null) return Optional.empty();
-
-        final String prefix = user.getCachedData().getMetaData().getPrefix();
-        if (prefix != null) {
-            return Optional.of(prefix);
-        }
-        return Optional.empty();
+    public Optional<String> getPlayerPrefix(@NotNull Player player) {
+        return getUser(player.getUuid()).flatMap(user -> Optional.ofNullable(
+                user.getCachedData().getMetaData().getPrefix()
+        ));
     }
 
     @Override
-    public Optional<String> getPlayerSuffix(Player player) {
-        User user = getUser(player.getUuid());
-        if (user == null) return Optional.empty();
-
-        final String suffix = user.getCachedData().getMetaData().getSuffix();
-        if (suffix != null) {
-            return Optional.of(suffix);
-        }
-        return Optional.empty();
+    public Optional<String> getPlayerSuffix(@NotNull Player player) {
+        return getUser(player.getUuid()).flatMap(user -> Optional.ofNullable(
+                user.getCachedData().getMetaData().getSuffix()
+        ));
     }
 
-    private User getUser(UUID uuid) {
-        return api.getUserManager().getUser(uuid);
+    @Override
+    public Optional<String> getPlayerGroupName(@NotNull Player player) {
+        return getUser(player.getUuid()).flatMap(user -> {
+            final Group group = api.getGroupManager().getGroup(user.getPrimaryGroup());
+            if (group == null) {
+                return Optional.empty();
+            }
+            return Optional.of(group.getName());
+        });
+    }
+
+    @Override
+    public Optional<String> getPlayerGroupDisplayName(@NotNull Player player) {
+        return getUser(player.getUuid()).flatMap(user -> {
+            final Group group = api.getGroupManager().getGroup(user.getPrimaryGroup());
+            if (group == null) {
+                return Optional.empty();
+            }
+            if (group.getDisplayName() == null) {
+                return Optional.of(group.getName());
+            }
+            return Optional.of(group.getDisplayName());
+        });
+
+
+    }
+
+    private Optional<User> getUser(@NotNull UUID uuid) {
+        return Optional.ofNullable(api.getUserManager().getUser(uuid));
     }
 }

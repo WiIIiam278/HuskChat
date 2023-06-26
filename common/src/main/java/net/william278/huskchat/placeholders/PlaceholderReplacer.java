@@ -17,31 +17,15 @@
  *  limitations under the License.
  */
 
-package net.william278.huskchat.placeholderparser;
+package net.william278.huskchat.placeholders;
 
-import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.player.Player;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public interface Placeholders {
+public interface PlaceholderReplacer {
 
-    public static String replace(Player player,String stringToParse, HuskChat implementingPlugin) {
-
-        // Set placeholders
-        for(Placeholders parser : implementingPlugin.getParsers()) {
-            final String finalMessage = stringToParse;
-            CompletableFuture<String> completableFuture = CompletableFuture
-                    .supplyAsync(() -> parser.parsePlaceholders(finalMessage, player))
-                    .thenApplyAsync(result -> result.join());
-            stringToParse = completableFuture.join();
-        }
-
-
-        return stringToParse;
-    }
-
-    public CompletableFuture<String> parsePlaceholders(String stringToParse, Player player);
+    CompletableFuture<String> formatPlaceholders(@NotNull String message, @NotNull Player player);
 
 }

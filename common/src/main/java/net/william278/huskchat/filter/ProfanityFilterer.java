@@ -61,7 +61,7 @@ public class ProfanityFilterer extends ChatFilter {
     }
 
     @Override
-    public boolean isAllowed(Player player, String message) {
+    public boolean isAllowed(@NotNull Player player, @NotNull String message) {
         try (final ProfanityChecker checker = builder.build()) {
             return !checker.isProfane(message);
         } catch (UnsatisfiedLinkError e) {
@@ -71,11 +71,13 @@ public class ProfanityFilterer extends ChatFilter {
     }
 
     @Override
+    @NotNull
     public String getFailureErrorMessageId() {
         return "error_chat_filter_profanity";
     }
 
     @Override
+    @NotNull
     public String getFilterIgnorePermission() {
         return "huskchat.ignore_filters.profanity";
     }

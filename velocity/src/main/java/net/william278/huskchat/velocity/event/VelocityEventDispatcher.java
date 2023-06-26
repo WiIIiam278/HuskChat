@@ -25,8 +25,9 @@ import net.william278.huskchat.event.IBroadcastMessageEvent;
 import net.william278.huskchat.event.IChatMessageEvent;
 import net.william278.huskchat.event.IPrivateMessageEvent;
 import net.william278.huskchat.player.Player;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class VelocityEventDispatcher implements EventDispatcher {
@@ -37,17 +38,17 @@ public class VelocityEventDispatcher implements EventDispatcher {
     }
 
     @Override
-    public CompletableFuture<IChatMessageEvent> dispatchChatMessageEvent(Player player, String message, String channelId) {
+    public CompletableFuture<IChatMessageEvent> dispatchChatMessageEvent(@NotNull Player player, @NotNull String message, @NotNull String channelId) {
         return server.getEventManager().fire(new ChatMessageEvent(player, message, channelId));
     }
 
     @Override
-    public CompletableFuture<IPrivateMessageEvent> dispatchPrivateMessageEvent(Player sender, ArrayList<Player> receivers, String message) {
+    public CompletableFuture<IPrivateMessageEvent> dispatchPrivateMessageEvent(@NotNull Player sender, @NotNull List<Player> receivers, @NotNull String message) {
         return server.getEventManager().fire(new PrivateMessageEvent(sender, receivers, message));
     }
 
     @Override
-    public CompletableFuture<IBroadcastMessageEvent> dispatchBroadcastMessageEvent(Player sender, String message) {
+    public CompletableFuture<IBroadcastMessageEvent> dispatchBroadcastMessageEvent(@NotNull Player sender, @NotNull String message) {
         return server.getEventManager().fire(new BroadcastMessageEvent(sender, message));
     }
 }

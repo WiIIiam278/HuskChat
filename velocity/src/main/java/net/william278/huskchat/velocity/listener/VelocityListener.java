@@ -23,16 +23,18 @@ import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.event.player.ServerConnectedEvent;
+import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.listener.PlayerListener;
 import net.william278.huskchat.message.ChatMessage;
 import net.william278.huskchat.player.Player;
-import net.william278.huskchat.player.PlayerCache;
-import net.william278.huskchat.velocity.HuskChatVelocity;
 import net.william278.huskchat.velocity.player.VelocityPlayer;
+import org.jetbrains.annotations.NotNull;
 
 public class VelocityListener extends PlayerListener {
 
-    private static final HuskChatVelocity plugin = HuskChatVelocity.getInstance();
+    public VelocityListener(@NotNull HuskChat plugin) {
+        super(plugin);
+    }
 
     @Subscribe(order = PostOrder.LAST)
     public void onPlayerChat(PlayerChatEvent e) {
@@ -40,8 +42,8 @@ public class VelocityListener extends PlayerListener {
             return;
         }
 
-        final Player player = VelocityPlayer.adaptCrossPlatform(e.getPlayer());
-        boolean shouldCancel = new ChatMessage(PlayerCache.getPlayerChannel(player.getUuid()),
+        final Player player = VelocityPlayer.adapt(e.getPlayer());
+        boolean shouldCancel = new ChatMessage(plugin.getPlayerCache().getPlayerChannel(player.getUuid()),
                 player, e.getMessage(), plugin)
                 .dispatch();
 
@@ -53,7 +55,8 @@ public class VelocityListener extends PlayerListener {
     @Subscribe
     public void onPlayerChangeServer(ServerConnectedEvent e) {
         final String server = e.getServer().getServerInfo().getName();
-        final VelocityPlayer player = VelocityPlayer.adaptCrossPlatform(e.getPlayer());
-        handlePlayerSwitchServer(player, server, plugin);
+        final VelocityPlayer player = VelocityPlayer.adapt(e.getPlayer());
+        handlePlayerSwitchServer(player, server);
     }
+
 }

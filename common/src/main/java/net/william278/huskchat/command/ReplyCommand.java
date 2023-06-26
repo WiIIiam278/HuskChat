@@ -20,67 +20,71 @@
 package net.william278.huskchat.command;
 
 import net.william278.huskchat.HuskChat;
-import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.message.PrivateMessage;
 import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class ReplyCommand extends CommandBase {
 
-    private final static String PERMISSION = "huskchat.command.msg.reply";
-
-    public ReplyCommand(HuskChat implementor) {
-        super(Settings.replyCommandAliases.get(0), PERMISSION, implementor, Settings.getAliases(Settings.replyCommandAliases));
+    public ReplyCommand(@NotNull HuskChat plugin) {
+        super(plugin.getSettings().getReplyCommandAliases(), "<message>", plugin);
     }
 
     @Override
-    public void onExecute(Player player, String[] args) {
-        if (player.hasPermission(permission)) {
+    public void onExecute(@NotNull Player player, @NotNull String[] args) {
+        if (player.hasPermission(getPermission())) {
             if (args.length >= 1) {
-                final Optional<HashSet<UUID>> lastMessengers = PlayerCache.getLastMessengers(player.getUuid());
+                final Optional<Set<UUID>> lastMessengers = PlayerCache.getLastMessengers(player.getUuid());
                 if (lastMessengers.isEmpty()) {
-                    implementor.getMessageManager().sendMessage(player, "error_reply_no_messages");
+                    plugin.getLocales().sendMessage(player, "error_reply_no_messages");
                     return;
                 }
 
                 final ArrayList<String> lastPlayers = new ArrayList<>();
                 for (UUID lastMessenger : lastMessengers.get()) {
                     if (ConsolePlayer.isConsolePlayer(lastMessenger)) {
-                        lastPlayers.add(ConsolePlayer.adaptConsolePlayer(implementor).getName());
+                        lastPlayers.add(ConsolePlayer.adaptConsolePlayer(plugin).getName());
                     } else {
-                        implementor.getPlayer(lastMessenger).ifPresent(onlineMessenger -> lastPlayers.add(onlineMessenger.getName()));
+                        plugin.getPlayer(lastMessenger).ifPresent(onlineMessenger -> lastPlayers.add(onlineMessenger.getName()));
                     }
                 }
 
                 if (lastPlayers.isEmpty()) {
                     if (lastMessengers.get().size() > 1) {
-                        implementor.getMessageManager().sendMessage(player, "error_reply_none_online");
+                        plugin.getLocales().sendMessage(player, "error_reply_none_online");
                     } else {
-                        implementor.getMessageManager().sendMessage(player, "error_reply_not_online");
+                        plugin.getLocales().sendMessage(player, "error_reply_not_online");
                     }
                     return;
                 }
 
-                StringJoiner message = new StringJoiner(" ");
+                final StringJoiner message = new StringJoiner(" ");
                 for (String arg : args) {
                     message.add(arg);
                 }
 
                 final String messageToSend = message.toString();
-                new PrivateMessage(player, lastPlayers, messageToSend, implementor).dispatch();
+                new PrivateMessage(player, lastPlayers, messageToSend, plugin).dispatch();
             } else {
-                implementor.getMessageManager().sendMessage(player, "error_invalid_syntax", "/r <message>");
+                plugin.getLocales().sendMessage(player, "error_invalid_syntax", "/r <message>");
             }
         } else {
-            implementor.getMessageManager().sendMessage(player, "error_no_permission");
+            plugin.getLocales().sendMessage(player, "error_no_permission");
         }
     }
 
     @Override
-    public List<String> onTabComplete(Player player, String[] args) {
+    @NotNull
+    public String getPermission() {
+        return "huskchat.command.msg.reply";
+    }
+
+    @Override
+    public List<String> onTabComplete(@NotNull Player player, @NotNull String[] args) {
         return Collections.emptyList();
     }
 

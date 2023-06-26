@@ -5,13 +5,14 @@ You can make use of [MineDown formatting](https://github.com/Phoenix616/MineDown
 make use of advanced text effects such as gradients. You can embed this formatting within the prefix and suffix contents of LuckPerms groups as well.
 
 ## Placeholders
-Within channel formats you can make use of the following placeholders, which will be replaced with the formatted text. Please note PlaceholderAPI placeholders are not supported, as PlaceholderAPI is a backend (Spigot) plugin and does not run on the proxy layer.
+Within channel formats you can make use of the following placeholders, which will be replaced with the formatted text.
 
 ### Regular placeholders
 * `%name%` - Username
-* `%fullname%` - LuckPerms prefix, username & LuckPerms suffix
-* `%prefix%` - LuckPerms prefix
-* `%suffix%` - LuckPerms suffix
+* `%fullname%` - Role prefix, player username & role suffix
+* `%prefix%` - Role prefix
+* `%suffix%` - Role suffix
+* `%displayname%` - 
 * `%ping%` - User's ping
 * `%uuid%` - User's uuid
 * `%servername%` - Server the user is on
@@ -27,6 +28,9 @@ These display the current system time.
 * `%day%` - dd
 * `%month%` - MM
 * `%year%` - yyyy
+
+### PlaceholderAPI support
+By installing [PAPIProxyBridge](https://modrinth.com/plugin/papiproxybridge) on both your proxy (Bungee or Velocity) and backend (Paper or Fabric) servers, you can use PlaceholderAPI placeholders in channel and message formats.
 
 ### Private message placeholders
 In private messages, the placeholders are applied to the sender of the message for inbound messages, and the receiver for outbound messages. You can use all placeholders above after the `sender_` or `receiver_` prefix. (e.g. `%sender_(placeholder)%` and `%receiver_(placeholder)%`).

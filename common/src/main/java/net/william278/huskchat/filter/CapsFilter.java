@@ -20,6 +20,7 @@
 package net.william278.huskchat.filter;
 
 import net.william278.huskchat.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A {@link ChatFilter} that filters against players using too many caps in their message
@@ -33,7 +34,7 @@ public class CapsFilter extends ChatFilter {
     }
 
     @Override
-    public boolean isAllowed(Player player, String message) {
+    public boolean isAllowed(@NotNull Player player, @NotNull String message) {
         double messageLength = message.length();
         if (messageLength <= 5) {
             return true;
@@ -49,11 +50,13 @@ public class CapsFilter extends ChatFilter {
     }
 
     @Override
+    @NotNull
     public String getFailureErrorMessageId() {
         return "error_chat_filter_caps";
     }
 
     @Override
+    @NotNull
     public String getFilterIgnorePermission() {
         return "huskchat.ignore_filters.caps";
     }

@@ -21,30 +21,35 @@ package net.william278.huskchat.listener;
 
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
-import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.player.Player;
-import net.william278.huskchat.player.PlayerCache;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public abstract class PlayerListener {
+
+    protected final HuskChat plugin;
+
+    public PlayerListener(@NotNull HuskChat plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * Handle a player switching server
      *
      * @param player      The player changing server
      * @param newServer   The name of the server they are changing to
-     * @param implementor The implementing plugin
      */
-    public final void handlePlayerSwitchServer(Player player, String newServer, HuskChat implementor) {
-        if (Settings.serverDefaultChannels.containsKey(newServer)) {
-            PlayerCache.switchPlayerChannel(player, Settings.serverDefaultChannels.get(newServer),
-                    implementor.getMessageManager());
+    public final void handlePlayerSwitchServer(Player player, String newServer) {
+        final Map<String, String> defaultChannels = plugin.getSettings().getServerDefaultChannels();
+        if (defaultChannels.containsKey(newServer)) {
+            plugin.getPlayerCache().switchPlayerChannel(player, defaultChannels.get(newServer));
         } else {
-            for (Channel channel : Settings.channels.values()) {
-                if (channel.id.equalsIgnoreCase(PlayerCache.getPlayerChannel(player.getUuid()))) {
-                    for (String restrictedServer : channel.restrictedServers) {
+            for (Channel channel : plugin.getSettings().getChannels().values()) {
+                if (channel.getId().equalsIgnoreCase(plugin.getPlayerCache().getPlayerChannel(player.getUuid()))) {
+                    for (String restrictedServer : channel.getRestrictedServers()) {
                         if (restrictedServer.equalsIgnoreCase(newServer)) {
-                            PlayerCache.switchPlayerChannel(player, Settings.defaultChannel,
-                                    implementor.getMessageManager());
+                            plugin.getPlayerCache().switchPlayerChannel(player, plugin.getSettings().getDefaultChannel());
                             break;
                         }
                     }

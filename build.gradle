@@ -62,7 +62,7 @@ subprojects {
         from '../LICENSE'
     }
 
-    if (['bukkit', 'bungee', 'velocity', 'plugin'].contains(project.name)) {
+    if (['bungee', 'velocity', 'plugin'].contains(project.name)) {
         shadowJar {
             destinationDirectory.set(file("$rootDir/target"))
             archiveClassifier.set('')

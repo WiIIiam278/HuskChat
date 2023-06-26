@@ -1,0 +1,16 @@
+{
+  "avatar_url": "https://william278.net/images/icons/huskchat.png",
+  "username": "HuskChat",
+  "content": null,
+  "embeds": [
+    {
+      "description": "{CHAT_MESSAGE}",
+      "color": 64410,
+      "footer": {
+        "text": "{SENDER_USERNAME} • {SENDER_CHANNEL}",
+        "icon_url": "https://crafatar.com/avatars/{SENDER_UUID}?size=64"
+      },
+      "timestamp": "{CURRENT_TIMESTAMP}"
+    }
+  ]
+}

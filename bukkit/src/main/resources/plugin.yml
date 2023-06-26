@@ -1,8 +1,0 @@
-name: 'HuskChat'
-version: '${version}'
-description: '${description}'
-author: 'William278'
-main: 'net.william278.huskchat.bukkit.HuskChatBukkit'
-api-version: 1.16
-depend:
-  - 'PlaceholderAPI'

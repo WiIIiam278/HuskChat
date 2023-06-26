@@ -20,6 +20,7 @@
 package net.william278.huskchat.filter;
 
 import net.william278.huskchat.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
 
@@ -34,16 +35,18 @@ public class AsciiFilter extends ChatFilter {
     private final Pattern asciiPattern = Pattern.compile("^[\\u0000-\\u007F]*$");
 
     @Override
-    public boolean isAllowed(Player player, String message) {
+    public boolean isAllowed(@NotNull Player player, @NotNull String message) {
         return asciiPattern.matcher(message).matches();
     }
 
     @Override
+    @NotNull
     public String getFailureErrorMessageId() {
         return "error_chat_filter_ascii";
     }
 
     @Override
+    @NotNull
     public String getFilterIgnorePermission() {
         return "huskchat.ignore_filters.ascii";
     }

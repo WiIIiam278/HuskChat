@@ -42,10 +42,12 @@ public class TestPlayer implements Player {
     }
 
     @Override
+    @NotNull
     public String getName() {
         return name;
     }
 
+    @NotNull
     @Override
     public UUID getUuid() {
         return uuid;
@@ -57,6 +59,7 @@ public class TestPlayer implements Player {
     }
 
     @Override
+    @NotNull
     public String getServerName() {
         return TEST_PLAYER_SERVER;
     }
