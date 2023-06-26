@@ -23,11 +23,17 @@ import net.william278.huskchat.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public interface IChatMessageEvent extends EventBase {
+
+    @NotNull
     Player getSender();
+    @NotNull
     String getMessage();
+    @NotNull
     String getChannelId();
 
     void setSender(@NotNull Player sender);
     void setMessage(@NotNull String message);
+    @SuppressWarnings("unused")
     void setChannelId(@NotNull String channelId);
+
 }

@@ -17,9 +17,10 @@
  *  limitations under the License.
  */
 
-package net.william278.huskchat.filter.replacer;
+package net.william278.huskchat.replacer;
 
 import net.william278.huskchat.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -39,7 +40,8 @@ public class EmojiReplacer extends ReplacerFilter {
     }
 
     @Override
-    public String replace(String message) {
+    @NotNull
+    public String replace(@NotNull String message) {
         String[] words = message.split(" ");
         StringJoiner replacedMessage = new StringJoiner(" ");
         for (String word : words) {
@@ -62,16 +64,18 @@ public class EmojiReplacer extends ReplacerFilter {
     }
 
     @Override
-    public boolean isAllowed(Player sender, String message) {
+    public boolean isAllowed(@NotNull Player sender, @NotNull String message) {
         return true;
     }
 
     @Override
+    @NotNull
     public String getFailureErrorMessageId() {
-        return null;
+        throw new UnsupportedOperationException("EmojiReplacer does not support failure messages");
     }
 
     @Override
+    @NotNull
     public String getFilterIgnorePermission() {
         return "huskchat.ignore_filters.emoji_replacer";
     }

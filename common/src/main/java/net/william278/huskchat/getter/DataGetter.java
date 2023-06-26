@@ -20,6 +20,7 @@
 package net.william278.huskchat.getter;
 
 import net.william278.huskchat.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -28,12 +29,16 @@ import java.util.Optional;
  */
 public abstract class DataGetter {
 
-    public abstract String getPlayerFullName(Player player);
+    public abstract String getPlayerFullName(@NotNull Player player);
 
-    public abstract String getPlayerName(Player player);
+    public abstract String getPlayerName(@NotNull Player player);
 
-    public abstract Optional<String> getPlayerPrefix(Player player);
+    public abstract Optional<String> getPlayerPrefix(@NotNull Player player);
 
-    public abstract Optional<String> getPlayerSuffix(Player player);
+    public abstract Optional<String> getPlayerSuffix(@NotNull Player player);
+
+    public abstract Optional<String> getPlayerGroupName(@NotNull Player player);
+
+    public abstract Optional<String> getPlayerGroupDisplayName(@NotNull Player player);
 
 }

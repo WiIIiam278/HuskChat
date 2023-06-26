@@ -35,16 +35,19 @@ public class ChatMessageEvent extends VelocityEvent implements IChatMessageEvent
     }
 
     @Override
+    @NotNull
     public Player getSender() {
         return sender;
     }
 
     @Override
+    @NotNull
     public String getMessage() {
         return message;
     }
 
     @Override
+    @NotNull
     public String getChannelId() {
         return channelId;
     }

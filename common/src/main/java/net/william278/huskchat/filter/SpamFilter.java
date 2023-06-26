@@ -20,6 +20,7 @@
 package net.william278.huskchat.filter;
 
 import net.william278.huskchat.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ public class SpamFilter extends ChatFilter {
     }
 
     @Override
-    public boolean isAllowed(Player player, String message) {
+    public boolean isAllowed(@NotNull Player player, @NotNull String message) {
         if (!userMessageQueues.containsKey(player.getUuid())) {
             userMessageQueues.put(player.getUuid(), new LinkedList<>());
         }
@@ -65,11 +66,13 @@ public class SpamFilter extends ChatFilter {
     }
 
     @Override
+    @NotNull
     public String getFailureErrorMessageId() {
         return "error_chat_filter_spam";
     }
 
     @Override
+    @NotNull
     public String getFilterIgnorePermission() {
         return "huskchat.ignore_filters.spam";
     }

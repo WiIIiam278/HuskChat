@@ -21,11 +21,10 @@ package net.william278.huskchat.command;
 
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
-import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.message.ChatMessage;
 import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
-import net.william278.huskchat.player.PlayerCache;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,49 +32,52 @@ import java.util.StringJoiner;
 import java.util.logging.Level;
 
 public class ShortcutCommand extends CommandBase {
-
-    private final static String PERMISSION = "huskchat.command.channel";
-
     private final String channelId;
 
-    public ShortcutCommand(String command, String channelId, HuskChat implementor) {
-        super(command, PERMISSION, implementor);
+    public ShortcutCommand(@NotNull String command, @NotNull String channelId, @NotNull HuskChat plugin) {
+        super(List.of(command), "[message]", plugin);
         this.channelId = channelId;
     }
 
     @Override
-    public void onExecute(Player player, String[] args) {
-        if (player.hasPermission(permission)) {
+    public void onExecute(@NotNull Player player, @NotNull String[] args) {
+        if (player.hasPermission(getPermission())) {
             if (args.length == 0) {
                 // Console can't chat in the same way as players can, it can only use commands.
                 // So no need to allow it to switch channels.
                 if (player instanceof ConsolePlayer) {
-                    implementor.getLoggingAdapter().log(Level.INFO, implementor.getMessageManager().getRawMessage("error_console_switch_channels"));
+                    plugin.log(Level.INFO, plugin.getLocales().getRawMessage("error_console_switch_channels"));
                     return;
                 }
-                PlayerCache.switchPlayerChannel(player, channelId, implementor.getMessageManager());
+                plugin.getPlayerCache().switchPlayerChannel(player, channelId);
             } else {
                 StringJoiner message = new StringJoiner(" ");
                 for (String arg : args) {
                     message.add(arg);
                 }
 
-                Channel channel = Settings.channels.get(channelId);
+                Channel channel = plugin.getSettings().getChannels().get(channelId);
 
-                if (channel.broadcastScope.isPassThrough) {
-                    implementor.getMessageManager().sendMessage(player, "passthrough_shortcut_command_error");
+                if (channel.getBroadcastScope().isPassThrough) {
+                    plugin.getLocales().sendMessage(player, "passthrough_shortcut_command_error");
                     return;
                 }
 
-                new ChatMessage(channelId, player, message.toString(), implementor).dispatch();
+                new ChatMessage(channelId, player, message.toString(), plugin).dispatch();
             }
         } else {
-            implementor.getMessageManager().sendMessage(player, "error_no_permission");
+            plugin.getLocales().sendMessage(player, "error_no_permission");
         }
     }
 
     @Override
-    public List<String> onTabComplete(Player player, String[] args) {
+    @NotNull
+    public String getPermission() {
+        return "huskchat.command.channel";
+    }
+
+    @Override
+    public List<String> onTabComplete(@NotNull Player player, @NotNull String[] args) {
         return Collections.emptyList();
     }
 

@@ -35,11 +35,13 @@ public class ConsolePlayer implements Player {
     }
 
     @Override
+    @NotNull
     public String getName() {
         return consoleUsername;
     }
 
     @Override
+    @NotNull
     public UUID getUuid() {
         return consoleUUID;
     }
@@ -50,6 +52,7 @@ public class ConsolePlayer implements Player {
     }
 
     @Override
+    @NotNull
     public String getServerName() {
         return implementor.getMetaPlatform();
     }
@@ -67,7 +70,7 @@ public class ConsolePlayer implements Player {
     @NotNull
     @Override
     public Audience getAudience() {
-        return implementor.getConsoleAudience();
+        return implementor.getConsole();
     }
 
     /**

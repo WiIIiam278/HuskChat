@@ -32,12 +32,14 @@ public class BroadcastMessageEvent extends BungeeEvent implements IBroadcastMess
         this.message = message;
     }
 
+    @NotNull
     @Override
     public Player getSender() {
         return sender;
     }
 
     @Override
+    @NotNull
     public String getMessage() {
         return message;
     }

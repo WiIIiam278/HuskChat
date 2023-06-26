@@ -25,15 +25,17 @@ import net.md_5.bungee.api.event.ServerSwitchEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
-import net.william278.huskchat.bungeecord.HuskChatBungee;
+import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.bungeecord.player.BungeePlayer;
 import net.william278.huskchat.listener.PlayerListener;
 import net.william278.huskchat.message.ChatMessage;
-import net.william278.huskchat.player.PlayerCache;
+import org.jetbrains.annotations.NotNull;
 
 public class BungeeListener extends PlayerListener implements Listener {
 
-    private static final HuskChatBungee plugin = HuskChatBungee.getInstance();
+    public BungeeListener(@NotNull HuskChat plugin) {
+        super(plugin);
+    }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerChat(ChatEvent e) {
@@ -42,8 +44,8 @@ public class BungeeListener extends PlayerListener implements Listener {
         }
 
         final ProxiedPlayer player = (ProxiedPlayer) e.getSender();
-        boolean shouldCancel = new ChatMessage(PlayerCache.getPlayerChannel(player.getUniqueId()),
-                BungeePlayer.adaptCrossPlatform(player), e.getMessage(), plugin).dispatch();
+        boolean shouldCancel = new ChatMessage(plugin.getPlayerCache().getPlayerChannel(player.getUniqueId()),
+                BungeePlayer.adapt(player), e.getMessage(), plugin).dispatch();
         if (shouldCancel) {
             e.setCancelled(true);
         }
@@ -52,8 +54,8 @@ public class BungeeListener extends PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerChangeServer(ServerSwitchEvent e) {
         final String server = e.getPlayer().getServer().getInfo().getName();
-        final BungeePlayer player = BungeePlayer.adaptCrossPlatform(e.getPlayer());
-        handlePlayerSwitchServer(player, server, plugin);
+        final BungeePlayer player = BungeePlayer.adapt(e.getPlayer());
+        this.handlePlayerSwitchServer(player, server);
     }
 
 }

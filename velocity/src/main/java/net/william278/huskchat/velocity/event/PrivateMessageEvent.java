@@ -23,29 +23,32 @@ import net.william278.huskchat.event.IPrivateMessageEvent;
 import net.william278.huskchat.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class PrivateMessageEvent extends VelocityEvent implements IPrivateMessageEvent {
     private Player sender;
-    private ArrayList<Player> recipients;
+    private List<Player> recipients;
     private String message;
 
-    public PrivateMessageEvent(Player sender, ArrayList<Player> recipients, String message) {
+    public PrivateMessageEvent(@NotNull Player sender, @NotNull List<Player> recipients, @NotNull String message) {
         this.sender = sender;
         this.recipients = recipients;
         this.message = message;
     }
 
     @Override
+    @NotNull
     public Player getSender() {
         return sender;
     }
 
+    @NotNull
     @Override
-    public ArrayList<Player> getRecipients() {
+    public List<Player> getRecipients() {
         return recipients;
     }
 
+    @NotNull
     @Override
     public String getMessage() {
         return message;
@@ -57,7 +60,7 @@ public class PrivateMessageEvent extends VelocityEvent implements IPrivateMessag
     }
 
     @Override
-    public void setRecipients(@NotNull ArrayList<Player> recipients) {
+    public void setRecipients(@NotNull List<Player> recipients) {
         this.recipients = recipients;
     }
 

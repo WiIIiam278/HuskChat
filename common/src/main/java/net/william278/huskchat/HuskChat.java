@@ -19,36 +19,79 @@
 
 package net.william278.huskchat;
 
+import dev.dejvokep.boostedyaml.YamlDocument;
+import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
+import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
+import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
+import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
+import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import net.kyori.adventure.audience.Audience;
-import net.william278.huskchat.discord.WebhookDispatcher;
+import net.william278.huskchat.config.Locales;
+import net.william278.huskchat.config.Settings;
+import net.william278.huskchat.config.Webhook;
 import net.william278.huskchat.event.EventDispatcher;
 import net.william278.huskchat.getter.DataGetter;
-import net.william278.huskchat.message.MessageManager;
-import net.william278.huskchat.placeholderparser.Placeholders;
+import net.william278.huskchat.placeholders.PlaceholderReplacer;
 import net.william278.huskchat.player.Player;
-import net.william278.huskchat.util.Logger;
+import net.william278.huskchat.player.PlayerCache;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 
 public interface HuskChat {
 
     @NotNull
-    MessageManager getMessageManager();
+    Settings getSettings();
+
+    void setSettings(@NotNull Settings settings);
+
+    @NotNull
+    Locales getLocales();
+
+    void setLocales(@NotNull Locales locales);
+
+    default void loadConfig() {
+        try {
+            this.setSettings(new Settings(YamlDocument.create(
+                    new File(getDataFolder(), "config.yml"),
+                    Objects.requireNonNull(getResource("config.yml")),
+                    GeneralSettings.builder().setUseDefaults(false).build(),
+                    LoaderSettings.builder().setAutoUpdate(true).build(),
+                    DumperSettings.builder().setEncoding(DumperSettings.Encoding.UNICODE).build(),
+                    UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build()
+            )));
+            this.setLocales(new Locales(this));
+        } catch (Throwable e) {
+            log(Level.SEVERE, "Failed to load plugin config/locale files", e);
+        }
+    }
 
     @NotNull
     EventDispatcher getEventDispatcher();
 
-    Optional<WebhookDispatcher> getWebhookDispatcher();
+    @NotNull
+    PlayerCache getPlayerCache();
 
-    void reloadSettings();
+    @NotNull
+    List<PlaceholderReplacer> getPlaceholderReplacers();
 
-    void reloadMessages();
+    default CompletableFuture<String> replacePlaceholders(@NotNull Player player, @NotNull String message) {
+        return getPlaceholderReplacers().stream()
+                .map(replacer -> replacer.formatPlaceholders(message, player))
+                .reduce(
+                        CompletableFuture.completedFuture(message),
+                        (a, b) -> a.thenCombine(b, (x, y) -> y)
+                );
+    }
+
+    @NotNull
+    DataGetter getDataGetter();
+
+    Optional<Webhook> getWebhook();
 
     @NotNull
     String getMetaVersion();
@@ -59,25 +102,21 @@ public interface HuskChat {
     @NotNull
     String getMetaPlatform();
 
-    List<Placeholders> getParsers();
+    Optional<Player> getPlayer(@NotNull UUID uuid);
 
-    DataGetter getDataGetter();
-
-    Optional<Player> getPlayer(UUID uuid);
-
-    Optional<Player> matchPlayer(String username);
+    Optional<Player> findPlayer(@NotNull String username);
 
     Collection<Player> getOnlinePlayers();
 
-    Collection<Player> getOnlinePlayersOnServer(Player player);
-
-    Audience getConsoleAudience();
+    Collection<Player> getOnlinePlayersOnServer(@NotNull Player player);
 
     @NotNull
-    Logger getLoggingAdapter();
+    Audience getConsole();
 
     File getDataFolder();
 
-    InputStream getResourceAsStream(String path);
+    InputStream getResource(@NotNull String path);
+
+    void log(@NotNull Level level, @NotNull String message, @NotNull Throwable... throwable);
 
 }

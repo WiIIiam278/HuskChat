@@ -20,9 +20,9 @@
 package net.william278.huskchat.command;
 
 import net.william278.huskchat.HuskChat;
-import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.message.BroadcastMessage;
 import net.william278.huskchat.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,31 +30,29 @@ import java.util.StringJoiner;
 
 public class BroadcastCommand extends CommandBase {
 
-    private final static String PERMISSION = "huskchat.command.broadcast";
-
-    public BroadcastCommand(HuskChat implementor) {
-        super(Settings.broadcastCommandAliases.get(0), PERMISSION, implementor, Settings.getAliases(Settings.broadcastCommandAliases));
+    public BroadcastCommand(@NotNull HuskChat plugin) {
+        super(plugin.getSettings().getBroadcastCommandAliases(), "<message>", plugin);
     }
 
     @Override
-    public void onExecute(Player player, String[] args) {
-        if (player.hasPermission(permission)) {
+    public void onExecute(@NotNull Player player, @NotNull String[] args) {
+        if (player.hasPermission(getPermission())) {
             if (args.length >= 1) {
                 StringJoiner message = new StringJoiner(" ");
                 for (String argument : args) {
                     message.add(argument);
                 }
-                new BroadcastMessage(player, message.toString(), implementor).dispatch();
+                new BroadcastMessage(player, message.toString(), plugin).dispatch();
             } else {
-                implementor.getMessageManager().sendMessage(player, "error_invalid_syntax", "/broadcast <message>");
+                plugin.getLocales().sendMessage(player, "error_invalid_syntax", getUsage());
             }
         } else {
-            implementor.getMessageManager().sendMessage(player, "error_no_permission");
+            plugin.getLocales().sendMessage(player, "error_no_permission");
         }
     }
 
     @Override
-    public List<String> onTabComplete(Player player, String[] args) {
+    public List<String> onTabComplete(@NotNull Player player, @NotNull String[] args) {
         return Collections.emptyList();
     }
 }

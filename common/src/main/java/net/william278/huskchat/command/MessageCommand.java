@@ -20,23 +20,24 @@
 package net.william278.huskchat.command;
 
 import net.william278.huskchat.HuskChat;
-import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.message.PrivateMessage;
 import net.william278.huskchat.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class MsgCommand extends CommandBase {
+public class MessageCommand extends CommandBase {
 
-    private final static String PERMISSION = "huskchat.command.msg";
-
-    public MsgCommand(HuskChat implementor) {
-        super(Settings.messageCommandAliases.get(0), PERMISSION, implementor, Settings.getAliases(Settings.messageCommandAliases));
+    public MessageCommand(@NotNull HuskChat plugin) {
+        super(
+                plugin.getSettings().getMessageCommandAliases(),
+                plugin.getSettings().doGroupMessages() ? "<player(s)> <message>" : "<player> <message>",
+                plugin);
     }
 
     @Override
-    public void onExecute(Player player, String[] args) {
-        if (player.hasPermission(permission)) {
+    public void onExecute(@NotNull Player player, @NotNull String[] args) {
+        if (player.hasPermission(getPermission())) {
             if (args.length >= 2) {
                 StringJoiner message = new StringJoiner(" ");
                 int messageWordCount = 0;
@@ -48,12 +49,12 @@ public class MsgCommand extends CommandBase {
                 }
                 final List<String> targetPlayers = getTargetPlayers(args[0]);
                 final String messageToSend = message.toString();
-                new PrivateMessage(player, targetPlayers, messageToSend, implementor).dispatch();
+                new PrivateMessage(player, targetPlayers, messageToSend, plugin).dispatch();
             } else {
-                implementor.getMessageManager().sendMessage(player, "error_invalid_syntax", "/msg <player> <message>");
+                plugin.getLocales().sendMessage(player, "error_invalid_syntax", getUsage());
             }
         } else {
-            implementor.getMessageManager().sendMessage(player, "error_no_permission");
+            plugin.getLocales().sendMessage(player, "error_no_permission");
         }
     }
 
@@ -66,23 +67,20 @@ public class MsgCommand extends CommandBase {
     }
 
     @Override
-    public List<String> onTabComplete(Player player, String[] args) {
-        if (!player.hasPermission(PERMISSION)) {
-            return Collections.emptyList();
-        }
+    public List<String> onTabComplete(@NotNull Player player, @NotNull String[] args) {
         if (args.length <= 1) {
             final ArrayList<String> userNames = new ArrayList<>();
-            for (Player connectedPlayer : implementor.getOnlinePlayers()) {
+            for (Player connectedPlayer : plugin.getOnlinePlayers()) {
                 if (!player.getUuid().equals(connectedPlayer.getUuid())) {
                     userNames.add(connectedPlayer.getName());
                 }
             }
-            String currentText = (args.length >= 1) ? args[0] : "";
+            String currentText = (args.length == 1) ? args[0] : "";
             String precursoryText = "";
             String[] names = new String[0];
             if (currentText.contains(",")) {
                 names = currentText.split(",");
-                currentText = names[names.length-1];
+                currentText = names[names.length - 1];
 
                 // Names array without the last name
                 String[] previousNames = Arrays.copyOf(names, names.length - 1);
@@ -93,7 +91,7 @@ public class MsgCommand extends CommandBase {
             final ArrayList<String> prependedUsernames = new ArrayList<>();
             for (String username : userNames.stream().filter(val -> val.toLowerCase().startsWith(completionFilter.toLowerCase())).sorted().toList()) {
                 // If the name was added already, don't suggest it again
-                if (names.length != 0 && Arrays.asList(names).stream().anyMatch(name -> name.equalsIgnoreCase(username))) {
+                if (names.length != 0 && Arrays.stream(names).anyMatch(name -> name.equalsIgnoreCase(username))) {
                     continue;
                 }
                 prependedUsernames.add(precursoryText + username);

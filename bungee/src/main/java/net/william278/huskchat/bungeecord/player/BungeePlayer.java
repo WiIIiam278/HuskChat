@@ -23,7 +23,7 @@ import net.kyori.adventure.audience.Audience;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.william278.huskchat.bungeecord.HuskChatBungee;
+import net.william278.huskchat.bungeecord.BungeeHuskChat;
 import net.william278.huskchat.player.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,16 +35,20 @@ import java.util.UUID;
  */
 public class BungeePlayer implements Player {
 
-    private BungeePlayer() {
+    private final BungeeHuskChat plugin = BungeeHuskChat.getInstance();
+    private final ProxiedPlayer player;
+
+    private BungeePlayer(@NotNull ProxiedPlayer player) {
+        this.player = player;
     }
 
-    private ProxiedPlayer player;
-
     @Override
+    @NotNull
     public String getName() {
         return player.getName();
     }
 
+    @NotNull
     @Override
     public UUID getUuid() {
         return player.getUniqueId();
@@ -56,6 +60,7 @@ public class BungeePlayer implements Player {
     }
 
     @Override
+    @NotNull
     public String getServerName() {
         return player.getServer().getInfo().getName();
     }
@@ -73,7 +78,7 @@ public class BungeePlayer implements Player {
     @NotNull
     @Override
     public Audience getAudience() {
-        return HuskChatBungee.getInstance().getAudience().player(player);
+        return plugin.getAudience().player(player);
     }
 
     /**
@@ -82,7 +87,7 @@ public class BungeePlayer implements Player {
      * @param player {@link Player} to adapt
      * @return The {@link ProxiedPlayer} object, {@code null} if they are offline
      */
-    public static Optional<ProxiedPlayer> adaptBungee(Player player) {
+    public static Optional<ProxiedPlayer> toBungee(@NotNull Player player) {
         ProxiedPlayer proxiedPlayer = ProxyServer.getInstance().getPlayer(player.getUuid());
         if (proxiedPlayer != null) {
             return Optional.of(proxiedPlayer);
@@ -97,9 +102,8 @@ public class BungeePlayer implements Player {
      * @param player {@link ProxiedPlayer} to adapt
      * @return The {@link Player} object
      */
-    public static BungeePlayer adaptCrossPlatform(ProxiedPlayer player) {
-        BungeePlayer bungeePlayer = new BungeePlayer();
-        bungeePlayer.player = player;
-        return bungeePlayer;
+    public static BungeePlayer adapt(@NotNull ProxiedPlayer player) {
+        return new BungeePlayer(player);
     }
+
 }

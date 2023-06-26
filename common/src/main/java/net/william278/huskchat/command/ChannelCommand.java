@@ -20,60 +20,59 @@
 package net.william278.huskchat.command;
 
 import net.william278.huskchat.HuskChat;
-import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
-import net.william278.huskchat.player.PlayerCache;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class ChannelCommand extends CommandBase {
 
-    private final static String PERMISSION = "huskchat.command.channel";
-
-    public ChannelCommand(HuskChat implementor) {
-        super(Settings.channelCommandAliases.get(0), PERMISSION, implementor, Settings.getAliases(Settings.channelCommandAliases));
+    public ChannelCommand(@NotNull HuskChat plugin) {
+        super(plugin.getSettings().getChannelCommandAliases(), "<channel>", plugin);
     }
 
     @Override
-    public void onExecute(Player player, String[] args) {
+    public void onExecute(@NotNull Player player, @NotNull String[] args) {
         if (player instanceof ConsolePlayer) {
-            implementor.getLoggingAdapter().log(Level.INFO, implementor.getMessageManager().getRawMessage("error_in_game_only"));
+            plugin.log(Level.INFO, plugin.getLocales().getRawMessage("error_in_game_only"));
             return;
         }
-        if (player.hasPermission(permission)) {
+        if (player.hasPermission(getPermission())) {
             if (args.length == 1) {
-                PlayerCache.switchPlayerChannel(player, args[0], implementor.getMessageManager());
+                plugin.getPlayerCache().switchPlayerChannel(player, args[0]);
             } else {
-                implementor.getMessageManager().sendMessage(player, "error_invalid_syntax", "/channel <channel>");
+                plugin.getLocales().sendMessage(player, "error_invalid_syntax", getUsage());
             }
         } else {
-            implementor.getMessageManager().sendMessage(player, "error_no_permission");
+            plugin.getLocales().sendMessage(player, "error_no_permission");
         }
     }
 
     @Override
-    public List<String> onTabComplete(Player player, String[] args) {
-        if (!player.hasPermission(permission)) {
+    public List<String> onTabComplete(@NotNull Player player, @NotNull String[] args) {
+        if (!player.hasPermission(getPermission())) {
             return Collections.emptyList();
         }
         if (args.length <= 1) {
-            return getChannelsIdsWithSendPermission(player).stream().filter(val ->
+            return getChannelIdsWithSendPermission(player).stream().filter(val ->
                             val.toLowerCase().startsWith((args.length >= 1) ? args[0].toLowerCase() : ""))
                     .sorted().collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
 
-    public HashSet<String> getChannelsIdsWithSendPermission(Player player) {
-        final HashSet<String> channelsWithPermission = new HashSet<>();
-        Settings.channels.forEach((id, channel) -> {
-            if (channel.sendPermission == null || player.hasPermission(channel.sendPermission)) {
-                channelsWithPermission.add(channel.id);
+    @NotNull
+    public Set<String> getChannelIdsWithSendPermission(Player player) {
+        final Set<String> channelsWithPermission = new HashSet<>();
+        plugin.getSettings().getChannels().forEach((id, channel) -> {
+            if (channel.getSendPermission() == null || player.hasPermission(channel.getSendPermission())) {
+                channelsWithPermission.add(channel.getId());
             }
         });
         return channelsWithPermission;

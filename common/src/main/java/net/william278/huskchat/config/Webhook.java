@@ -17,45 +17,57 @@
  *  limitations under the License.
  */
 
-package net.william278.huskchat.discord;
+package net.william278.huskchat.config;
 
-import net.william278.huskchat.config.Settings;
+import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.message.ChatMessage;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public class WebhookDispatcher {
+/**
+ * Represents a discord webhook
+ */
+public class Webhook {
 
-    private final Map<String, URL> channelWebhooks;
+    private final HuskChat plugin;
 
-    private Optional<URL> getChannelWebhook(@NotNull String channelId) {
-        if (channelWebhooks.containsKey(channelId)) {
-            return Optional.of(channelWebhooks.get(channelId));
+    // Get the webhook URL for a channel by its ID
+    private Optional<URL> getWebhookUrl(@NotNull String channelId) {
+        final Map<String, URL> urls = plugin.getSettings().getWebhookUrls();
+        if (urls.containsKey(channelId)) {
+            return Optional.of(urls.get(channelId));
         }
         return Optional.empty();
     }
 
-    public WebhookDispatcher(@NotNull Map<String, URL> channelWebhooks) {
-        this.channelWebhooks = channelWebhooks;
+    public Webhook(@NotNull HuskChat plugin) {
+        this.plugin = plugin;
     }
 
+    /**
+     * Dispatch a {@link ChatMessage} to a discord webhook
+     *
+     * @param message The message to dispatch
+     */
     public void dispatchWebhook(@NotNull ChatMessage message) {
-        CompletableFuture.runAsync(() -> getChannelWebhook(message.targetChannelId).ifPresent(webhookUrl -> {
+        CompletableFuture.runAsync(() -> getWebhookUrl(message.targetChannelId).ifPresent(webhookUrl -> {
             try {
                 final HttpURLConnection webhookConnection = (HttpURLConnection) webhookUrl.openConnection();
                 webhookConnection.setRequestMethod("POST");
                 webhookConnection.setDoOutput(true);
 
-                final byte[] jsonMessage = getChatMessageJson(Settings.webhookMessageFormat, message);
+                final byte[] jsonMessage = getChatMessageJson(plugin.getSettings().getWebhookMessageFormat(), message);
                 final int messageLength = jsonMessage.length;
                 webhookConnection.setFixedLengthStreamingMode(messageLength);
                 webhookConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
@@ -75,10 +87,9 @@ public class WebhookDispatcher {
      * @param format  The discord message format to use
      * @param message The message to format
      * @return the json message as a byte array
-     * @implNote Quotes message will be escaped before dispatch
      */
-    private byte[] getChatMessageJson(@NotNull DiscordMessageFormat format, @NotNull ChatMessage message) {
-        return format.postMessageFormat
+    private byte[] getChatMessageJson(@NotNull Webhook.Format format, @NotNull ChatMessage message) {
+        return format.getPostMessageFormat(plugin)
                 .replace("{SENDER_UUID}", message.sender.getUuid().toString())
                 .replace("{SENDER_CHANNEL}", message.targetChannelId)
                 .replace("{CURRENT_TIMESTAMP}", ZonedDateTime.now()
@@ -90,4 +101,39 @@ public class WebhookDispatcher {
                 .getBytes(StandardCharsets.UTF_8);
     }
 
+    /**
+     * Message format definitions for Discord webhooks
+     */
+    public enum Format {
+
+        EMBEDDED,
+        INLINE;
+
+        /**
+         * Get the discord message format by name if it exists
+         *
+         * @param formatName The name of the message format
+         * @return the {@link Format}
+         */
+        public static Optional<Format> getMessageFormat(@NotNull String formatName) {
+            for (Format format : Format.values()) {
+                if (format.name().equalsIgnoreCase(formatName)) {
+                    return Optional.of(format);
+                }
+            }
+            return Optional.empty();
+        }
+
+        @NotNull
+        public String getPostMessageFormat(@NotNull HuskChat plugin) {
+            try {
+                return new String(plugin.getResource(
+                        "discord/" + name().toLowerCase(Locale.ENGLISH) + "_message.json"
+                ).readAllBytes(), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                throw new IllegalStateException("Unable to load \"" + name() + "\" Discord message format", e);
+            }
+        }
+
+    }
 }

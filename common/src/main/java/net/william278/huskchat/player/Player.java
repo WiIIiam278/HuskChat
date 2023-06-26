@@ -36,6 +36,7 @@ public interface Player {
      *
      * @return the player's name
      */
+    @NotNull
     String getName();
 
     /**
@@ -43,6 +44,7 @@ public interface Player {
      *
      * @return the player {@link UUID}
      */
+    @NotNull
     UUID getUuid();
 
     /**
@@ -57,6 +59,7 @@ public interface Player {
      *
      * @return player's server name
      */
+    @NotNull
     String getServerName();
 
     /**

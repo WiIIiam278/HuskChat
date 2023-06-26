@@ -24,6 +24,7 @@ import net.alpenblock.bungeeperms.PermissionsManager;
 import net.alpenblock.bungeeperms.User;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -40,7 +41,7 @@ public class BungeePermsDataGetter extends DataGetter {
     }
 
     @Override
-    public String getPlayerFullName(Player player) {
+    public String getPlayerFullName(@NotNull Player player) {
         final Optional<String> prefix = getPlayerPrefix(player);
         final Optional<String> suffix = getPlayerSuffix(player);
         return (prefix.isPresent() ? prefix : "") + player.getName()
@@ -48,12 +49,12 @@ public class BungeePermsDataGetter extends DataGetter {
     }
 
     @Override
-    public String getPlayerName(Player player) {
+    public String getPlayerName(@NotNull Player player) {
         return player.getName();
     }
 
     @Override
-    public Optional<String> getPlayerPrefix(Player player) {
+    public Optional<String> getPlayerPrefix(@NotNull Player player) {
         try {
             return Optional.of(permissionsManager.getMainGroup(getUser(player)).getPrefix());
         } catch (NullPointerException e) {
@@ -62,9 +63,27 @@ public class BungeePermsDataGetter extends DataGetter {
     }
 
     @Override
-    public Optional<String> getPlayerSuffix(Player player) {
+    public Optional<String> getPlayerSuffix(@NotNull Player player) {
         try {
             return Optional.of(permissionsManager.getMainGroup(getUser(player)).getSuffix());
+        } catch (NullPointerException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<String> getPlayerGroupName(@NotNull Player player) {
+        try {
+            return Optional.of(permissionsManager.getMainGroup(getUser(player)).getName());
+        } catch (NullPointerException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<String> getPlayerGroupDisplayName(@NotNull Player player) {
+        try {
+            return Optional.of(permissionsManager.getMainGroup(getUser(player)).getDisplay());
         } catch (NullPointerException e) {
             return Optional.empty();
         }

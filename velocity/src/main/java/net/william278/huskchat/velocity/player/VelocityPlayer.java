@@ -22,7 +22,7 @@ package net.william278.huskchat.velocity.player;
 import com.velocitypowered.api.proxy.ServerConnection;
 import net.kyori.adventure.audience.Audience;
 import net.william278.huskchat.player.Player;
-import net.william278.huskchat.velocity.HuskChatVelocity;
+import net.william278.huskchat.velocity.VelocityHuskChat;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -34,18 +34,20 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class VelocityPlayer implements Player {
 
-    private static final HuskChatVelocity plugin = HuskChatVelocity.getInstance();
+    private static final VelocityHuskChat plugin = VelocityHuskChat.getInstance();
+    private final com.velocitypowered.api.proxy.Player player;
 
-    private VelocityPlayer() {
+    private VelocityPlayer(com.velocitypowered.api.proxy.Player player) {
+        this.player = player;
     }
 
-    private com.velocitypowered.api.proxy.Player player;
-
     @Override
+    @NotNull
     public String getName() {
         return player.getUsername();
     }
 
+    @NotNull
     @Override
     public UUID getUuid() {
         return player.getUniqueId();
@@ -57,13 +59,14 @@ public class VelocityPlayer implements Player {
     }
 
     @Override
+    @NotNull
     public String getServerName() {
         AtomicReference<ServerConnection> connection = new AtomicReference<>();
         player.getCurrentServer().ifPresent(connection::set);
         if (connection.get() != null) {
             return connection.get().getServerInfo().getName();
         }
-        return null;
+        return "";
     }
 
     @Override
@@ -93,7 +96,7 @@ public class VelocityPlayer implements Player {
      * @param player {@link Player} to adapt
      * @return The {@link com.velocitypowered.api.proxy.Player} object, {@code null} if they are offline
      */
-    public static Optional<com.velocitypowered.api.proxy.Player> adaptVelocity(@NotNull Player player) {
+    public static Optional<com.velocitypowered.api.proxy.Player> toVelocity(@NotNull Player player) {
         return plugin.getProxyServer().getPlayer(player.getUuid());
     }
 
@@ -104,9 +107,7 @@ public class VelocityPlayer implements Player {
      * @return The {@link Player} object
      */
     @NotNull
-    public static VelocityPlayer adaptCrossPlatform(com.velocitypowered.api.proxy.Player player) {
-        VelocityPlayer velocityPlayer = new VelocityPlayer();
-        velocityPlayer.player = player;
-        return velocityPlayer;
+    public static VelocityPlayer adapt(com.velocitypowered.api.proxy.Player player) {
+        return new VelocityPlayer(player);
     }
 }

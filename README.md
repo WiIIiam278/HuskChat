@@ -33,11 +33,9 @@ It's designed to be easy to configure with an elegant out-of-box setup, while al
 > ⚠️ _Velocity 1.19+ users: Please [see here](https://github.com/WiIIiam278/HuskChat/issues/72) for how to fix players getting kicked for message signing issues!_
 
 ## Features
-**⭐ Use PlaceholderAPI** &mdash; Use more than 500+ Placeholders from [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/) using [PAPIProxyBridge](https://www.spigotmc.org/resources/papiproxybridge.108415/)
-
 **⭐ Works great out of the box** &mdash; Install on your Velocity or BungeeCord-based proxy and use right away
 
-**⭐ Display user roles** &mdash; Hooks with LuckPerms to display user prefixes and suffixes
+**⭐ Placeholder support** &mdash; Hooks with LuckPerms to display user roles, PAPI support via [PAPIProxyBridge](https://william278.net/docs/huskchat/formatting)
 
 **⭐ Private messaging** &mdash; Private messages&mdash;including group DMs&mdash and replying, admin spy features
 
@@ -45,7 +43,7 @@ It's designed to be easy to configure with an elegant out-of-box setup, while al
 
 **⭐ Quick and easy to use** &mdash; Super simple set of [commands](https://william278.net/docs/huskchat/commands). Define channel shortcut commands, too!
 
-**⭐ Advanced profanity checking** &mdash;  Machine learning powered profanity filter
+**⭐ Advanced profanity checking** &mdash; Machine learning powered profanity filter
 
 **⭐ Filters & replacers** &mdash; Customisable spam limiting filter, anti-advertising & special emoji
 

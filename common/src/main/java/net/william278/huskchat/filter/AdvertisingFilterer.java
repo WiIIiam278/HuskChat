@@ -20,6 +20,7 @@
 package net.william278.huskchat.filter;
 
 import net.william278.huskchat.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
 
@@ -52,7 +53,7 @@ public class AdvertisingFilterer extends ChatFilter {
                     // (first & last IP address of each class)
                     "(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])" +
                     "(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}" +
-                    "(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))" +
+                    "\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4])" +
                     "|" +
                     // host & domain names, may end with dot
                     // can be replaced by the shortest alternative
@@ -65,7 +66,7 @@ public class AdvertisingFilterer extends ChatFilter {
                     "[a-z0-9\\u00a1-\\uffff]\\." +
                     ")+" +
                     // TLD identifier name, may end with dot
-                    "(?:[a-z\\u00a1-\\uffff]{2,}\\.?)" +
+                    "[a-z\\u00a1-\\uffff]{2,}\\.?" +
                     ")" +
                     // port number (optional)
                     "(?::\\d{2,5})?" +
@@ -75,16 +76,18 @@ public class AdvertisingFilterer extends ChatFilter {
             Pattern.CASE_INSENSITIVE);
 
     @Override
-    public boolean isAllowed(Player player, String message) {
+    public boolean isAllowed(@NotNull Player player, @NotNull String message) {
         return !(domainPattern.matcher(message).matches());
     }
 
     @Override
+    @NotNull
     public String getFailureErrorMessageId() {
         return "error_chat_filter_advertising";
     }
 
     @Override
+    @NotNull
     public String getFilterIgnorePermission() {
         return "huskchat.ignore_filters.advertising";
     }

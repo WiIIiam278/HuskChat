@@ -20,6 +20,7 @@
 package net.william278.huskchat.filter;
 
 import net.william278.huskchat.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * An abstract representation of a chat filterer
@@ -32,13 +33,14 @@ public abstract class ChatFilter {
      * @param message The user's message
      * @return {@code true} if the filter allows the message to pass; {@code false} otherwise
      */
-    public abstract boolean isAllowed(Player sender, String message);
+    public abstract boolean isAllowed(@NotNull Player sender, @NotNull String message);
 
     /**
      * The ID of the locale to send the player if their message fails the filter
      *
      * @return the failure message ID
      */
+    @NotNull
     public abstract String getFailureErrorMessageId();
 
     /**
@@ -46,5 +48,7 @@ public abstract class ChatFilter {
      *
      * @return filter bypass permission node
      */
+    @NotNull
     public abstract String getFilterIgnorePermission();
+
 }
