@@ -23,14 +23,18 @@ import net.william278.huskchat.player.Player;
 import net.william278.papiproxybridge.api.PlaceholderAPI;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class PAPIProxyBridgeReplacer implements PlaceholderReplacer {
+
+    private final PlaceholderAPI api;
+
+    public PAPIProxyBridgeReplacer() {
+        this.api = PlaceholderAPI.getInstance();
+    }
+
     @Override
     public CompletableFuture<String> formatPlaceholders(@NotNull String message, @NotNull Player player) {
-        final PlaceholderAPI api = PlaceholderAPI.getInstance();
-        final UUID uuid = player.getUuid();
-        return api.formatPlaceholders(message, uuid).toCompletableFuture();
+        return api.formatPlaceholders(message, player.getUuid());
     }
 }
