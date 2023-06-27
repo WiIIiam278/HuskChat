@@ -13,12 +13,12 @@ dependencies {
     api 'net.william278:ProfanityCheckerAPI:2.0.1'
     api 'net.william278:papiproxybridge:1.2.1'
 
-    compileOnly 'net.kyori:adventure-api:4.13.1'
+    compileOnly 'net.kyori:adventure-api:4.14.0'
     compileOnly 'net.luckperms:api:5.4'
     compileOnly 'org.jetbrains:annotations:24.0.1'
 
     testImplementation 'net.william278:ProfanityCheckerAPI:2.0.1'
-    testImplementation 'net.kyori:adventure-api:4.13.1'
+    testImplementation 'net.kyori:adventure-api:4.14.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
 }
