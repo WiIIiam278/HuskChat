@@ -54,7 +54,7 @@ public class ConsolePlayer implements Player {
     @Override
     @NotNull
     public String getServerName() {
-        return implementor.getMetaPlatform();
+        return implementor.getPlatform();
     }
 
     @Override

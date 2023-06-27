@@ -30,8 +30,6 @@
 
 It's designed to be easy to configure with an elegant out-of-box setup, while also being highly configurable, suiting a variety of use cases by allowing you to define channels and manage who can send and receive messages within them.
 
-> ⚠️ _Velocity 1.19+ users: Please [see here](https://github.com/WiIIiam278/HuskChat/issues/72) for how to fix players getting kicked for message signing issues!_
-
 ## Features
 **⭐ Works great out of the box** &mdash; Install on your Velocity or BungeeCord-based proxy and use right away
 

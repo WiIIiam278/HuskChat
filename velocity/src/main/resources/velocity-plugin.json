@@ -9,6 +9,10 @@
   ],
   "dependencies": [
     {
+      "id": "unsignedvelocity",
+      "optional": false
+    },
+    {
       "id": "luckperms",
       "optional": true
     },

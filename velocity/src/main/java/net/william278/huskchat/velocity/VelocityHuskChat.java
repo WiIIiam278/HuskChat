@@ -69,9 +69,7 @@ public class VelocityHuskChat implements HuskChat {
     }
 
     // Plugin version
-    public static String VERSION = null;
-    public static String DESCRIPTION = null;
-
+    private final PluginContainer container;
     private final Logger logger;
     private final Metrics.Factory metrics;
     private final Path dataDirectory;
@@ -95,8 +93,7 @@ public class VelocityHuskChat implements HuskChat {
         this.logger = logger;
         this.dataDirectory = dataDirectory;
         this.metrics = metrics;
-        pluginContainer.getDescription().getVersion().ifPresent(version -> VERSION = version);
-        pluginContainer.getDescription().getDescription().ifPresent(description -> DESCRIPTION = description);
+        this.container = pluginContainer;
     }
 
     @Subscribe
@@ -109,8 +106,7 @@ public class VelocityHuskChat implements HuskChat {
         this.playerCache = new PlayerCache(this);
 
         // Setup player data getter
-        Optional<PluginContainer> luckPerms = getProxyServer().getPluginManager().getPlugin("luckperms");
-        if (luckPerms.isPresent()) {
+        if (isPluginPresent("luckperms")) {
             this.playerDataGetter = new LuckPermsDataGetter();
         } else {
             this.playerDataGetter = new DefaultDataGetter();
@@ -119,8 +115,7 @@ public class VelocityHuskChat implements HuskChat {
         // Setup PlaceholderParser
         this.placeholders = new ArrayList<>();
         this.placeholders.add(new DefaultReplacer(this));
-        final Optional<PluginContainer> papiBridge = getProxyServer().getPluginManager().getPlugin("papiproxybridge");
-        if (papiBridge.isPresent()) {
+        if (isPluginPresent("papiproxybridge")) {
             this.placeholders.add(new PAPIProxyBridgeReplacer());
         }
 
@@ -142,7 +137,7 @@ public class VelocityHuskChat implements HuskChat {
 
         // Initialise metrics and log
         this.metrics.make(this, METRICS_ID);
-        log(Level.INFO, "Enabled HuskChat version " + getMetaVersion());
+        log(Level.INFO, "Enabled HuskChat version " + getPluginVersion());
     }
 
     @NotNull
@@ -187,19 +182,19 @@ public class VelocityHuskChat implements HuskChat {
 
     @NotNull
     @Override
-    public String getMetaVersion() {
-        return VERSION;
+    public String getPluginVersion() {
+        return container.getDescription().getVersion().orElse("Unknown");
     }
 
     @NotNull
     @Override
-    public String getMetaDescription() {
-        return DESCRIPTION;
+    public String getPluginDescription() {
+        return container.getDescription().getDescription().orElse("Unknown");
     }
 
     @NotNull
     @Override
-    public String getMetaPlatform() {
+    public String getPlatform() {
         return "Velocity";
     }
 
@@ -282,6 +277,11 @@ public class VelocityHuskChat implements HuskChat {
     @Override
     public InputStream getResource(@NotNull String path) {
         return HuskChat.class.getClassLoader().getResourceAsStream(path);
+    }
+
+    @Override
+    public boolean isPluginPresent(@NotNull String dependency) {
+        return getProxyServer().getPluginManager().getPlugin(dependency).isPresent();
     }
 
     @NotNull

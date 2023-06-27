@@ -37,8 +37,8 @@ public class HuskChatCommand extends CommandBase {
 
     public HuskChatCommand(@NotNull HuskChat plugin) {
         super(List.of("huskchat"), "[about|reload]", plugin);
-        this.pluginInformation = "[HuskChat](#00fb9a bold) [| " + plugin.getMetaPlatform() + " Version " + plugin.getMetaVersion() + "](#00fb9a)\n" +
-                                 "[" + plugin.getMetaDescription() + "](gray)\n" +
+        this.pluginInformation = "[HuskChat](#00fb9a bold) [| " + plugin.getPlatform() + " Version " + plugin.getPluginVersion() + "](#00fb9a)\n" +
+                                 "[" + plugin.getPluginDescription() + "](gray)\n" +
                                  "[• Author:](white) [William278](gray show_text=&7Click to visit website open_url=https://william278.net)\n" +
                                  "[• Contributors:](white) [TrueWinter](gray show_text=&7Code), [Ironboundred](gray show_text=&7Code)\n" +
                                  "[• Translators:](white) [xF3d3](gray show_text=&7Italian, it-it), [MalzSmith](gray show_text=&7Hungarian, hu-hu), [Ceddix](gray show_text=&7German, de-de), [Pukejoy_1](gray show_text=&7Bulgarian, bg-bg)\n" +

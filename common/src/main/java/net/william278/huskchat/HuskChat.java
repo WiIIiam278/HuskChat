@@ -94,13 +94,13 @@ public interface HuskChat {
     Optional<Webhook> getWebhook();
 
     @NotNull
-    String getMetaVersion();
+    String getPluginVersion();
 
     @NotNull
-    String getMetaDescription();
+    String getPluginDescription();
 
     @NotNull
-    String getMetaPlatform();
+    String getPlatform();
 
     Optional<Player> getPlayer(@NotNull UUID uuid);
 
@@ -116,6 +116,8 @@ public interface HuskChat {
     File getDataFolder();
 
     InputStream getResource(@NotNull String path);
+
+    boolean isPluginPresent(@NotNull String dependency);
 
     void log(@NotNull Level level, @NotNull String message, @NotNull Throwable... throwable);
 

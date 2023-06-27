@@ -90,12 +90,10 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
         this.playerCache = new PlayerCache(this);
 
         // Setup player data getter
-        final Plugin luckPerms = ProxyServer.getInstance().getPluginManager().getPlugin("LuckPerms");
-        if (luckPerms != null) {
+        if (isPluginPresent("LuckPerms")) {
             this.playerDataGetter = new LuckPermsDataGetter();
         } else {
-            Plugin bungeePerms = ProxyServer.getInstance().getPluginManager().getPlugin("BungeePerms");
-            if (bungeePerms != null) {
+            if (isPluginPresent("BungeePerms")) {
                 this.playerDataGetter = new BungeePermsDataGetter();
             } else {
                 this.playerDataGetter = new DefaultDataGetter();
@@ -105,8 +103,7 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
         // Setup placeholder parser
         this.placeholders = new ArrayList<>();
         this.placeholders.add(new DefaultReplacer(this));
-        final Plugin papiBridge = ProxyServer.getInstance().getPluginManager().getPlugin("PAPIProxyBridge");
-        if (papiBridge != null) {
+        if (isPluginPresent("PAPIProxyBridge")) {
             this.placeholders.add(new PAPIProxyBridgeReplacer());
         }
 
@@ -128,7 +125,7 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
 
         // Initialise metrics and log
         new Metrics(this, METRICS_ID);
-        log(Level.INFO, "Enabled HuskChat version " + getMetaVersion());
+        log(Level.INFO, "Enabled HuskChat version " + this.getPluginVersion());
     }
 
     @Override
@@ -155,19 +152,19 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
 
     @NotNull
     @Override
-    public String getMetaVersion() {
+    public String getPluginVersion() {
         return getDescription().getVersion();
     }
 
     @NotNull
     @Override
-    public String getMetaDescription() {
+    public String getPluginDescription() {
         return getDescription().getDescription();
     }
 
     @NotNull
     @Override
-    public String getMetaPlatform() {
+    public String getPlatform() {
         return ProxyServer.getInstance().getName();
     }
 
@@ -238,6 +235,11 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
     @Override
     public InputStream getResource(@NotNull String path) {
         return getResourceAsStream(path);
+    }
+
+    @Override
+    public boolean isPluginPresent(@NotNull String dependency) {
+        return ProxyServer.getInstance().getPluginManager().getPlugin(dependency) != null;
     }
 
     @Override
