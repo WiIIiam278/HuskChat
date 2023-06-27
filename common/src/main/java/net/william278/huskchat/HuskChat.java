@@ -84,12 +84,11 @@ public interface HuskChat {
     List<PlaceholderReplacer> getPlaceholderReplacers();
 
     default CompletableFuture<String> replacePlaceholders(@NotNull Player player, @NotNull String message) {
-        return getPlaceholderReplacers().stream()
-                .map(replacer -> replacer.formatPlaceholders(message, player))
-                .reduce(
-                        CompletableFuture.completedFuture(message),
-                        (a, b) -> a.thenCombine(b, (x, y) -> y)
-                );
+        CompletableFuture<String> future = CompletableFuture.completedFuture(message);
+        for (PlaceholderReplacer replacer : getPlaceholderReplacers()) {
+            future = future.thenComposeAsync(toFormat -> replacer.formatPlaceholders(toFormat, player));
+        }
+        return future;
     }
 
     @NotNull

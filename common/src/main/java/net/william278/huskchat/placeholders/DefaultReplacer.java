@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
@@ -131,7 +132,7 @@ public class DefaultReplacer implements PlaceholderReplacer {
 
         Placeholder(@NotNull BiFunction<HuskChat, Player, String> replacer, @NotNull String... aliases) {
             this.replacer = replacer;
-            this.aliases.add(this.name());
+            this.aliases.add(this.name().toLowerCase(Locale.ENGLISH));
             this.aliases.addAll(Set.of(aliases));
         }
 
