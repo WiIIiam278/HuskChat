@@ -138,6 +138,7 @@ public class VelocityHuskChat implements HuskChat {
 
         // Initialise metrics and log
         this.metrics.make(this, METRICS_ID);
+        this.checkForUpdates();
         log(Level.INFO, "Enabled HuskChat version " + getVersion());
     }
 

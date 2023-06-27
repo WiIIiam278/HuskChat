@@ -132,6 +132,17 @@ public interface HuskChat {
                 .build();
     }
 
+    default void checkForUpdates() {
+        if (getSettings().doCheckForUpdates()) {
+            getUpdateChecker().check().thenAccept(checked -> {
+                if (!checked.isUpToDate()) {
+                    log(Level.WARNING, "A new version of HuskChat is available: v"
+                                       + checked.getLatestVersion() + " (running v" + getVersion() + ")");
+                }
+            });
+        }
+    }
+
     void log(@NotNull Level level, @NotNull String message, @NotNull Throwable... throwable);
 
 }

@@ -7,6 +7,7 @@
 
 # General options. Default channel should match one of the channels below.
 language: 'en-gb'
+check_for_updates: true
 default_channel: global
 channel_log_format: '[CHAT] [%channel%] %sender%: '
 channel_command_aliases: # Must contain at least one item; the first being the primary alias of the command
@@ -206,4 +207,4 @@ discord:
 #  lobby: hub
 
 # Version of the config file
-config-version: 1
+config-version: 2

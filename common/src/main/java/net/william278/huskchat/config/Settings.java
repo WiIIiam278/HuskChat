@@ -35,8 +35,9 @@ import java.util.*;
  */
 public class Settings {
 
-    // Plugin language
+    // Top level options
     private String language;
+    private boolean checkForUpdates;
 
 
     // Channel config
@@ -104,6 +105,7 @@ public class Settings {
     private void loadConfig(@NotNull YamlDocument configFile) {
         // Language file
         language = configFile.getString("language", "en-gb");
+        checkForUpdates = configFile.getBoolean("check_for_updates", true);
 
         // Channels
         defaultChannel = configFile.getString("default_channel", "global");
@@ -450,6 +452,10 @@ public class Settings {
     @NotNull
     public String getLanguage() {
         return language;
+    }
+
+    public boolean doCheckForUpdates() {
+        return checkForUpdates;
     }
 
     @NotNull

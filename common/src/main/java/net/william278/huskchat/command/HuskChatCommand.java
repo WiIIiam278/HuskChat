@@ -34,13 +34,13 @@ import java.util.Locale;
 
 public class HuskChatCommand extends CommandBase {
 
-    private final static String[] COMMAND_TAB_ARGUMENTS = {"about", "reload"};
+    private final static String[] COMMAND_TAB_ARGUMENTS = {"about", "reload", "update"};
 
     private final UpdateChecker updateChecker;
     private final AboutMenu aboutMenu;
 
     public HuskChatCommand(@NotNull HuskChat plugin) {
-        super(List.of("huskchat"), "[about|reload]", plugin);
+        super(List.of("huskchat"), "[about|reload|update]", plugin);
         this.updateChecker = plugin.getUpdateChecker();
         this.aboutMenu = AboutMenu.builder()
                 .title(Component.text("HuskChat"))

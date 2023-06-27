@@ -70,7 +70,7 @@ public class ReplyCommand extends CommandBase {
                 final String messageToSend = message.toString();
                 new PrivateMessage(player, lastPlayers, messageToSend, plugin).dispatch();
             } else {
-                plugin.getLocales().sendMessage(player, "error_invalid_syntax", "/r <message>");
+                plugin.getLocales().sendMessage(player, "error_invalid_syntax", getUsage());
             }
         } else {
             plugin.getLocales().sendMessage(player, "error_no_permission");

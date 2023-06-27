@@ -126,6 +126,7 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
 
         // Initialise metrics and log
         new Metrics(this, METRICS_ID);
+        this.checkForUpdates();
         log(Level.INFO, "Enabled HuskChat version " + this.getVersion());
     }
 
