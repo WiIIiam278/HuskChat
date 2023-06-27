@@ -26,7 +26,6 @@ import net.william278.huskchat.player.PlayerCache;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -40,7 +39,7 @@ public class SocialSpyCommand extends CommandBase {
     @Override
     public void onExecute(@NotNull Player player, @NotNull String[] args) {
         if (player instanceof ConsolePlayer) {
-            plugin.log(Level.INFO, plugin.getLocales().getRawLocale("error_in_game_only"));
+            plugin.getLocales().sendMessage(player, "error_in_game_only");
             return;
         }
         if (player.hasPermission(getPermission())) {
@@ -81,7 +80,7 @@ public class SocialSpyCommand extends CommandBase {
 
     @Override
     public List<String> onTabComplete(@NotNull Player player, @NotNull String[] args) {
-        return Collections.emptyList();
+        return List.of();
     }
 
 }

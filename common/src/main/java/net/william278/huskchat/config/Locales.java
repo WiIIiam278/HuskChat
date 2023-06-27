@@ -26,7 +26,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
-import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 import org.jetbrains.annotations.NotNull;
@@ -36,8 +35,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Locales {
 
@@ -64,35 +61,6 @@ public class Locales {
         return locales.get(id);
     }
 
-    // todo use Adventure's provided serializer?
-    @NotNull
-    public String extractMineDownLinks(@NotNull String string) {
-        String[] in = string.split("\n");
-        StringBuilder out = new StringBuilder();
-
-        // This regex extracts the text and url, only supports one link per line.
-        String regex = "[^\\[\\]() ]*\\[([^()]+)]\\([^()]+open_url=(\\S+).*\\)";
-
-        for (int i = 0; i < in.length; i++) {
-            Pattern pattern = Pattern.compile(regex);
-            Matcher m = pattern.matcher(in[i]);
-
-            if (m.find()) {
-                // match 0 is the whole match, 1 is the text, 2 is the url
-                out.append(in[i].replace(m.group(0), ""));
-                out.append(m.group(2));
-            } else {
-                out.append(in[i]);
-            }
-
-            if (i + 1 != in.length) {
-                out.append("\n");
-            }
-        }
-
-        return out.toString();
-    }
-
     public void sendMessage(@NotNull Player player, @NotNull String id, @NotNull String... replacements) {
         String locale = getRawLocale(id);
 
@@ -109,20 +77,7 @@ public class Locales {
             replacementIndexer = replacementIndexer + 1;
         }
 
-        if (player instanceof ConsolePlayer) {
-            sendMineDownToConsole(locale);
-            return;
-        }
-
         player.sendMessage(new MineDown(locale));
-    }
-
-    public void sendCustomMessage(@NotNull Player player, @NotNull String message) {
-        if (player instanceof ConsolePlayer) {
-            sendMineDownToConsole(message);
-            return;
-        }
-        player.sendMessage(new MineDown(message));
     }
 
     public void sendChannelMessage(@NotNull Player target, @NotNull Player sender, @NotNull Channel channel,
@@ -163,10 +118,6 @@ public class Locales {
                 builder.append(Component.text(message).mergeStyle(format));
             }
 
-            if (sender instanceof ConsolePlayer) {
-                plugin.getConsole().sendMessage(builder.build());
-                return;
-            }
             sender.sendMessage(builder.build());
         });
     }
@@ -194,10 +145,6 @@ public class Locales {
             }
 
             for (final Player recipient : recipients) {
-                if (recipient instanceof ConsolePlayer) {
-                    plugin.getConsole().sendMessage(builder.build());
-                    return;
-                }
                 recipient.sendMessage(builder.build());
             }
         });
@@ -240,10 +187,6 @@ public class Locales {
         componentBuilder.append(new MineDown(plugin.getSettings().getBroadcastMessageFormat()).toComponent());
         componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
         player.sendMessage(componentBuilder.build());
-    }
-
-    private void sendMineDownToConsole(@NotNull String mineDown) {
-        plugin.getConsole().sendMessage(Component.text(extractMineDownLinks(mineDown)));
     }
 
     // Returns a newline-separated list of player names

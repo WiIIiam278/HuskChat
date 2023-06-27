@@ -98,7 +98,7 @@ public class MessageCommand extends CommandBase {
             }
             return prependedUsernames;
         } else {
-            return Collections.emptyList();
+            return List.of();
         }
     }
 

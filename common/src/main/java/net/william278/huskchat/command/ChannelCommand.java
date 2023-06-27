@@ -24,11 +24,9 @@ import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class ChannelCommand extends CommandBase {
@@ -40,7 +38,7 @@ public class ChannelCommand extends CommandBase {
     @Override
     public void onExecute(@NotNull Player player, @NotNull String[] args) {
         if (player instanceof ConsolePlayer) {
-            plugin.log(Level.INFO, plugin.getLocales().getRawLocale("error_in_game_only"));
+            plugin.getLocales().sendMessage(player, "error_in_game_only");
             return;
         }
         if (player.hasPermission(getPermission())) {
@@ -57,14 +55,14 @@ public class ChannelCommand extends CommandBase {
     @Override
     public List<String> onTabComplete(@NotNull Player player, @NotNull String[] args) {
         if (!player.hasPermission(getPermission())) {
-            return Collections.emptyList();
+            return List.of();
         }
         if (args.length <= 1) {
             return getChannelIdsWithSendPermission(player).stream().filter(val ->
                             val.toLowerCase().startsWith((args.length >= 1) ? args[0].toLowerCase() : ""))
                     .sorted().collect(Collectors.toList());
         }
-        return Collections.emptyList();
+        return List.of();
     }
 
     @NotNull

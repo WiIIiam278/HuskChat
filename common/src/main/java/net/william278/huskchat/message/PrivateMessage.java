@@ -73,7 +73,7 @@ public class PrivateMessage {
         for (String targetUsername : targetUsernames) {
             Optional<Player> targetPlayer;
             if (ConsolePlayer.isConsolePlayer(targetUsername)) {
-                targetPlayer = Optional.of(ConsolePlayer.adaptConsolePlayer(plugin));
+                targetPlayer = Optional.of(ConsolePlayer.create(plugin));
             } else {
                 targetPlayer = plugin.findPlayer(targetUsername);
             }

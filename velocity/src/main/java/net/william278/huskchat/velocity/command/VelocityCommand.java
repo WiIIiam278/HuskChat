@@ -28,7 +28,6 @@ import net.william278.huskchat.velocity.player.VelocityPlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -55,7 +54,7 @@ public class VelocityCommand implements SimpleCommand {
         if (invocation.source() instanceof Player player) {
             command.onExecute(VelocityPlayer.adapt(player), invocation.arguments());
         } else {
-            command.onExecute(ConsolePlayer.adaptConsolePlayer(plugin), invocation.arguments());
+            command.onExecute(ConsolePlayer.create(plugin), invocation.arguments());
         }
     }
 
@@ -64,7 +63,7 @@ public class VelocityCommand implements SimpleCommand {
         if (invocation.source() instanceof Player player) {
             return command.onTabComplete(VelocityPlayer.adapt(player), invocation.arguments());
         }
-        return Collections.emptyList();
+        return List.of();
     }
 
     @Override

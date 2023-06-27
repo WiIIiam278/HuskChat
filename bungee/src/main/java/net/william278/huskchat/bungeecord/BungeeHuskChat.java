@@ -24,6 +24,7 @@ import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.william278.desertwell.util.Version;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.bungeecord.command.BungeeCommand;
 import net.william278.huskchat.bungeecord.event.BungeeEventDispatcher;
@@ -125,7 +126,7 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
 
         // Initialise metrics and log
         new Metrics(this, METRICS_ID);
-        log(Level.INFO, "Enabled HuskChat version " + this.getPluginVersion());
+        log(Level.INFO, "Enabled HuskChat version " + this.getVersion());
     }
 
     @Override
@@ -152,8 +153,8 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
 
     @NotNull
     @Override
-    public String getPluginVersion() {
-        return getDescription().getVersion();
+    public Version getVersion() {
+        return Version.fromString(getDescription().getVersion());
     }
 
     @NotNull

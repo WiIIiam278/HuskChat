@@ -26,10 +26,8 @@ import net.william278.huskchat.player.ConsolePlayer;
 import net.william278.huskchat.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
-import java.util.logging.Level;
 
 public class ShortcutCommand extends CommandBase {
     private final String channelId;
@@ -46,7 +44,7 @@ public class ShortcutCommand extends CommandBase {
                 // Console can't chat in the same way as players can, it can only use commands.
                 // So no need to allow it to switch channels.
                 if (player instanceof ConsolePlayer) {
-                    plugin.log(Level.INFO, plugin.getLocales().getRawLocale("error_console_switch_channels"));
+                    plugin.getLocales().sendMessage(player, "error_console_switch_channels");
                     return;
                 }
                 plugin.getPlayerCache().switchPlayerChannel(player, channelId);
@@ -59,7 +57,7 @@ public class ShortcutCommand extends CommandBase {
                 Channel channel = plugin.getSettings().getChannels().get(channelId);
 
                 if (channel.getBroadcastScope().isPassThrough) {
-                    plugin.getLocales().sendMessage(player, "passthrough_shortcut_command_error");
+                    plugin.getLocales().sendMessage(player, "error_passthrough_shortcut_command");
                     return;
                 }
 
@@ -78,7 +76,7 @@ public class ShortcutCommand extends CommandBase {
 
     @Override
     public List<String> onTabComplete(@NotNull Player player, @NotNull String[] args) {
-        return Collections.emptyList();
+        return List.of();
     }
 
 }

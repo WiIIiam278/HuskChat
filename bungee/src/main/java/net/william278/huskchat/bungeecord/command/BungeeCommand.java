@@ -30,7 +30,6 @@ import net.william278.huskchat.player.ConsolePlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -54,7 +53,7 @@ public class BungeeCommand extends Command implements TabExecutor {
         if (sender instanceof ProxiedPlayer player) {
             command.onExecute(BungeePlayer.adapt(player), args);
         } else {
-            command.onExecute(ConsolePlayer.adaptConsolePlayer(plugin), args);
+            command.onExecute(ConsolePlayer.create(plugin), args);
         }
     }
 
@@ -63,7 +62,7 @@ public class BungeeCommand extends Command implements TabExecutor {
         if (sender instanceof ProxiedPlayer player && player.hasPermission(command.getPermission())) {
             return command.onTabComplete(BungeePlayer.adapt(player), args);
         }
-        return Collections.emptyList();
+        return List.of();
     }
 
     public enum Type {

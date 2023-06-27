@@ -19,75 +19,91 @@
 
 package net.william278.huskchat.command;
 
+import de.themoep.minedown.adventure.MineDown;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
+import net.william278.desertwell.about.AboutMenu;
+import net.william278.desertwell.util.UpdateChecker;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 public class HuskChatCommand extends CommandBase {
 
     private final static String[] COMMAND_TAB_ARGUMENTS = {"about", "reload"};
 
-    private final String pluginInformation;
+    private final UpdateChecker updateChecker;
+    private final AboutMenu aboutMenu;
 
     public HuskChatCommand(@NotNull HuskChat plugin) {
         super(List.of("huskchat"), "[about|reload]", plugin);
-        this.pluginInformation = "[HuskChat](#00fb9a bold) [| " + plugin.getPlatform() + " Version " + plugin.getPluginVersion() + "](#00fb9a)\n" +
-                                 "[" + plugin.getPluginDescription() + "](gray)\n" +
-                                 "[• Author:](white) [William278](gray show_text=&7Click to visit website open_url=https://william278.net)\n" +
-                                 "[• Contributors:](white) [TrueWinter](gray show_text=&7Code), [Ironboundred](gray show_text=&7Code)\n" +
-                                 "[• Translators:](white) [xF3d3](gray show_text=&7Italian, it-it), [MalzSmith](gray show_text=&7Hungarian, hu-hu), [Ceddix](gray show_text=&7German, de-de), [Pukejoy_1](gray show_text=&7Bulgarian, bg-bg)\n" +
-                                 "[• Help Wiki:](white) [[Link]](#00fb9a show_text=&7Click to open link open_url=https://william278.net/docs/huskchat/Home)\n" +
-                                 "[• Report Issues:](white) [[Link]](#00fb9a show_text=&7Click to open link open_url=https://github.com/WiIIiam278/HuskChat/issues)\n" +
-                                 "[• Support Discord:](white) [[Link]](#00fb9a show_text=&7Click to join open_url=https://discord.gg/tVYhJfyDWG)";
+        this.updateChecker = plugin.getUpdateChecker();
+        this.aboutMenu = AboutMenu.builder()
+                .title(Component.text("HuskChat"))
+                .description(Component.text(plugin.getPluginDescription()))
+                .version(plugin.getVersion())
+                .credits("Author",
+                        AboutMenu.Credit.of("William278").description("Click to visit website").url("https://william278.net"))
+                .credits("Contributors",
+                        AboutMenu.Credit.of("TrueWinter").description("Code"),
+                        AboutMenu.Credit.of("Ironboundred").description("Code"))
+                .credits("Translators",
+                        AboutMenu.Credit.of("xF3d3").description("Italian (it-it)"),
+                        AboutMenu.Credit.of("MalzSmith").description("Hungarian (hu-hu)"),
+                        AboutMenu.Credit.of("Ceddix").description("German (de-de)"),
+                        AboutMenu.Credit.of("Pukejoy_1").description("Bulgarian (bg-bg)"))
+                .buttons(
+                        AboutMenu.Link.of("https://william278.net/docs/huskchat").text("Documentation").icon("⛏"),
+                        AboutMenu.Link.of("https://github.com/WiIIiam278/HuskChat/issues").text("Issues").icon("❌").color(TextColor.color(0xff9f0f)),
+                        AboutMenu.Link.of("https://discord.gg/tVYhJfyDWG").text("Discord").icon("⭐").color(TextColor.color(0x6773f5)))
+                .build();
     }
 
     @Override
     public void onExecute(@NotNull Player player, @NotNull String[] args) {
-        if (player.hasPermission(getPermission())) {
-            if (args.length == 1) {
-                switch (args[0].toLowerCase(Locale.ROOT)) {
-                    case "about", "info" -> sendAboutInformation(player);
-                    case "reload" -> {
-                        plugin.loadConfig();
-                        plugin.getLocales().sendCustomMessage(player, "[HuskChat](#00fb9a bold) &#00fb9a&| Reloaded config & message files.");
-                    }
-                    default ->
-                            plugin.getLocales().sendMessage(player, "error_invalid_syntax", "/huskchat <about/reload>");
-                }
-            } else {
-                sendAboutInformation(player);
-            }
-        } else {
+        if (!player.hasPermission(getPermission())) {
             plugin.getLocales().sendMessage(player, "error_no_permission");
+            return;
         }
-    }
 
-    /**
-     * Send the plugin information to the {@link Player}
-     *
-     * @param player The {@link Player} to send plugin information to
-     */
-    private void sendAboutInformation(Player player) {
-        plugin.getLocales().sendCustomMessage(player, pluginInformation);
+        if (args.length >= 1) {
+            switch (args[0].toLowerCase(Locale.ROOT)) {
+                case "about", "info" -> player.sendMessage(aboutMenu.toComponent());
+                case "update" -> updateChecker.check().thenAccept(checked -> {
+                    if (checked.isUpToDate()) {
+                        plugin.getLocales().sendMessage(player, "up_to_date", plugin.getVersion().toString());
+                        return;
+                    }
+                    plugin.getLocales().sendMessage(player, "update_available",
+                            checked.getLatestVersion().toString(), plugin.getVersion().toString());
+                });
+                case "reload" -> {
+                    plugin.loadConfig();
+                    player.sendMessage(new MineDown("[HuskChat](#00fb9a bold) &#00fb9a&| Reloaded config & message files."));
+                }
+                default -> plugin.getLocales().sendMessage(player, "error_invalid_syntax", getUsage());
+            }
+            return;
+        }
+
+        player.sendMessage(aboutMenu.toComponent());
     }
 
     @Override
     public List<String> onTabComplete(@NotNull Player player, @NotNull String[] args) {
         if (!player.hasPermission(getPermission())) {
-            return Collections.emptyList();
+            return List.of();
         }
         if (args.length <= 1) {
-            return Arrays.stream(COMMAND_TAB_ARGUMENTS).filter(val -> val.toLowerCase().startsWith((args.length >= 1) ? args[0].toLowerCase() : ""))
-                    .sorted().collect(Collectors.toList());
-        } else {
-            return Collections.emptyList();
+            return Arrays.stream(COMMAND_TAB_ARGUMENTS)
+                    .filter(i -> i.toLowerCase().startsWith((args.length == 1) ? args[0].toLowerCase() : ""))
+                    .sorted().toList();
         }
+        return List.of();
     }
 
 }

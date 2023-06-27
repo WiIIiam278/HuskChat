@@ -85,11 +85,11 @@ public class ChatMessage {
         // Determine the players who will receive the message;
         Channel.BroadcastScope broadcastScope = channel.get().getBroadcastScope();
 
-        // There's no point in allowing the console to send to local chat as it's not actually in any servers and
-        // therefore the message won't get sent to anyone
+        // There's no point in allowing the console to send to local chat as it's not actually in any servers;
+        // the message won't get sent to anyone
         if (sender instanceof ConsolePlayer && (broadcastScope == Channel.BroadcastScope.LOCAL ||
                                                 broadcastScope == Channel.BroadcastScope.LOCAL_PASSTHROUGH)) {
-            plugin.log(Level.INFO, plugin.getLocales().getRawLocale("error_console_local_scope"));
+            plugin.getLocales().sendMessage(sender, "error_console_local_scope");
             return true;
         }
 

@@ -47,7 +47,7 @@ public class ReplyCommand extends CommandBase {
                 final ArrayList<String> lastPlayers = new ArrayList<>();
                 for (UUID lastMessenger : lastMessengers.get()) {
                     if (ConsolePlayer.isConsolePlayer(lastMessenger)) {
-                        lastPlayers.add(ConsolePlayer.adaptConsolePlayer(plugin).getName());
+                        lastPlayers.add(ConsolePlayer.create(plugin).getName());
                     } else {
                         plugin.getPlayer(lastMessenger).ifPresent(onlineMessenger -> lastPlayers.add(onlineMessenger.getName()));
                     }
@@ -85,7 +85,7 @@ public class ReplyCommand extends CommandBase {
 
     @Override
     public List<String> onTabComplete(@NotNull Player player, @NotNull String[] args) {
-        return Collections.emptyList();
+        return List.of();
     }
 
 }

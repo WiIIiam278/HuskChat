@@ -26,6 +26,8 @@ import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
 import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import net.kyori.adventure.audience.Audience;
+import net.william278.desertwell.util.UpdateChecker;
+import net.william278.desertwell.util.Version;
 import net.william278.huskchat.config.Locales;
 import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.config.Webhook;
@@ -43,6 +45,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public interface HuskChat {
+
+    int SPIGOT_RESOURCE_ID = 94496;
 
     @NotNull
     Settings getSettings();
@@ -94,7 +98,7 @@ public interface HuskChat {
     Optional<Webhook> getWebhook();
 
     @NotNull
-    String getPluginVersion();
+    Version getVersion();
 
     @NotNull
     String getPluginDescription();
@@ -118,6 +122,15 @@ public interface HuskChat {
     InputStream getResource(@NotNull String path);
 
     boolean isPluginPresent(@NotNull String dependency);
+
+    @NotNull
+    default UpdateChecker getUpdateChecker() {
+        return UpdateChecker.builder()
+                .currentVersion(getVersion())
+                .endpoint(UpdateChecker.Endpoint.SPIGOT)
+                .resource(Integer.toString(SPIGOT_RESOURCE_ID))
+                .build();
+    }
 
     void log(@NotNull Level level, @NotNull String message, @NotNull Throwable... throwable);
 

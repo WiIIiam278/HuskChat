@@ -24,7 +24,6 @@ import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -62,7 +61,7 @@ public class OptOutMessageCommand extends CommandBase {
 
     @Override
     public List<String> onTabComplete(@NotNull Player player, @NotNull String[] args) {
-        return Collections.emptyList();
+        return List.of();
     }
 
 }

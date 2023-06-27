@@ -24,7 +24,6 @@ import net.william278.huskchat.message.BroadcastMessage;
 import net.william278.huskchat.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -53,6 +52,6 @@ public class BroadcastCommand extends CommandBase {
 
     @Override
     public List<String> onTabComplete(@NotNull Player player, @NotNull String[] args) {
-        return Collections.emptyList();
+        return List.of();
     }
 }

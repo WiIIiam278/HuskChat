@@ -44,4 +44,6 @@ error_last_message_not_group: '[错误：](#ff3300) [你收到的最后一条信
 error_no_messages_opt_out: '[错误：](#ff3300) [你还没有发送或接收群组信息。](#ff7e5e)'
 removed_from_group_message: '[你被从群组信息中移除：](#00fb9a) %1%'
 list_conjunction: '和'
-passthrough_shortcut_command_error: '[错误：](#ff3300) [不支持使用快捷命令向 passthrough 频道发送消息。请先切换到该频道。](#ff7e5e)'
+error_passthrough_shortcut_command: '[错误：](#ff3300) [不支持使用快捷命令向 passthrough 频道发送消息。请先切换到该频道。](#ff7e5e)'
+up_to_date: '[HuskChat](#00fb9a bold) [| 你正在使用最新版本的HuskChat (v%1%).](#00fb9a)'
+update_available: '[HuskChat](#ff7e5e bold) [| 一个新版本的HuskChat已经可以更新: v%1% (当前: v%2%).](#ff7e5e)'

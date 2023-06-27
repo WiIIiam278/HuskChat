@@ -29,9 +29,10 @@ public class ConsolePlayer implements Player {
 
     private static final UUID consoleUUID = new UUID(0, 0);
     private static final String consoleUsername = "[CONSOLE]";
-    private HuskChat implementor;
+    private final HuskChat plugin;
 
-    private ConsolePlayer() {
+    private ConsolePlayer(@NotNull HuskChat plugin) {
+        this.plugin = plugin;
     }
 
     @Override
@@ -54,12 +55,12 @@ public class ConsolePlayer implements Player {
     @Override
     @NotNull
     public String getServerName() {
-        return implementor.getPlatform();
+        return plugin.getPlatform();
     }
 
     @Override
     public int getPlayersOnServer() {
-        return implementor.getOnlinePlayers().size();
+        return plugin.getOnlinePlayers().size();
     }
 
     @Override
@@ -70,7 +71,7 @@ public class ConsolePlayer implements Player {
     @NotNull
     @Override
     public Audience getAudience() {
-        return implementor.getConsole();
+        return plugin.getConsole();
     }
 
     /**
@@ -79,10 +80,9 @@ public class ConsolePlayer implements Player {
      * @param plugin The implementing HuskChat plugin
      * @return The ConsolePlayer
      */
-    public static ConsolePlayer adaptConsolePlayer(HuskChat plugin) {
-        ConsolePlayer consolePlayer = new ConsolePlayer();
-        consolePlayer.implementor = plugin;
-        return consolePlayer;
+    @NotNull
+    public static ConsolePlayer create(@NotNull HuskChat plugin) {
+        return new ConsolePlayer(plugin);
     }
 
     /**
@@ -91,7 +91,7 @@ public class ConsolePlayer implements Player {
      * @param uuid UUID to check
      * @return {@code true} if the UUID is the console
      */
-    public static boolean isConsolePlayer(UUID uuid) {
+    public static boolean isConsolePlayer(@NotNull UUID uuid) {
         return uuid.equals(consoleUUID);
     }
 
@@ -101,7 +101,8 @@ public class ConsolePlayer implements Player {
      * @param username username to check
      * @return {@code true} if the username is the console
      */
-    public static boolean isConsolePlayer(String username) {
-        return username.equals(consoleUsername);
+    public static boolean isConsolePlayer(@NotNull String username) {
+        return username.equalsIgnoreCase(consoleUsername);
     }
+
 }

@@ -13,6 +13,7 @@ dependencies {
 shadowJar {
     relocate 'dev.dejvokep.boostedyaml', 'net.william278.huskchat.libraries.boostedyaml'
     relocate 'net.william278.profanitycheckerapi', 'net.william278.huskchat.libraries.profanitycheckerapi'
+    relocate 'net.william278.desertwell', 'net.william278.huskchat.libraries.desertwell'
     relocate 'de.themoep', 'net.william278.huskchat.libraries'
 
     relocate 'org.apache', 'net.william278.huskchat.libraries'

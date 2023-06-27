@@ -27,6 +27,7 @@ import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.kyori.adventure.audience.Audience;
+import net.william278.desertwell.util.Version;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.command.ShortcutCommand;
 import net.william278.huskchat.config.Locales;
@@ -137,7 +138,7 @@ public class VelocityHuskChat implements HuskChat {
 
         // Initialise metrics and log
         this.metrics.make(this, METRICS_ID);
-        log(Level.INFO, "Enabled HuskChat version " + getPluginVersion());
+        log(Level.INFO, "Enabled HuskChat version " + getVersion());
     }
 
     @NotNull
@@ -182,8 +183,9 @@ public class VelocityHuskChat implements HuskChat {
 
     @NotNull
     @Override
-    public String getPluginVersion() {
-        return container.getDescription().getVersion().orElse("Unknown");
+    public Version getVersion() {
+        return Version.fromString(container.getDescription().getVersion()
+                .orElseThrow(() -> new IllegalStateException("Could not fetch plugin version from container")));
     }
 
     @NotNull
