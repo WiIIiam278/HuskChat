@@ -27,14 +27,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class PAPIProxyBridgeReplacer implements PlaceholderReplacer {
 
-    private final PlaceholderAPI api;
-
-    public PAPIProxyBridgeReplacer() {
-        this.api = PlaceholderAPI.getInstance();
-    }
-
     @Override
     public CompletableFuture<String> formatPlaceholders(@NotNull String message, @NotNull Player player) {
-        return api.formatPlaceholders(message, player.getUuid());
+        return PlaceholderAPI.getInstance().formatPlaceholders(message, player.getUuid());
     }
 }
