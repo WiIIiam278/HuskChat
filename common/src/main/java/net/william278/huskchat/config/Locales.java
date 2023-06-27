@@ -24,6 +24,7 @@ import de.themoep.minedown.adventure.MineDownParser;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextColor;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.player.Player;
@@ -88,9 +89,9 @@ public class Locales {
             if (sender.hasPermission("huskchat.formatted_chat")) {
                 builder.append(new MineDown(message)
                         .disable(MineDownParser.Option.ADVANCED_FORMATTING)
-                        .toComponent().mergeStyle(format));
+                        .toComponent().color(getFormatColor(format)));
             } else {
-                builder.append(Component.text(message).mergeStyle(format));
+                builder.append(Component.text(message).color(getFormatColor(format)));
             }
             target.sendMessage(builder.build());
         });
@@ -113,13 +114,30 @@ public class Locales {
             builder.append(format);
             if (sender.hasPermission("huskchat.formatted_chat")) {
                 builder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING)
-                        .toComponent().mergeStyle(format));
+                        .toComponent().color(getFormatColor(format)));
             } else {
-                builder.append(Component.text(message).mergeStyle(format));
+                builder.append(Component.text(message).color(getFormatColor(format)));
             }
 
             sender.sendMessage(builder.build());
         });
+    }
+
+    // Gets the last TextColor from a component
+    @Nullable
+    private TextColor getFormatColor(@NotNull Component component) {
+        // get the last color in the format
+        TextColor color = component.color();
+        if (component.children().isEmpty()) {
+            return color;
+        }
+        for (Component child : component.children()) {
+            TextColor childColor = getFormatColor(child);
+            if (childColor != null) {
+                color = childColor;
+            }
+        }
+        return color;
     }
 
     public void sendInboundPrivateMessage(List<Player> recipients, Player sender, String message) {
@@ -139,9 +157,9 @@ public class Locales {
             builder.append(format);
             if (sender.hasPermission("huskchat.formatted_chat")) {
                 builder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING)
-                        .toComponent().mergeStyle(format));
+                        .toComponent().color(getFormatColor(format)));
             } else {
-                builder.append(Component.text(message).mergeStyle(format));
+                builder.append(Component.text(message).color(getFormatColor(format)));
             }
 
             for (final Player recipient : recipients) {
