@@ -36,6 +36,7 @@ allprojects {
         maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
         maven { url 'https://jitpack.io' }
         maven { url 'https://repo.william278.net/releases/' }
+        maven { url 'https://mvn-repo.arim.space/lesser-gpl3/' }
     }
 
     license {
@@ -62,7 +63,7 @@ subprojects {
         from '../LICENSE'
     }
 
-    if (['bungee', 'velocity', 'plugin'].contains(project.name)) {
+    if (['bungee', 'velocity', 'bukkit', 'plugin'].contains(project.name)) {
         shadowJar {
             destinationDirectory.set(file("$rootDir/target"))
             archiveClassifier.set('')

@@ -1,0 +1,8 @@
+name: 'HuskChat'
+version: '${version}'
+description: '${description}'
+author: 'William278'
+main: 'net.william278.huskchat.bungeecord.BungeeHuskChat'
+softdepend:
+  - 'LuckPerms'
+  - 'PAPIProxyBridge'

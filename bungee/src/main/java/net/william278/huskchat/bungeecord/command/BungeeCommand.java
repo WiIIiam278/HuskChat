@@ -92,6 +92,7 @@ public class BungeeCommand extends Command implements TabExecutor {
             return commandSupplier.apply(plugin);
         }
 
+        @NotNull
         public static List<BungeeCommand> getCommands(@NotNull BungeeHuskChat plugin) {
             return Arrays.stream(values())
                     .map(type -> type.create(plugin))
