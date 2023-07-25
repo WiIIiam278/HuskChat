@@ -69,13 +69,15 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat {
 
     @Override
     public void onLoad() {
-        // Set instance for easy cross-class referencing, register audiences
+        // Set instance for easy cross-class referencing
         instance = this;
-        audiences = BukkitAudiences.create(this);
     }
 
     @Override
     public void onEnable() {
+        // Register audiences
+        audiences = BukkitAudiences.create(this);
+
         // Load morePaperLib
         this.morePaperLib = new MorePaperLib(this);
 
