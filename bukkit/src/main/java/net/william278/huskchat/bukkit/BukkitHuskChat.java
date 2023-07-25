@@ -69,11 +69,8 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat {
 
     @Override
     public void onLoad() {
-        // Set instance for easy cross-class referencing
+        // Set instance for easy cross-class referencing, register audiences
         instance = this;
-
-        // Create the event dispatcher, register audiences
-        eventDispatcher = new BukkitEventDispatcher(this);
         audiences = BukkitAudiences.create(this);
     }
 
@@ -102,11 +99,14 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat {
             this.placeholders.add(new PAPIProxyBridgeReplacer());
         }
 
+        // Create the event dispatcher
+        eventDispatcher = new BukkitEventDispatcher(this);
+
         // Register events
         getServer().getPluginManager().registerEvents(new BukkitListener(this), this);
 
         // Register commands & channel shortcuts
-        List<BukkitCommand> commands = new ArrayList<>(BukkitCommand.Type.getCommands(this));
+        final List<BukkitCommand> commands = new ArrayList<>(BukkitCommand.Type.getCommands(this));
         commands.addAll(getSettings().getChannels().values().stream()
                 .flatMap(channel -> channel.getShortcutCommands().stream().map(command -> new BukkitCommand(
                         new ShortcutCommand(command, channel.getId(), this), this
