@@ -2,7 +2,7 @@ name: 'HuskChat'
 version: '${version}'
 description: '${description}'
 author: 'William278'
-main: 'net.william278.huskchat.bungeecord.BukkitHuskChat'
+main: 'net.william278.huskchat.bukkit.BukkitHuskChat'
 api-version: 1.16
 softdepend:
   - 'LuckPerms'
