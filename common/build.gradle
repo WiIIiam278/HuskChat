@@ -20,6 +20,6 @@ dependencies {
 
     testImplementation 'net.william278:ProfanityCheckerAPI:2.0.1'
     testImplementation 'net.kyori:adventure-api:4.14.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
 }
