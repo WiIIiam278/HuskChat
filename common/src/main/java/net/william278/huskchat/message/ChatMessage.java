@@ -43,10 +43,10 @@ public class ChatMessage {
     public final HuskChat plugin;
     public final String targetChannelId;
     public Player sender;
-
     public String message;
 
-    public ChatMessage(String targetChannelId, Player sender, String message, HuskChat plugin) {
+    public ChatMessage(@NotNull String targetChannelId, @NotNull Player sender,
+                       @NotNull String message, @NotNull HuskChat plugin) {
         this.targetChannelId = targetChannelId;
         this.sender = sender;
         this.message = message;
@@ -88,7 +88,7 @@ public class ChatMessage {
         // There's no point in allowing the console to send to local chat as it's not actually in any servers;
         // the message won't get sent to anyone
         if (sender instanceof ConsolePlayer && (broadcastScope == Channel.BroadcastScope.LOCAL ||
-                                                broadcastScope == Channel.BroadcastScope.LOCAL_PASSTHROUGH)) {
+                broadcastScope == Channel.BroadcastScope.LOCAL_PASSTHROUGH)) {
             plugin.getLocales().sendMessage(sender, "error_console_local_scope");
             return true;
         }
