@@ -26,6 +26,7 @@ import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.bukkit.command.BukkitCommand;
 import net.william278.huskchat.bukkit.event.BukkitEventDispatcher;
 import net.william278.huskchat.bukkit.listener.BukkitListener;
+import net.william278.huskchat.bukkit.placeholders.PlaceholderAPIReplacer;
 import net.william278.huskchat.bukkit.player.BukkitPlayer;
 import net.william278.huskchat.command.ShortcutCommand;
 import net.william278.huskchat.config.Locales;
@@ -36,7 +37,6 @@ import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.getter.DefaultDataGetter;
 import net.william278.huskchat.getter.LuckPermsDataGetter;
 import net.william278.huskchat.placeholders.DefaultReplacer;
-import net.william278.huskchat.placeholders.PAPIProxyBridgeReplacer;
 import net.william278.huskchat.placeholders.PlaceholderReplacer;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
@@ -60,6 +60,7 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat {
     private MorePaperLib morePaperLib;
     private BukkitAudiences audiences;
     private Settings settings;
+    private List<BukkitCommand> commands;
     private BukkitEventDispatcher eventDispatcher;
     private Webhook webhook;
     private Locales locales;
@@ -97,8 +98,8 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat {
         // Setup placeholder parser
         this.placeholders = new ArrayList<>();
         this.placeholders.add(new DefaultReplacer(this));
-        if (isPluginPresent("PAPIProxyBridge")) {
-            this.placeholders.add(new PAPIProxyBridgeReplacer());
+        if (getSettings().doPlaceholderAPI() && isPluginPresent("PlaceholderAPI")) {
+            this.placeholders.add(new PlaceholderAPIReplacer());
         }
 
         // Create the event dispatcher
@@ -108,7 +109,7 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat {
         getServer().getPluginManager().registerEvents(new BukkitListener(this), this);
 
         // Register commands & channel shortcuts
-        final List<BukkitCommand> commands = new ArrayList<>(BukkitCommand.Type.getCommands(this));
+        commands = new ArrayList<>(BukkitCommand.Type.getCommands(this));
         commands.addAll(getSettings().getChannels().values().stream()
                 .flatMap(channel -> channel.getShortcutCommands().stream().map(command -> new BukkitCommand(
                         new ShortcutCommand(command, channel.getId(), this), this

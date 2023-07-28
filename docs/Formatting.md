@@ -1,4 +1,4 @@
-The channel `format` defines how messages sent on that channel will be formatted. The content of the message sent by the player itself is always appended after the formatting. Note that any uncleared formatting will persist and apply to the message contents. The format of private messages, group private messages and broadcasts can also be customised.
+The channel `format` defines how messages sent on that channel will be formatted. The content of the message sent by the player itself is always appended after the formatting. Note that any uncleared formatting will persist and apply to the message contents. The format of private messages, group private messages and broadcasts can also be customized.
 
 ## MineDown
 You can make use of [MineDown formatting](https://github.com/Phoenix616/MineDown) to use modern (1.16+) hexadecimal colors and easily
@@ -9,25 +9,26 @@ Within channel formats you can make use of the following placeholders, which wil
 
 ### Regular placeholders
 * `%name%` - Username
-* `%fullname%` - Role prefix, player username & role suffix
+* `%full_name%` - Role prefix, player username & role suffix
 * `%prefix%` - Role prefix
 * `%suffix%` - Role suffix
-* `%displayname%` - 
+* `%role%` - User's (primary) group name
+* `%role_display_name%` - User's (primary) group display name
 * `%ping%` - User's ping
-* `%uuid%` - User's uuid
-* `%servername%` - Server the user is on
-* `%serverplayercount%` - Number of players on the server the user is on
+* `%uuid%` - User's UUID
+* `%server%` - Server the user is on (on single-server setups, this is always `server`)
+* `%local_players_online%` - Number of players on the server the user is on
 
 ### Time placeholders
 These display the current system time.
 * `%timestamp%` - yyyy/MM/dd HH:mm:ss
-* `%time%` - HH:mm:ss
-* `%short_time%` - HH:mm
-* `%date%` - yyyy/MM/dd
-* `%british_date%` - dd/MM/yyyy
-* `%day%` - dd
-* `%month%` - MM
-* `%year%` - yyyy
+* `%current_time%` - HH:mm:ss
+* `%current_time_short%` - HH:mm
+* `%current_date%` - yyyy/MM/dd
+* `%current_date_uk%` - dd/MM/yyyy
+* `%current_date_day%` - dd
+* `%current_date_month%` - MM
+* `%current_date_year%` - yyyy
 
 ### PlaceholderAPI support
 By installing [PAPIProxyBridge](https://modrinth.com/plugin/papiproxybridge) on both your proxy (Bungee or Velocity) and backend (Paper or Fabric) servers, you can use PlaceholderAPI placeholders in channel and message formats.

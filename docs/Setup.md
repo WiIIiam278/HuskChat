@@ -1,13 +1,18 @@
-> **Note:** HuskChat is a proxy plugin; it is not installed on your Spigot/Paper/Fabric server. It runs on your Velocity/Bungee proxy, which sits atop your Minecraft server network.
-
 This will walk you through installing HuskChat on your Velocity or BungeeCord/Waterfall-based proxy server.
 
 ## Requirements
 * Java 16+
-* A Velocity (recommended) or BungeeCord/Waterfall-based proxy server
-* At least one Minecraft server connected to your proxy (running 1.16.5 or above for the best experience)
+* A Spigot (1.16.5+) Minecraft server (for single-server setups) OR a Velocity (recommended) or BungeeCord/Waterfall-based proxy server
 
-## Velocity Installation
+## Single-server Setup Instructions
+1. Turn off your Spigot server
+2. Download the [latest version of HuskChat](https://github.com/WiIIiam278/HuskChat/releases/latest).
+3. Add the jar file to your Spigot server's `~/plugins` folder
+4. Start your Spigot server. Let HuskChat generate its config files, then stop the server again.
+5. Modify your HuskChat config files as needed, then start your Spigot server again.
+
+## Multi-server Setup Instructions
+### Velocity Installation
 1. Turn off your Velocity proxy
 2. Download the [latest version of HuskChat](https://github.com/WiIIiam278/HuskChat/releases/latest). 
 3. Download both the latest version of [UnsignedVelocity](https://modrinth.com/plugin/unsignedvelocity) and [VPacketEvents](https://modrinth.com/plugin/vpacketevents/)
@@ -15,7 +20,7 @@ This will walk you through installing HuskChat on your Velocity or BungeeCord/Wa
 5. Start your Velocity proxy. Let HuskChat generate its config files, then stop the proxy again.
 6. Modify your HuskChat config files as needed, then start your Velocity proxy again.
 
-## BungeeCord/Waterfall Installation
+### BungeeCord/Waterfall Installation
 > **Warning:** As there's not a good chat message stripping plugin for Bungee proxies at the moment, your mileage may vary with using HuskChat on Minecraft 1.19.1+. We recommend Velocity for it's stronger performance, security & more modern codebase.
 
 1. Turn off your BungeeCord/Waterfall proxy

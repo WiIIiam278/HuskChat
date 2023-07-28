@@ -33,7 +33,7 @@ You can also disable individual types of replacers with the following permission
 The `profanity_filter` uses a Python machine learning algorithm (alt-profanity-check) that uses Scikit-learn to predict whether messages contain profanity. It's imperfect and unable to catch elongated or modified slurs, but it's quite effective (and let's face it, if people are going to be bad actors and use bad language, they'll find a way around any swear filter). The profanity checker is only trained on English words.
 
 ### Shared hosts
-If you're on a **shared host**, unfortunately you probably won't be able to use this feature unless your host is utterly amazing and doesn't mind helping you with this. Note that due to the complexities associated with doing this feature, I consider this feature for **advanced users only**, and I can't provide support for setting it up beyond directing you here.
+If you're on a **shared host**, unfortunately, you probably won't be able to use this feature unless your host is utterly amazing and doesn't mind helping you with this. Note that due to the complexities associated with doing this feature, I consider this feature for **advanced users only**, and I can't provide support for setting it up beyond directing you here.
 
 ### Setup
 To use it, you'll need to install Python 3.8+ and Jep onto your server and ensure that the Jep driver is correctly present in your Java classpath for your system. You can install Jep with `pip install jep`. In addition to Jep, you will also need to run `pip install alt-profanity-check` to install the profanity checker and prerequisites.

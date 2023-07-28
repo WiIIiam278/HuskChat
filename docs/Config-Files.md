@@ -1,3 +1,16 @@
+This page contains the configuration structure for HuskChat.
+
+## Configuration structure
+📁 `plugins/HuskChat/`
+- 📄 `config.yml`: General plugin configuration
+- 📄 `spies.yml`: Cache of users currently in [[social and local spy]] mode
+- 📄 `messages-xx-xx.yml`: Plugin locales, formatted in MineDown (see [[Translations]])
+
+## Example files
+<details>
+<summary>config.yml</summary>
+
+```yaml
 #  ------------------------------
 # |        HuskChat Config      |
 # |    Developed by William278  |
@@ -13,11 +26,6 @@ channel_log_format: '[CHAT] [%channel%] %sender%: '
 channel_command_aliases: # Must contain at least one item; the first being the primary alias of the command
   - /channel
   - /c
-
-# Placeholder configuration
-placeholders:
-  use_papi: true # For proxy setups, requires PAPIProxyBridge on both the proxy/backend servers
-  cache_time: 3000 # If using PAPIProxyBridge, how long to cache placeholders for in milliseconds
 
 # Chat channel configuration.
 # - You can edit the default channels and make your own if you would like.
@@ -213,3 +221,5 @@ discord:
 
 # Version of the config file
 config-version: 2
+```
+</details>

@@ -40,6 +40,11 @@ public class Settings {
     private boolean checkForUpdates;
 
 
+    // Placeholder support
+    private boolean doPlaceholderAPI;
+    private long papiProxyBridgeCacheTime;
+
+
     // Channel config
     private String defaultChannel;
     private HashMap<String, String> serverDefaultChannels;
@@ -106,6 +111,10 @@ public class Settings {
         // Language file
         language = configFile.getString("language", "en-gb");
         checkForUpdates = configFile.getBoolean("check_for_updates", true);
+
+        // Placeholders
+        doPlaceholderAPI = configFile.getBoolean("placeholders.use_papi", true);
+        papiProxyBridgeCacheTime = configFile.getLong("placeholders.cache_time", 1000L);
 
         // Channels
         defaultChannel = configFile.getString("default_channel", "global");
@@ -456,6 +465,14 @@ public class Settings {
 
     public boolean doCheckForUpdates() {
         return checkForUpdates;
+    }
+
+    public boolean doPlaceholderAPI() {
+        return doPlaceholderAPI;
+    }
+
+    public long getPapiProxyBridgeCacheTime() {
+        return papiProxyBridgeCacheTime;
     }
 
     @NotNull

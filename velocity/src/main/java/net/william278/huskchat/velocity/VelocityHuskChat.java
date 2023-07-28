@@ -116,8 +116,8 @@ public class VelocityHuskChat implements HuskChat {
         // Setup PlaceholderParser
         this.placeholders = new ArrayList<>();
         this.placeholders.add(new DefaultReplacer(this));
-        if (isPluginPresent("papiproxybridge")) {
-            this.placeholders.add(new PAPIProxyBridgeReplacer());
+        if (getSettings().doPlaceholderAPI() && isPluginPresent("papiproxybridge")) {
+            this.placeholders.add(new PAPIProxyBridgeReplacer(this));
         }
 
         // Register events

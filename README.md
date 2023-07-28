@@ -26,18 +26,18 @@
 </p>
 <br/>
 
-**HuskChat** is a no-frills, simple and customisable cross-server chat system for Minecraft networks running BungeeCord and Velocity frontend servers.
+**HuskChat** is a no-frills, simple and customisable chat system for Minecraft networks. It supports both running on BungeeCord and Velocity frontend servers for cross-server chat, or on a single-server Spigot setup.
 
 It's designed to be easy to configure with an elegant out-of-box setup, while also being highly configurable, suiting a variety of use cases by allowing you to define channels and manage who can send and receive messages within them.
 
 ## Features
-**⭐ Works great out of the box** &mdash; Install on your Velocity or BungeeCord-based proxy and use right away
+**⭐ Works great out of the box** &mdash; Install on your single Spigot server, or Velocity/BungeeCord-based proxy and use right away
 
 **⭐ Placeholder support** &mdash; Hooks with LuckPerms to display user roles, PAPI support via [PAPIProxyBridge](https://william278.net/docs/huskchat/formatting)
 
 **⭐ Private messaging** &mdash; Private messages&mdash;including group DMs&mdash and replying, admin spy features
 
-**⭐ Fine-tune channels** &mdash; Set channel send/receive permissions, send to a discord webhook, filter [& more](https://william278.net/docs/huskchat/channels)!
+**⭐ Fine-tune channels** &mdash; Set send/receive permissions for channels, send messages to a discord webhook, filter [& more](https://william278.net/docs/huskchat/channels)!
 
 **⭐ Quick and easy to use** &mdash; Super simple set of [commands](https://william278.net/docs/huskchat/commands). Define channel shortcut commands, too!
 

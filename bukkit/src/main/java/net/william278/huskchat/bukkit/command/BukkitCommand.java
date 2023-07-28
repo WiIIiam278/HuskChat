@@ -80,9 +80,7 @@ public class BukkitCommand extends Command {
         BROADCAST((plugin) -> plugin.getSettings().isDoBroadcastCommand()
                 ? Optional.of(new BukkitCommand(new BroadcastCommand(plugin), plugin)) : Optional.empty()),
         SOCIAL_SPY((plugin) -> plugin.getSettings().doSocialSpyCommand()
-                ? Optional.of(new BukkitCommand(new SocialSpyCommand(plugin), plugin)) : Optional.empty()),
-        LOCAL_SPY((plugin) -> plugin.getSettings().doLocalSpyCommand()
-                ? Optional.of(new BukkitCommand(new LocalSpyCommand(plugin), plugin)) : Optional.empty());
+                ? Optional.of(new BukkitCommand(new SocialSpyCommand(plugin), plugin)) : Optional.empty());
 
         private final Function<BukkitHuskChat, Optional<BukkitCommand>> commandSupplier;
 

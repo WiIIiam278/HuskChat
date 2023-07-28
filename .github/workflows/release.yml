@@ -68,8 +68,14 @@ jobs:
           loaders: |
             bungeecord
             velocity
-          modrinth-dependencies: |
+            spigot
+            paper
+            folia
+          dependencies: |
             unsignedvelocity | suggests | *
+            signedvelocity | suggests | *
+            papiproxybridge | suggests | *
+            placeholderapi | suggests | *
           java: 16
       - name: Upload GitHub Artifact
         uses: actions/upload-artifact@v2

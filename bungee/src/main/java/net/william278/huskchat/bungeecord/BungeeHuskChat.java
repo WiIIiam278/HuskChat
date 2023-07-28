@@ -62,9 +62,9 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
         return instance;
     }
 
-    private List<BungeeCommand> commands;
     private BungeeAudiences audiences;
     private Settings settings;
+    private List<BungeeCommand> commands;
     private BungeeEventDispatcher eventDispatcher;
     private Webhook webhook;
     private Locales locales;
@@ -104,16 +104,16 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
         // Setup placeholder parser
         this.placeholders = new ArrayList<>();
         this.placeholders.add(new DefaultReplacer(this));
-        if (isPluginPresent("PAPIProxyBridge")) {
-            this.placeholders.add(new PAPIProxyBridgeReplacer());
+        if (getSettings().doPlaceholderAPI() && isPluginPresent("PAPIProxyBridge")) {
+            this.placeholders.add(new PAPIProxyBridgeReplacer(this));
         }
 
         // Register events
         getProxy().getPluginManager().registerListener(this, new BungeeListener(this));
 
         // Register commands & channel shortcuts
-        this.commands = new ArrayList<>(BungeeCommand.Type.getCommands(this));
-        this.commands.addAll(getSettings().getChannels().values().stream()
+        commands = new ArrayList<>(BungeeCommand.Type.getCommands(this));
+        commands.addAll(getSettings().getChannels().values().stream()
                 .flatMap(channel -> channel.getShortcutCommands().stream().map(command -> new BungeeCommand(
                         new ShortcutCommand(command, channel.getId(), this), this
                 )))

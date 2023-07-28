@@ -19,6 +19,7 @@
 
 package net.william278.huskchat.placeholders;
 
+import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.player.Player;
 import net.william278.papiproxybridge.api.PlaceholderAPI;
 import org.jetbrains.annotations.NotNull;
@@ -27,8 +28,15 @@ import java.util.concurrent.CompletableFuture;
 
 public class PAPIProxyBridgeReplacer implements PlaceholderReplacer {
 
+    private final PlaceholderAPI instance;
+
+    public PAPIProxyBridgeReplacer(@NotNull HuskChat plugin) {
+        this.instance = PlaceholderAPI.getInstance();
+        instance.setCacheExpiry(plugin.getSettings().getPapiProxyBridgeCacheTime());
+    }
+
     @Override
     public CompletableFuture<String> formatPlaceholders(@NotNull String message, @NotNull Player player) {
-        return PlaceholderAPI.getInstance().formatPlaceholders(message, player.getUuid());
+        return instance.formatPlaceholders(message, player.getUuid());
     }
 }

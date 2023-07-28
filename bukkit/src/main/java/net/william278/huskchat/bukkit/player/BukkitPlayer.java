@@ -78,4 +78,10 @@ public class BukkitPlayer implements Player {
     public Audience getAudience() {
         return plugin.getAudience().player(player);
     }
+
+    @NotNull
+    public org.bukkit.entity.Player getBukkitPlayer() {
+        return player;
+    }
+
 }
