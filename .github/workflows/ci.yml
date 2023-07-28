@@ -82,6 +82,7 @@ jobs:
             placeholderapi | suggests | *
           loaders: |
             bungeecord
+            waterfall
             velocity
             spigot
             paper
