@@ -69,7 +69,7 @@ jobs:
             spigot
             paper
             folia
-          dependencies: |
+          modrinth-dependencies: |
             unsignedvelocity | suggests | *
             signedvelocity | suggests | *
             papiproxybridge | suggests | *

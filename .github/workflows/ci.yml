@@ -75,7 +75,7 @@ jobs:
             1.18.2
             1.19.4
             1.20.1
-          dependencies: |
+          modrinth-dependencies: |
             unsignedvelocity | suggests | *
             signedvelocity | suggests | *
             papiproxybridge | suggests | *
