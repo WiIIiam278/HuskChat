@@ -6,6 +6,7 @@ plugins {
 dependencies {
     implementation project(path: ':bungee', configuration: 'shadow')
     implementation project(path: ':velocity', configuration: 'shadow')
+    implementation project(path: ':bukkit', configuration: 'shadow')
 }
 
 shadowJar {

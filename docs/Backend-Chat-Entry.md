@@ -1,3 +1,5 @@
+> **Note:** The information of this page does not apply to those running HuskChat on a single-server Spigot setup.
+
 This page provides information on using HuskChat on the proxy with backend (Spigot) plugins that rely on using chat for data entry.
 
 ## Background

@@ -17,55 +17,51 @@
  *  limitations under the License.
  */
 
-package net.william278.huskchat.bungeecord;
+package net.william278.huskchat.bukkit;
 
 import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Plugin;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.william278.desertwell.util.Version;
 import net.william278.huskchat.HuskChat;
-import net.william278.huskchat.bungeecord.command.BungeeCommand;
-import net.william278.huskchat.bungeecord.event.BungeeEventDispatcher;
-import net.william278.huskchat.bungeecord.getter.BungeePermsDataGetter;
-import net.william278.huskchat.bungeecord.listener.BungeeListener;
-import net.william278.huskchat.bungeecord.player.BungeePlayer;
+import net.william278.huskchat.bukkit.command.BukkitCommand;
+import net.william278.huskchat.bukkit.event.BukkitEventDispatcher;
+import net.william278.huskchat.bukkit.listener.BukkitListener;
+import net.william278.huskchat.bukkit.placeholders.PlaceholderAPIReplacer;
+import net.william278.huskchat.bukkit.player.BukkitPlayer;
 import net.william278.huskchat.command.ShortcutCommand;
 import net.william278.huskchat.config.Locales;
 import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.config.Webhook;
+import net.william278.huskchat.event.EventDispatcher;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.getter.DefaultDataGetter;
 import net.william278.huskchat.getter.LuckPermsDataGetter;
 import net.william278.huskchat.placeholders.DefaultReplacer;
-import net.william278.huskchat.placeholders.PAPIProxyBridgeReplacer;
 import net.william278.huskchat.placeholders.PlaceholderReplacer;
 import net.william278.huskchat.player.Player;
 import net.william278.huskchat.player.PlayerCache;
-import org.bstats.bungeecord.Metrics;
+import org.bukkit.command.CommandMap;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import space.arim.morepaperlib.MorePaperLib;
 
-import java.io.InputStream;
 import java.util.*;
 import java.util.logging.Level;
 
-public final class BungeeHuskChat extends Plugin implements HuskChat {
-
-    // bStats ID
-    private static final int METRICS_ID = 11882;
+public class BukkitHuskChat extends JavaPlugin implements HuskChat {
 
     // Instance provider
-    private static BungeeHuskChat instance;
+    private static BukkitHuskChat instance;
 
-    public static BungeeHuskChat getInstance() {
+    public static BukkitHuskChat getInstance() {
         return instance;
     }
 
-    private BungeeAudiences audiences;
+    private MorePaperLib morePaperLib;
+    private BukkitAudiences audiences;
     private Settings settings;
-    private List<BungeeCommand> commands;
-    private BungeeEventDispatcher eventDispatcher;
+    private List<BukkitCommand> commands;
+    private BukkitEventDispatcher eventDispatcher;
     private Webhook webhook;
     private Locales locales;
     private DataGetter playerDataGetter;
@@ -76,14 +72,16 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
     public void onLoad() {
         // Set instance for easy cross-class referencing
         instance = this;
-
-        // Create the event dispatcher, register audiences
-        eventDispatcher = new BungeeEventDispatcher(getProxy());
-        audiences = BungeeAudiences.create(this);
     }
 
     @Override
     public void onEnable() {
+        // Register audiences
+        audiences = BukkitAudiences.create(this);
+
+        // Load morePaperLib
+        this.morePaperLib = new MorePaperLib(this);
+
         // Load config and locale files
         this.loadConfig();
 
@@ -94,27 +92,26 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
         if (isPluginPresent("LuckPerms")) {
             this.playerDataGetter = new LuckPermsDataGetter();
         } else {
-            if (isPluginPresent("BungeePerms")) {
-                this.playerDataGetter = new BungeePermsDataGetter();
-            } else {
-                this.playerDataGetter = new DefaultDataGetter();
-            }
+            this.playerDataGetter = new DefaultDataGetter();
         }
 
         // Setup placeholder parser
         this.placeholders = new ArrayList<>();
         this.placeholders.add(new DefaultReplacer(this));
-        if (getSettings().doPlaceholderAPI() && isPluginPresent("PAPIProxyBridge")) {
-            this.placeholders.add(new PAPIProxyBridgeReplacer(this));
+        if (getSettings().doPlaceholderAPI() && isPluginPresent("PlaceholderAPI")) {
+            this.placeholders.add(new PlaceholderAPIReplacer());
         }
 
+        // Create the event dispatcher
+        eventDispatcher = new BukkitEventDispatcher(this);
+
         // Register events
-        getProxy().getPluginManager().registerListener(this, new BungeeListener(this));
+        getServer().getPluginManager().registerEvents(new BukkitListener(this), this);
 
         // Register commands & channel shortcuts
-        commands = new ArrayList<>(BungeeCommand.Type.getCommands(this));
+        commands = new ArrayList<>(BukkitCommand.Type.getCommands(this));
         commands.addAll(getSettings().getChannels().values().stream()
-                .flatMap(channel -> channel.getShortcutCommands().stream().map(command -> new BungeeCommand(
+                .flatMap(channel -> channel.getShortcutCommands().stream().map(command -> new BukkitCommand(
                         new ShortcutCommand(command, channel.getId(), this), this
                 )))
                 .toList());
@@ -125,13 +122,12 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
         }
 
         // Initialise metrics and log
-        new Metrics(this, METRICS_ID);
         this.checkForUpdates();
         log(Level.INFO, "Enabled HuskChat version " + this.getVersion());
     }
 
-    @Override
     @NotNull
+    @Override
     public Settings getSettings() {
         return settings;
     }
@@ -154,20 +150,14 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
 
     @NotNull
     @Override
-    public Version getVersion() {
-        return Version.fromString(getDescription().getVersion());
+    public EventDispatcher getEventDispatcher() {
+        return eventDispatcher;
     }
 
     @NotNull
     @Override
-    public String getPluginDescription() {
-        return getDescription().getDescription();
-    }
-
-    @NotNull
-    @Override
-    public String getPlatform() {
-        return ProxyServer.getInstance().getName();
+    public PlayerCache getPlayerCache() {
+        return playerCache;
     }
 
     @NotNull
@@ -176,8 +166,8 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
         return placeholders;
     }
 
-    @Override
     @NotNull
+    @Override
     public DataGetter getDataGetter() {
         return playerDataGetter;
     }
@@ -188,60 +178,57 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
     }
 
     @NotNull
-    public BungeeEventDispatcher getEventDispatcher() {
-        return eventDispatcher;
+    @Override
+    public Version getVersion() {
+        return Version.fromString(getDescription().getVersion());
     }
 
-    @Override
     @NotNull
-    public PlayerCache getPlayerCache() {
-        return playerCache;
+    @Override
+    public String getPluginDescription() {
+        return Optional.ofNullable(getDescription().getDescription())
+                .orElseThrow(() -> new IllegalStateException("Plugin description not found"));
+    }
+
+    @NotNull
+    @Override
+    public String getPlatform() {
+        return getServer().getName();
     }
 
     @Override
     public Optional<Player> getPlayer(@NotNull UUID uuid) {
-        final ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
-        if (player != null) {
-            return Optional.of(BungeePlayer.adapt(player));
-        } else {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(getServer().getPlayer(uuid))
+                .map(BukkitPlayer::adapt);
+    }
+
+    @Override
+    public Optional<Player> findPlayer(@NotNull String username) {
+        return Optional.ofNullable(getServer().getPlayerExact(username))
+                .map(BukkitPlayer::adapt);
     }
 
     @Override
     public Collection<Player> getOnlinePlayers() {
-        ArrayList<Player> crossPlatform = new ArrayList<>();
-        for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-            crossPlatform.add(BungeePlayer.adapt(player));
-        }
-        return crossPlatform;
+        return getServer().getOnlinePlayers().stream()
+                .map(user -> (Player) BukkitPlayer.adapt(user))
+                .toList();
     }
 
     @Override
     public Collection<Player> getOnlinePlayersOnServer(@NotNull Player player) {
-        ArrayList<Player> crossPlatform = new ArrayList<>();
-        BungeePlayer.toBungee(player).ifPresent(bungeePlayer -> {
-            for (ProxiedPlayer playerOnServer : bungeePlayer.getServer().getInfo().getPlayers()) {
-                crossPlatform.add(BungeePlayer.adapt(playerOnServer));
-            }
-        });
-        return crossPlatform;
+        return getOnlinePlayers();
     }
 
-    @Override
     @NotNull
+    @Override
     public Audience getConsole() {
         return audiences.console();
     }
 
     @Override
-    public InputStream getResource(@NotNull String path) {
-        return getResourceAsStream(path);
-    }
-
-    @Override
     public boolean isPluginPresent(@NotNull String dependency) {
-        return ProxyServer.getInstance().getPluginManager().getPlugin(dependency) != null;
+        return getServer().getPluginManager().getPlugin(dependency) != null;
     }
 
     @Override
@@ -250,30 +237,14 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
     }
 
     @NotNull
-    public BungeeAudiences getAudience() {
+    public BukkitAudiences getAudience() {
         return audiences;
     }
 
-    @Override
-    public Optional<Player> findPlayer(@NotNull String username) {
-        if (username.isEmpty()) {
-            return Optional.empty();
-        }
-
-        final Optional<Player> optionalPlayer;
-        if (ProxyServer.getInstance().getPlayer(username) != null) {
-            final ProxiedPlayer player = ProxyServer.getInstance().getPlayer(username);
-            optionalPlayer = Optional.of(BungeePlayer.adapt(player));
-        } else {
-            final List<ProxiedPlayer> matchedPlayers = ProxyServer.getInstance().matchPlayer(username)
-                    .stream().filter(val -> val.getName().startsWith(username)).sorted().toList();
-            if (matchedPlayers.size() > 0) {
-                optionalPlayer = Optional.of(BungeePlayer.adapt(matchedPlayers.get(0)));
-            } else {
-                optionalPlayer = Optional.empty();
-            }
-        }
-        return optionalPlayer;
+    @NotNull
+    public CommandMap getCommandMap() {
+        return morePaperLib.commandRegistration().getServerCommandMap();
     }
+
 
 }

@@ -1,0 +1,10 @@
+name: 'HuskChat'
+version: '${version}'
+description: '${description}'
+author: 'William278'
+main: 'net.william278.huskchat.bukkit.BukkitHuskChat'
+api-version: 1.16
+folia-supported: true
+softdepend:
+  - 'LuckPerms'
+  - 'PlaceholderAPI'

@@ -17,26 +17,30 @@
  *  limitations under the License.
  */
 
-package net.william278.huskchat.placeholders;
+package net.william278.huskchat.bukkit.event;
 
-import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.player.Player;
-import net.william278.papiproxybridge.api.PlaceholderAPI;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.concurrent.CompletableFuture;
+public abstract class BukkitEvent extends Event implements Cancellable {
 
-public class PAPIProxyBridgeReplacer implements PlaceholderReplacer {
+    private boolean cancelled;
+    protected net.william278.huskchat.player.Player player;
 
-    private final PlaceholderAPI instance;
-
-    public PAPIProxyBridgeReplacer(@NotNull HuskChat plugin) {
-        this.instance = PlaceholderAPI.getInstance();
-        instance.setCacheExpiry(plugin.getSettings().getPapiProxyBridgeCacheTime());
+    protected BukkitEvent(@NotNull Player player) {
+        this.player = player;
     }
 
     @Override
-    public CompletableFuture<String> formatPlaceholders(@NotNull String message, @NotNull Player player) {
-        return instance.formatPlaceholders(message, player.getUuid());
+    public boolean isCancelled() {
+        return cancelled;
     }
+
+    @Override
+    public void setCancelled(boolean cancel) {
+        this.cancelled = cancel;
+    }
+
 }

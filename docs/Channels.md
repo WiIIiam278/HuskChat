@@ -1,16 +1,10 @@
-Channels are what players talk in and can be switched between using the /channel command or specialised channel shortcut
-command. By default, HuskChat has the following channels setup, perfect for a typical proxy server setup:
+Channels are what players talk in and can be switched between using the /channel command or specialized channel shortcut
+command. By default, HuskChat has the following channels setup, perfect for a typical setup:
 
-* `local` - Local scoped channel with `/local`, `/l` shortcut commands, for sending messages to players on the same
-  server.
-* `global` (default channel) - Global scoped channel with `/global`, `/g` shortcut commands, for sending messages across
-  the network.
-* `staff` - Global scoped channel with `/staff`, `/sc` shortcut commands. Great for letting staff communicate easily.
-  Players need the `huskchat.channel.staff.send`
-  and `huskchat.channel.staff.receive` permissions to send and receive messages in this channel respectively.
-* `helpop` - Global scoped channel with `/helpop` shortcut command. Great for letting players easily contact staff.
-  Players need the `huskchat.channel.helpop.receive`
-  permission to receive messages in this channel.
+* `local` - Local-scoped channel with `/local`, `/l` shortcut commands, for sending messages to players on the same server.
+* `global` (default channel) - Global-scoped channel with `/global`, `/g` shortcut commands, for sending messages across the network.
+* `staff` - Global-scoped channel with `/staff`, `/sc` shortcut commands. Great for letting staff communicate easily. Players need the `huskchat.channel.staff.send` and `huskchat.channel.staff.receive` permissions to send and receive messages in this channel respectively.
+* `helpop` - Global-scoped channel with `/helpop` shortcut command. Great for letting players easily contact staff. Players need the `huskchat.channel.helpop.receive` permission to receive messages in this channel.
 
 ### Channel definition
 
@@ -42,6 +36,9 @@ channels:
 Channel scope defines the scope by which messages are broadcast and handled by HuskChat. The following options are
 available:
 
+#### Proxy scopes
+These scopes are available when running HuskChat on a proxy server (Velocity or BungeeCord/Waterfall)
+
 * `GLOBAL` - Message is broadcast globally to those with permissions via the proxy
 * `LOCAL` - Message is broadcast via the proxy to players who have permission and are on the same server as the source
 * `PASSTHROUGH` - Message is not handled by the proxy and is instead passed to the backend server
@@ -49,6 +46,15 @@ available:
 * `LOCAL_PASSTHROUGH` - Message is broadcast via the proxy to players who have permission and are on the same server as
   the source and is additionally passed to the backend server
   to the backend server
+
+#### Single-server scopes
+These scopes are available when running HuskChat on a single-server Spigot server
+
+* `GLOBAL` - Message is broadcast to everyone on the server
+* `PASSTHROUGH` - Message is not handled by HuskChat; chat will be delegated to other/the vanilla chat handlers
+* `GLOBAL_PASSTHROUGH` - Message is broadcast to everyone on the server and is additionally passed to other/the vanilla chat handlers (the event is not cancelled)
+
+On a single server setup, the `LOCAL` and `LOCAL_PASSTHROUGH` scopes duplicate the `GLOBAL` and `GLOBAL_PASSTHROUGH` scopes.
 
 ### Default channels
 
@@ -63,6 +69,8 @@ server_default_channels:
   bedwars: minigames
 ```
 
+On a single-server setup, this is ignored.
+
 ### Restricted channels
 
 If you'd like to prevent players from using certain channels in certain servers, you can define `restricted_servers` in
@@ -74,3 +82,5 @@ the `default_channel` unless it has an overriding server default channel as outl
 
 You can also restrict use of the `/msg` and `/r` commands in certain servers through the `restricted_servers` section
 under `message_command`.
+
+On a single-server setup, this is ignored.
