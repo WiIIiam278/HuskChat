@@ -57,8 +57,6 @@ jobs:
           version: ${{ github.event.release.tag_name }}
           version-type: release
           changelog: ${{ github.event.release.body }}
-          hangar-game-versions: |
-            3.2
           modrinth-game-versions: |
             1.16.5
             1.17.1
@@ -79,6 +77,7 @@ jobs:
           java: 16
       - name: Upload GitHub Artifact
         uses: actions/upload-artifact@v2
+        if: success() || failure()
         with:
           name: HuskChat Plugin
           path: target/HuskChat-Plugin-*.jar

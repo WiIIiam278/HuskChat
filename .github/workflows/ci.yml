@@ -68,8 +68,6 @@ jobs:
           version: ${{ env.version_name }}
           changelog: ${{ github.event.head_commit.message }}
           hangar-version-type: Alpha
-          hangar-game-versions: |
-            3.2
           modrinth-version-type: alpha
           modrinth-game-versions: |
             1.16.5
@@ -90,6 +88,7 @@ jobs:
             folia
           java: 16
       - name: Upload GitHub Artifact
+        if: success() || failure()
         uses: actions/upload-artifact@v2
         with:
           name: HuskChat Plugin
