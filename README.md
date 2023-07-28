@@ -31,7 +31,7 @@
 It's designed to be easy to configure with an elegant out-of-box setup, while also being highly configurable, suiting a variety of use cases by allowing you to define channels and manage who can send and receive messages within them.
 
 ## Features
-**⭐ Works great out of the box** &mdash; Install on your single Spigot server, or Velocity/BungeeCord-based proxy and use right away
+**⭐ Works great out of the box** &mdash; Install on your Spigot server or Velocity/BungeeCord-based proxy and use right away
 
 **⭐ Placeholder support** &mdash; Hooks with LuckPerms to display user roles, PAPI support via [PAPIProxyBridge](https://william278.net/docs/huskchat/formatting)
 
