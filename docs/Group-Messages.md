@@ -10,7 +10,7 @@ To enable Group Messages, ensure the `group_messages` feature is enabled in the 
 ```yaml
   group_messages: # Whether to allow sending and replying to a message in a group (/msg User1,User2 <message>)
     enabled: true
-    max_size: 5
+    max_size: 10
 ```
 </details>
 
