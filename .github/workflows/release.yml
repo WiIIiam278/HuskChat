@@ -57,7 +57,7 @@ jobs:
           version: ${{ github.event.release.tag_name }}
           version-type: release
           changelog: ${{ github.event.release.body }}
-          modrinth-game-versions: |
+          game-versions: |
             1.16.5
             1.17.1
             1.18.2

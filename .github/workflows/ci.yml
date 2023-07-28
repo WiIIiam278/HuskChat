@@ -69,7 +69,7 @@ jobs:
           changelog: ${{ github.event.head_commit.message }}
           hangar-version-type: Alpha
           modrinth-version-type: alpha
-          modrinth-game-versions: |
+          game-versions: |
             1.16.5
             1.17.1
             1.18.2
