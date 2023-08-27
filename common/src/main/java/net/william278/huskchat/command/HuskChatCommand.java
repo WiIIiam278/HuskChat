@@ -55,7 +55,8 @@ public class HuskChatCommand extends CommandBase {
                         AboutMenu.Credit.of("xF3d3").description("Italian (it-it)"),
                         AboutMenu.Credit.of("MalzSmith").description("Hungarian (hu-hu)"),
                         AboutMenu.Credit.of("Ceddix").description("German (de-de)"),
-                        AboutMenu.Credit.of("Pukejoy_1").description("Bulgarian (bg-bg)"))
+                        AboutMenu.Credit.of("Pukejoy_1").description("Bulgarian (bg-bg)"),
+                        AboutMenu.Credit.of("XeroLe1er").description("French (fr-fr)"))
                 .buttons(
                         AboutMenu.Link.of("https://william278.net/docs/huskchat").text("Documentation").icon("⛏"),
                         AboutMenu.Link.of("https://github.com/WiIIiam278/HuskChat/issues").text("Issues").icon("❌").color(TextColor.color(0xff9f0f)),
