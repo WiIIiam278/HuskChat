@@ -2,6 +2,7 @@
   "avatar_url": "https://william278.net/images/icons/huskchat.png",
   "username": "HuskChat",
   "content": null,
+  "allowed_mentions": { "parse": [] },
   "embeds": [
     {
       "description": "{CHAT_MESSAGE}",
