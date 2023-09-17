@@ -14,7 +14,7 @@ error_no_permission_send: '[Ошибка:](#ff3300) [Недостаточно п
 error_invalid_channel: '[Ошибка:](#ff3300) [Пожайлуста укажите валидный канал чата.](#ff7e5e)'
 error_invalid_channel_command: '[Ошибка:](#ff3300) [Этот канал невалиден](#ff7e5e)'
 error_no_channel: '[Ошибка:](#ff3300) [Вы пытаетесь говорить в невалидном канале чата.](#ff7e5e) [Используйте /channel чтобы переключится на исправный.](#ff7e5e show_text=&#ff7e5e&Кликните сюда чтобы преложить команду suggest_command=/channel )'
-error_player_not_found: '[Ошибка:](#ff3300) [Could not find the specified player; are they online?](#ff7e5e)'
+error_player_not_found: '[Ошибка:](#ff3300) [Не удалось найти указанного игрока; есть ли он в сети?](#ff7e5e)'
 error_cannot_message_self: '[Ошибка:](#ff3300) [Вы не можете отправить самому себе!](#ff7e5e)'
 error_reply_no_messages: '[Ошибка:](#ff3300) [Нет никого, кто бы отправил вам сообщение, на которое можно было бы ответить!](#ff7e5e)'
 error_reply_not_online: '[Ошибка:](#ff3300) [Последний человек, с которым вы переписывались, больше не находится в сети.](#ff7e5e)'
@@ -41,7 +41,7 @@ error_group_messages_max: '[Ошибка:](#ff3300) [Одновременно м
 error_players_not_found: '[Ошибка:](#ff3300) [Не удалось найти ни одного из указанных игроков; есть ли они в сети?](#ff7e5e)'
 error_reply_none_online: '[Ошибка:](#ff3300) [Никто из последней группы людей, с которыми вы переписывались, все еще не в сети.](#ff7e5e)'
 error_last_message_not_group: '[Ошибка:](#ff3300) [Вы еще не отправляли и не получали групповые сообщения.](#ff7e5e)'
-error_no_messages_opt_out: '[Ошибка:](#ff3300) [You have not yet sent or received group messages.](#ff7e5e)'
+error_no_messages_opt_out: '[Ошибка:](#ff3300) [Вы еще не отправляли и не получали групповые сообщения.](#ff7e5e)'
 removed_from_group_message: '[Удалил вас из группового сообщения между:](#00fb9a) %1%'
 list_conjunction: и
 error_passthrough_shortcut_command: '[Ошибка:](#ff3300) [Отправка сообщений в сквозные каналы с помощью команд быстрого доступа не поддерживается. Пожалуйста, сначала переключитесь на канал.](#ff7e5e)'
