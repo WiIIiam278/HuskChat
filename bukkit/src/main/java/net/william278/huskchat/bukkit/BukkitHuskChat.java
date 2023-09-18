@@ -31,7 +31,7 @@ import net.william278.huskchat.bukkit.player.BukkitPlayer;
 import net.william278.huskchat.command.ShortcutCommand;
 import net.william278.huskchat.config.Locales;
 import net.william278.huskchat.config.Settings;
-import net.william278.huskchat.config.Webhook;
+import net.william278.huskchat.discord.DiscordHook;
 import net.william278.huskchat.event.EventDispatcher;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.getter.DefaultDataGetter;
@@ -62,7 +62,7 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat {
     private Settings settings;
     private List<BukkitCommand> commands;
     private BukkitEventDispatcher eventDispatcher;
-    private Webhook webhook;
+    private DiscordHook discordHook;
     private Locales locales;
     private DataGetter playerDataGetter;
     private PlayerCache playerCache;
@@ -116,11 +116,6 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat {
                 )))
                 .toList());
 
-        // Initialize webhook dispatcher
-        if (getSettings().doDiscordIntegration()) {
-            this.webhook = new Webhook(this);
-        }
-
         // Initialise metrics and log
         this.checkForUpdates();
         log(Level.INFO, "Enabled HuskChat version " + this.getVersion());
@@ -173,8 +168,13 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat {
     }
 
     @Override
-    public Optional<Webhook> getWebhook() {
-        return Optional.ofNullable(webhook);
+    public Optional<DiscordHook> getDiscordHook() {
+        return Optional.ofNullable(discordHook);
+    }
+
+    @Override
+    public void setDiscordHook(@NotNull DiscordHook discordHook) {
+        this.discordHook = discordHook;
     }
 
     @NotNull
@@ -232,8 +232,12 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat {
     }
 
     @Override
-    public void log(@NotNull Level level, @NotNull String message, @NotNull Throwable... throwable) {
-        getLogger().log(level, message, throwable);
+    public void log(@NotNull Level level, @NotNull String message, @NotNull Throwable... exceptions) {
+        if (exceptions.length > 0) {
+            getLogger().log(level, message, exceptions[0]);
+            return;
+        }
+        getLogger().log(level, message);
     }
 
     @NotNull

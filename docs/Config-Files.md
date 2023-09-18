@@ -27,6 +27,11 @@ channel_command_aliases: # Must contain at least one item; the first being the p
   - /channel
   - /c
 
+# Placeholder configuration
+placeholders:
+  use_papi: true # For proxy setups, requires PAPIProxyBridge on both the proxy/backend servers
+  cache_time: 3000 # If using PAPIProxyBridge, how long to cache placeholders for in milliseconds
+
 # Chat channel configuration.
 # - You can edit the default channels and make your own if you would like.
 # - Channels that have permissions set require them to send and receive messages respectively.
@@ -213,6 +218,13 @@ discord:
   format_style: 'inline' # Format style to display Discord messages in - 'inline' or 'embedded'
   channel_webhooks:
     global: 'https://discord.com/api/webhooks/channel_id/secret'
+  spicord:
+    enabled: true  # If Spicord is installed, use that for two-way message support
+    username_format: '@%discord_handle%' # Format of Discord users in-game. Note this doesn't support other placeholders
+    #receive_channel_map: # Send in-game messages on these channels to a specified Discord channel (by numeric ID)
+    #  global: '123456789012345678'
+    #send_channel_map: # Send Discord messages on these channels (by numeric ID) to a specified in-game channel
+    #  '123456789012345678': 'global'
 
 # If you want %servername% to show something other than the server name,
 # set it here and uncomment this section

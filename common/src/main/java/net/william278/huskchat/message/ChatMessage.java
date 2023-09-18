@@ -175,7 +175,7 @@ public class ChatMessage {
 
             // Dispatch message to a Discord webhook if enabled
             if (plugin.getSettings().doDiscordIntegration()) {
-                plugin.getWebhook().ifPresent(dispatcher -> dispatcher.dispatchWebhook(this));
+                plugin.getDiscordHook().ifPresent(hook -> hook.postMessage(this));
             }
         });
 

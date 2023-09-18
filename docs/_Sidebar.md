@@ -10,6 +10,7 @@
 * 🤫 [[Filters and Replacers]]
 * 🔎 [[Social and Local Spy]]
 * ⚙️ [[Backend Chat Entry]]
+* 🔵 [[Discord Hook]]
 
 ## Links
 * 💻 [GitHub](https://github.com/WiIIiam278/HuskChat)

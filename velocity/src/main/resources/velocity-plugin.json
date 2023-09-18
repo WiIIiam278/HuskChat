@@ -19,6 +19,10 @@
     {
       "id": "papiproxybridge",
       "optional": true
+    },
+    {
+      "id": "spicord",
+      "optional": true
     }
   ],
   "main": "net.william278.huskchat.velocity.VelocityHuskChat"

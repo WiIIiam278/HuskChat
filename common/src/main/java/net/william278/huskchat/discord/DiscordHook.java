@@ -17,79 +17,34 @@
  *  limitations under the License.
  */
 
-package net.william278.huskchat.config;
+package net.william278.huskchat.discord;
 
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.message.ChatMessage;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
-/**
- * Represents a discord webhook
- */
-public class Webhook {
+public interface DiscordHook {
 
-    private final HuskChat plugin;
+    void postMessage(@NotNull ChatMessage message);
 
-    // Get the webhook URL for a channel by its ID
-    private Optional<URL> getWebhookUrl(@NotNull String channelId) {
-        final Map<String, URL> urls = plugin.getSettings().getWebhookUrls();
-        if (urls.containsKey(channelId)) {
-            return Optional.of(urls.get(channelId));
-        }
-        return Optional.empty();
-    }
-
-    public Webhook(@NotNull HuskChat plugin) {
-        this.plugin = plugin;
-    }
-
-    /**
-     * Dispatch a {@link ChatMessage} to a discord webhook
-     *
-     * @param message The message to dispatch
-     */
-    public void dispatchWebhook(@NotNull ChatMessage message) {
-        CompletableFuture.runAsync(() -> getWebhookUrl(message.targetChannelId).ifPresent(webhookUrl -> {
-            try {
-                final HttpURLConnection webhookConnection = (HttpURLConnection) webhookUrl.openConnection();
-                webhookConnection.setRequestMethod("POST");
-                webhookConnection.setDoOutput(true);
-
-                final byte[] jsonMessage = getChatMessageJson(plugin.getSettings().getWebhookMessageFormat(), message);
-                final int messageLength = jsonMessage.length;
-                webhookConnection.setFixedLengthStreamingMode(messageLength);
-                webhookConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-                webhookConnection.connect();
-                try (OutputStream messageOutputStream = webhookConnection.getOutputStream()) {
-                    messageOutputStream.write(jsonMessage);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }));
-    }
 
     /**
      * Get the discord chat message json for the given message.
      *
-     * @param format  The discord message format to use
+     * @param plugin  The discord message format to use
      * @param message The message to format
      * @return the json message as a byte array
      */
-    private byte[] getChatMessageJson(@NotNull Webhook.Format format, @NotNull ChatMessage message) {
-        return format.getPostMessageFormat(plugin)
+    static byte[] getDiscordMessageJson(@NotNull HuskChat plugin, @NotNull ChatMessage message) {
+        return plugin.getSettings().getDiscordMessageFormat()
+                .getPostMessageFormat(plugin)
                 .replace("{SENDER_UUID}", message.sender.getUuid().toString())
                 .replace("{SENDER_CHANNEL}", message.targetChannelId)
                 .replace("{CURRENT_TIMESTAMP}", ZonedDateTime.now()
@@ -104,7 +59,7 @@ public class Webhook {
     /**
      * Message format definitions for Discord webhooks
      */
-    public enum Format {
+    enum Format {
 
         EMBEDDED,
         INLINE;
@@ -125,10 +80,10 @@ public class Webhook {
         }
 
         @NotNull
-        public String getPostMessageFormat(@NotNull HuskChat plugin) {
+        private String getPostMessageFormat(@NotNull HuskChat plugin) {
             try {
                 return new String(plugin.getResource(
-                        "discord/" + name().toLowerCase(Locale.ENGLISH) + "_message.json"
+                        String.format("discord/%s_message.json", name().toLowerCase(Locale.ENGLISH))
                 ).readAllBytes(), StandardCharsets.UTF_8);
             } catch (IOException e) {
                 throw new IllegalStateException("Unable to load \"" + name() + "\" Discord message format", e);
@@ -136,4 +91,5 @@ public class Webhook {
         }
 
     }
+
 }

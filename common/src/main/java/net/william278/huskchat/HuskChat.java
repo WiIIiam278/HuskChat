@@ -30,7 +30,9 @@ import net.william278.desertwell.util.UpdateChecker;
 import net.william278.desertwell.util.Version;
 import net.william278.huskchat.config.Locales;
 import net.william278.huskchat.config.Settings;
-import net.william278.huskchat.config.Webhook;
+import net.william278.huskchat.discord.DiscordHook;
+import net.william278.huskchat.discord.SpicordHook;
+import net.william278.huskchat.discord.WebHook;
 import net.william278.huskchat.event.EventDispatcher;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.placeholders.PlaceholderReplacer;
@@ -60,6 +62,7 @@ public interface HuskChat {
 
     default void loadConfig() {
         try {
+            // Set settings
             this.setSettings(new Settings(YamlDocument.create(
                     new File(getDataFolder(), "config.yml"),
                     Objects.requireNonNull(getResource("config.yml")),
@@ -69,6 +72,12 @@ public interface HuskChat {
                     UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build()
             )));
             this.setLocales(new Locales(this));
+
+            // Initialize webhook dispatcher
+            if (getSettings().doDiscordIntegration()) {
+                setDiscordHook(getSettings().useSpicord() && isPluginPresent("Spicord")
+                        ? new SpicordHook(this) : new WebHook(this));
+            }
         } catch (Throwable e) {
             log(Level.SEVERE, "Failed to load plugin config/locale files", e);
         }
@@ -94,7 +103,9 @@ public interface HuskChat {
     @NotNull
     DataGetter getDataGetter();
 
-    Optional<Webhook> getWebhook();
+    Optional<DiscordHook> getDiscordHook();
+
+    void setDiscordHook(@NotNull DiscordHook discordHook);
 
     @NotNull
     Version getVersion();
@@ -136,7 +147,7 @@ public interface HuskChat {
             getUpdateChecker().check().thenAccept(checked -> {
                 if (!checked.isUpToDate()) {
                     log(Level.WARNING, "A new version of HuskChat is available: v"
-                                       + checked.getLatestVersion() + " (running v" + getVersion() + ")");
+                            + checked.getLatestVersion() + " (running v" + getVersion() + ")");
                 }
             });
         }
