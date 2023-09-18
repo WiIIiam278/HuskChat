@@ -19,7 +19,6 @@ Spicord is a plugin that allows for two-way communication between Discord and Mi
 
 Your Spicord `config.toml` file should contain a bot like this:
 ```toml
-[[bots]]
   name = "Server Chat"
   enabled = true
   token = "[YOUR TOKEN]"
