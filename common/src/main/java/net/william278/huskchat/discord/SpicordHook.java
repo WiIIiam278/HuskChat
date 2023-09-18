@@ -19,8 +19,6 @@
 
 package net.william278.huskchat.discord;
 
-import de.themoep.minedown.adventure.MineDown;
-import de.themoep.minedown.adventure.MineDownParser;
 import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -64,6 +62,9 @@ public class SpicordHook implements DiscordHook {
 
     @Override
     public void postMessage(@NotNull ChatMessage message) {
+        if (message.sender instanceof SpicordPlayer) {
+            return;
+        }
         CompletableFuture.runAsync(() -> this.addon.sendMessage(message));
     }
 
@@ -82,14 +83,22 @@ public class SpicordHook implements DiscordHook {
         @NotNull
         @Override
         public String getName() {
-            return getDiscriminator()
-                    .map(discriminator -> String.format("@%s#%04d", discordUser.getName(), discriminator))
-                    .orElse(String.format("@%s", discordUser.getName()));
+            return plugin.getSettings().getDiscordUsernameFormat()
+                    .replaceAll(
+                            "%discord_handle%",
+                            getDiscriminatorString()
+                                    .map(discriminator -> String.format("%s%s", discordUser.getName(), discriminator))
+                                    .orElse(discordUser.getName())
+                    );
         }
 
-        private Optional<Integer> getDiscriminator() {
+        private Optional<String> getDiscriminatorString() {
             try {
-                return Optional.of(Integer.parseInt(discordUser.getDiscriminator()));
+                return Optional.of(Integer.parseInt(discordUser.getDiscriminator()))
+                        .flatMap(d -> d > 0
+                                ? Optional.of(String.format("#%04d", d))
+                                : Optional.empty()
+                        );
             } catch (NumberFormatException e) {
                 return Optional.empty();
             }
@@ -209,13 +218,8 @@ public class SpicordHook implements DiscordHook {
                             .build()) : List.of())
 
                     // Inline formatting
-                    .setContent(format == Format.INLINE ? String.format("**%s** %s",
-                            message.sender.getName(),
-                            message.sender.hasPermission("huskchat.formatted_chat")
-                                    ? DiscordSerializer.INSTANCE.serialize(new MineDown(message.message)
-                                    .disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent())
-                                    : message.message
-                    ) : null)
+                    .setContent(format == Format.INLINE ? String.format("### %s\n%s",
+                            message.sender.getName(), message.message) : null)
 
                     .build()
             ).queue();

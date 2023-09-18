@@ -100,6 +100,7 @@ public class Settings {
     private Map<String, URL> webhookUrls;
     private WebHook.Format webhookFormat;
     private boolean useSpicord;
+    private String discordUsernameFormat;
     private Map<String, String> spicordReceiveChannelMap;
     private Map<String, String> spicordSendChannelMap;
 
@@ -188,6 +189,7 @@ public class Settings {
         webhookUrls = fetchWebhookUrls(configFile);
         doDiscordIntegration = configFile.getBoolean("discord.enabled", false);
         useSpicord = configFile.getBoolean("discord.spicord.enabled", true);
+        discordUsernameFormat = configFile.getString("discord.username_format", "@%discord_name%");
         spicordReceiveChannelMap = new LinkedHashMap<>();
         if (configFile.contains("discord.spicord.receive_channel_map")) {
             for (String channelID : configFile.getSection("discord.spicord.receive_channel_map").getRoutesAsStrings(false)) {
@@ -669,6 +671,11 @@ public class Settings {
 
     public boolean useSpicord() {
         return useSpicord;
+    }
+
+    @NotNull
+    public String getDiscordUsernameFormat() {
+        return discordUsernameFormat;
     }
 
     @NotNull

@@ -207,6 +207,7 @@ discord:
     global: 'https://discord.com/api/webhooks/channel_id/secret'
   spicord:
     enabled: true  # If Spicord is installed, use that for two-way message support
+    username_format: '@%discord_handle%' # Format of Discord users in-game. Note this doesn't support other placeholders
     #receive_channel_map: # Send in-game messages on these channels to a specified Discord channel (by numeric ID)
     #  global: '123456789012345678'
     #send_channel_map: # Send Discord messages on these channels (by numeric ID) to a specified in-game channel
