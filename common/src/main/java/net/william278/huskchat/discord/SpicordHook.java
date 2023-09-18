@@ -134,6 +134,8 @@ public class SpicordHook implements DiscordHook {
         @Override
         public void sendMessage(@NotNull Component component) {
             try {
+                //todo in the future, it'd be nice to send this message ephemerally and delete the original message
+                // if someone better at me at JDA wants to do this, feel free to make a PR
                 context.reply(DiscordSerializer.INSTANCE.serialize(component)).queue();
             } catch (Throwable e) {
                 plugin.log(Level.WARNING, "Unable to send contextual reply via Spicord to Discord user", e);
