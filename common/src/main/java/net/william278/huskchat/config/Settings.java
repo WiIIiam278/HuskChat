@@ -189,7 +189,7 @@ public class Settings {
         webhookUrls = fetchWebhookUrls(configFile);
         doDiscordIntegration = configFile.getBoolean("discord.enabled", false);
         useSpicord = configFile.getBoolean("discord.spicord.enabled", true);
-        discordUsernameFormat = configFile.getString("discord.username_format", "@%discord_name%");
+        discordUsernameFormat = configFile.getString("discord.username_format", "@%discord_handle%");
         spicordReceiveChannelMap = new LinkedHashMap<>();
         if (configFile.contains("discord.spicord.receive_channel_map")) {
             for (String channelID : configFile.getSection("discord.spicord.receive_channel_map").getRoutesAsStrings(false)) {
