@@ -151,7 +151,7 @@ public class SpicordHook implements DiscordHook {
 
         private void sendMessage(@NotNull ChatMessage message) {
             final Optional<Long> discordChannelId = Optional.ofNullable(
-                    plugin.getSettings().getSpicordSendChannelMap().get(message.targetChannelId)
+                    plugin.getSettings().getSpicordReceiveChannelMap().get(message.targetChannelId)
             ).flatMap(id -> {
                 try {
                     return Optional.of(Long.parseLong(id.trim()));
@@ -229,6 +229,12 @@ public class SpicordHook implements DiscordHook {
 
         @Override
         public void onMessageReceived(@NotNull DiscordBot bot, @NotNull MessageReceivedEvent event) {
+            // Don't send messages from bots (or myself)
+            if (event.getAuthor().isBot()) {
+                return;
+            }
+
+            // Get the channel ID, send an in-game message.
             final Optional<String> serverChannelId = Optional.ofNullable(
                     plugin.getSettings().getSpicordSendChannelMap().get(event.getGuildChannel().getId())
             );

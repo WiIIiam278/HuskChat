@@ -245,8 +245,12 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
     }
 
     @Override
-    public void log(@NotNull Level level, @NotNull String message, @NotNull Throwable... throwable) {
-        getLogger().log(level, message, throwable);
+    public void log(@NotNull Level level, @NotNull String message, @NotNull Throwable... exceptions) {
+        if (exceptions.length > 0) {
+            getLogger().log(level, message, exceptions[0]);
+            return;
+        }
+        getLogger().log(level, message);
     }
 
     @NotNull

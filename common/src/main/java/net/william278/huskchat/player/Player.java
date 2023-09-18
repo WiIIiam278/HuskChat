@@ -91,7 +91,7 @@ public interface Player {
      * @param mineDown the message to send
      */
     default void sendMessage(@NotNull MineDown mineDown) {
-        getAudience().sendMessage(mineDown.toComponent());
+        this.sendMessage(mineDown.toComponent());
     }
 
     /**
