@@ -284,7 +284,7 @@ public class VelocityHuskChat implements HuskChat {
 
     @Override
     public boolean isPluginPresent(@NotNull String dependency) {
-        return getProxyServer().getPluginManager().getPlugin(dependency).isPresent();
+        return getProxyServer().getPluginManager().getPlugin(dependency.toLowerCase(Locale.ENGLISH)).isPresent();
     }
 
     @NotNull

@@ -175,7 +175,8 @@ public class SpicordHook implements DiscordHook {
                 return;
             }
             if (bot == null || bot.getJda() == null) {
-                plugin.log(Level.WARNING, "No active bots found to dispatch message!");
+                plugin.log(Level.WARNING, "No active bots found to dispatch message! " +
+                        "Have you added \"huskchat\" to the \"addons:\" section of a bot in your Spicord config?");
                 return;
             }
 

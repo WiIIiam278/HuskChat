@@ -14,8 +14,24 @@ Spicord is a plugin that allows for two-way communication between Discord and Mi
 3. Open the config.toml file located in the `plugins/Spicord` directory using a text editor.
    * Insert your bot token in the designated field (see below how to get a token)
    * Change the value of the enabled option to true
+   * Add `huskchat` to the `addons` section of your bot
 4. Restart your server.
 
+Your Spicord `config.toml` file should contain a bot like this:
+```toml
+[[bots]]
+  name = "Server Chat"
+  enabled = true
+  token = "[YOUR TOKEN]"
+  command_support = true
+  command_prefix = "-"
+  addons = [
+    "spicord::info",
+    "spicord::plugins",
+    "spicord::players",
+    "huskchat"
+  ]
+```
 
 ### Creating a bot
 Here's how to create a bot and add it to your Discord server (Taken from [Spicord's documentation](https://github.com/Spicord/Spicord/blob/v5/tutorial/CREATE-A-BOT.md)):
