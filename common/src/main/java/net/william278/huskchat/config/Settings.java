@@ -22,6 +22,7 @@ package net.william278.huskchat.config;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import net.william278.huskchat.channel.Channel;
+import net.william278.huskchat.discord.WebHook;
 import net.william278.huskchat.filter.*;
 import net.william278.huskchat.replacer.EmojiReplacer;
 import org.jetbrains.annotations.NotNull;
@@ -97,7 +98,10 @@ public class Settings {
     // Discord integration
     private boolean doDiscordIntegration;
     private Map<String, URL> webhookUrls;
-    private Webhook.Format webhookFormat;
+    private WebHook.Format webhookFormat;
+    private boolean useSpicord;
+    private Map<String, String> spicordReceiveChannelMap;
+    private Map<String, String> spicordSendChannelMap;
 
     // Server names
     private Map<String, String> serverNameReplacement;
@@ -179,10 +183,23 @@ public class Settings {
         chatFilters = fetchChatFilters(configFile);
 
         // Discord integration
-        doDiscordIntegration = configFile.getBoolean("discord.enabled", false);
-        webhookFormat = Webhook.Format.getMessageFormat(configFile.getString("discord.format_style", "inline"))
-                .orElse(Webhook.Format.INLINE);
+        webhookFormat = WebHook.Format.getMessageFormat(configFile.getString("discord.format_style", "inline"))
+                .orElse(WebHook.Format.INLINE);
         webhookUrls = fetchWebhookUrls(configFile);
+        doDiscordIntegration = configFile.getBoolean("discord.enabled", false);
+        useSpicord = configFile.getBoolean("discord.spicord.enabled", true);
+        spicordReceiveChannelMap = new LinkedHashMap<>();
+        if (configFile.contains("discord.spicord.receive_channel_map")) {
+            for (String channelID : configFile.getSection("discord.spicord.receive_channel_map").getRoutesAsStrings(false)) {
+                spicordReceiveChannelMap.put(channelID, configFile.getString("discord.spicord.receive_channel_map." + channelID));
+            }
+        }
+        spicordSendChannelMap = new LinkedHashMap<>();
+        if (configFile.contains("discord.spicord.send_channel_map")) {
+            for (String channelID : configFile.getSection("discord.spicord.send_channel_map").getRoutesAsStrings(false)) {
+                spicordSendChannelMap.put(channelID, configFile.getString("discord.spicord.send_channel_map." + channelID));
+            }
+        }
 
         // Server name replacement
         serverNameReplacement = new LinkedHashMap<>();
@@ -640,14 +657,31 @@ public class Settings {
         return doDiscordIntegration;
     }
 
+    @NotNull
     public Map<String, URL> getWebhookUrls() {
         return webhookUrls;
     }
 
-    public Webhook.Format getWebhookMessageFormat() {
+    @NotNull
+    public WebHook.Format getDiscordMessageFormat() {
         return webhookFormat;
     }
 
+    public boolean useSpicord() {
+        return useSpicord;
+    }
+
+    @NotNull
+    public Map<String, String> getSpicordReceiveChannelMap() {
+        return spicordReceiveChannelMap;
+    }
+
+    @NotNull
+    public Map<String, String> getSpicordSendChannelMap() {
+        return spicordSendChannelMap;
+    }
+
+    @NotNull
     public Map<String, String> getServerNameReplacement() {
         return serverNameReplacement;
     }

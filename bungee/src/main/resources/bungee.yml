@@ -6,3 +6,4 @@ main: 'net.william278.huskchat.bungeecord.BungeeHuskChat'
 softDepends:
   - 'LuckPerms'
   - 'PAPIProxyBridge'
+  - 'Spicord'

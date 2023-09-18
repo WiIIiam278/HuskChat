@@ -34,7 +34,7 @@ import net.william278.huskchat.bungeecord.player.BungeePlayer;
 import net.william278.huskchat.command.ShortcutCommand;
 import net.william278.huskchat.config.Locales;
 import net.william278.huskchat.config.Settings;
-import net.william278.huskchat.config.Webhook;
+import net.william278.huskchat.discord.DiscordHook;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.getter.DefaultDataGetter;
 import net.william278.huskchat.getter.LuckPermsDataGetter;
@@ -66,7 +66,7 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
     private Settings settings;
     private List<BungeeCommand> commands;
     private BungeeEventDispatcher eventDispatcher;
-    private Webhook webhook;
+    private DiscordHook discordHook;
     private Locales locales;
     private DataGetter playerDataGetter;
     private PlayerCache playerCache;
@@ -118,11 +118,6 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
                         new ShortcutCommand(command, channel.getId(), this), this
                 )))
                 .toList());
-
-        // Initialize webhook dispatcher
-        if (getSettings().doDiscordIntegration()) {
-            this.webhook = new Webhook(this);
-        }
 
         // Initialise metrics and log
         new Metrics(this, METRICS_ID);
@@ -183,8 +178,13 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
     }
 
     @Override
-    public Optional<Webhook> getWebhook() {
-        return Optional.ofNullable(webhook);
+    public Optional<DiscordHook> getDiscordHook() {
+        return Optional.ofNullable(discordHook);
+    }
+
+    @Override
+    public void setDiscordHook(@NotNull DiscordHook discordHook) {
+        this.discordHook = discordHook;
     }
 
     @NotNull

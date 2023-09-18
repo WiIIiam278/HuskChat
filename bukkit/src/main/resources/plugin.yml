@@ -8,3 +8,4 @@ folia-supported: true
 softdepend:
   - 'LuckPerms'
   - 'PlaceholderAPI'
+  - 'Spicord'
