@@ -41,7 +41,7 @@ Here's how to create a bot and add it to your Discord server (Taken from [Spicor
 4. Switch to the **Bot** tab located at the left of the page, and then click **Add Bot > Yes, do it!**
 5. You will see your bot information and there you can change its profile picture and name
 6. Click the **Copy** button below the **Token** section, you will need to put it in the Spicord configuration
-7. To invite your bot, go to `https://mcdb.eu/invite/YOUR_ID` but before replace `YOUR_ID` with the ID you copied in the 3rd step, this will generate the invite url for your bot and redirect you to it, the generated url will make your bot have Administrator permission
+7. To invite your bot, go to `https://discord.com/oauth2/authorize?scope=bot&permissions=8&client_id=YOUR_ID` but before replace `YOUR_ID` with the ID you copied in the 3rd step, this will generate the invite url for your bot and redirect you to it, the generated url will make your bot have Administrator permission
 
 Note that you are required to enable the following gateway intents for your bot on the developer panel, otherwise it won't boot up:
 ![Gateway intents](https://raw.githubusercontent.com/WiIIiam278/HuskChat/master/images/spicord-bot-intents.png)
