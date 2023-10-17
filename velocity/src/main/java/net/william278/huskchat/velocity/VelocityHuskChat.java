@@ -99,6 +99,11 @@ public class VelocityHuskChat implements HuskChat {
 
     @Subscribe
     public void onProxyInitialization(@NotNull ProxyInitializeEvent event) {
+        // Check plugin compat
+        if (!isSigningPluginInstalled()) {
+            return;
+        }
+
         // Load config and locale files
         this.loadConfig();
         this.eventDispatcher = new VelocityEventDispatcher(server);
@@ -135,6 +140,26 @@ public class VelocityHuskChat implements HuskChat {
         this.metrics.make(this, METRICS_ID);
         this.checkForUpdates();
         log(Level.INFO, "Enabled HuskChat version " + getVersion());
+    }
+
+    // Ensures a signing plugin is installed
+    private boolean isSigningPluginInstalled() {
+        boolean usvPresent = isPluginPresent("unsignedvelocity");
+        boolean svPresent = isPluginPresent("signedvelocity");
+        if (usvPresent && svPresent) {
+            log(Level.SEVERE, "Both UnsignedVelocity and SignedVelocity are present!\n" +
+                    "Please uninstall UnsignedVelocity. HuskChat will now be disabled."
+            );
+            return false;
+        }
+        if (!(usvPresent || svPresent)) {
+            log(Level.WARNING, "Neither UnsignedVelocity nor SignedVelocity are present!\n" +
+                    "Install SignedVelocity (https://modrinth.com/plugin/signedvelocity) for 1.19+ support.");
+        } else if (usvPresent) {
+            log(Level.WARNING, "UnsignedVelocity is deprecated; please install SignedVelocity " +
+                    " (https://modrinth.com/plugin/signedvelocity) instead for better support.");
+        }
+        return true;
     }
 
     @NotNull
@@ -259,7 +284,7 @@ public class VelocityHuskChat implements HuskChat {
         } else {
             final List<com.velocitypowered.api.proxy.Player> matchedPlayers = getProxyServer().matchPlayer(username)
                     .stream().filter(val -> val.getUsername().startsWith(username)).sorted().toList();
-            if (matchedPlayers.size() > 0) {
+            if (!matchedPlayers.isEmpty()) {
                 optionalPlayer = Optional.of(VelocityPlayer.adapt(matchedPlayers.get(0)));
             } else {
                 optionalPlayer = Optional.empty();
