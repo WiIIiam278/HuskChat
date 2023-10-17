@@ -19,22 +19,23 @@
 
 package net.william278.huskchat.bukkit.listener;
 
-import net.william278.huskchat.bukkit.BukkitHuskChat;
+import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.bukkit.player.BukkitPlayer;
+import net.william278.huskchat.listener.PlayerListener;
 import net.william278.huskchat.message.ChatMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class BukkitListener implements Listener {
+public class BukkitListener extends PlayerListener implements Listener {
 
-    private final BukkitHuskChat plugin;
-
-    public BukkitListener(@NotNull BukkitHuskChat plugin) {
-        this.plugin = plugin;
+    public BukkitListener(@NotNull HuskChat plugin) {
+        super(plugin);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -49,6 +50,24 @@ public class BukkitListener implements Listener {
         if (shouldCancel) {
             e.setCancelled(true);
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        final BukkitPlayer player = BukkitPlayer.adapt(e.getPlayer());
+        super.handlePlayerSwitchServer(player, player.getServerName());
+        if (plugin.getSettings().doJoinMessages() || !plugin.getSettings().getJoinQuitBroadcastScope().isPassThrough) {
+            e.setJoinMessage(null);
+        }
+        super.handlePlayerJoin(player);
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent e) {
+        if (plugin.getSettings().doQuitMessages() || !plugin.getSettings().getJoinQuitBroadcastScope().isPassThrough) {
+            e.setQuitMessage(null);
+        }
+        super.handlePlayerQuit(BukkitPlayer.adapt(e.getPlayer()));
     }
 
 }

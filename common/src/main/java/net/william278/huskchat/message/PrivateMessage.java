@@ -120,7 +120,7 @@ public class PrivateMessage {
                 if (sender.hasPermission(filter.getFilterIgnorePermission())) {
                     continue;
                 }
-                if (!filter.isAllowed(sender, finalMessage.get())) {
+                if (plugin.getSettings().isCensorPrivateMessages() && !filter.isAllowed(sender, finalMessage.get())) {
                     plugin.getLocales().sendMessage(sender, filter.getFailureErrorMessageId());
                     return;
                 }

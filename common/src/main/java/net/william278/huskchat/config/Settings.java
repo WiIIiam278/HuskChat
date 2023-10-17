@@ -94,6 +94,13 @@ public class Settings {
     // Chat filters
     private Map<String, List<ChatFilter>> chatFilters;
 
+    // Join and Quit messages
+    private boolean doJoinMessages;
+    private String joinMessageFormat;
+    private boolean doQuitMessages;
+    private String quitMessageFormat;
+    private Channel.BroadcastScope joinQuitBroadcastScope;
+
 
     // Discord integration
     private boolean doDiscordIntegration;
@@ -182,6 +189,13 @@ public class Settings {
 
         // Chat filters
         chatFilters = fetchChatFilters(configFile);
+
+        // Join and Quit messages
+        doJoinMessages = configFile.getBoolean("join_and_quit_messages.join.enabled", true);
+        joinMessageFormat = configFile.getString("join_and_quit_messages.join.format", "&e%player_name% joined the network");
+        doQuitMessages = configFile.getBoolean("join_and_quit_messages.quit.enabled", true);
+        quitMessageFormat = configFile.getString("join_and_quit_messages.quit.format", "&e%player_name% left the network");
+        joinQuitBroadcastScope = Channel.BroadcastScope.valueOf(configFile.getString("join_and_quit_messages.broadcast_scope", "GLOBAL").toUpperCase(Locale.ENGLISH));
 
         // Discord integration
         webhookFormat = WebHook.Format.getMessageFormat(configFile.getString("discord.format_style", "inline"))
@@ -648,6 +662,29 @@ public class Settings {
     @NotNull
     public String getBroadcastLogFormat() {
         return broadcastLogFormat;
+    }
+
+    public boolean doJoinMessages() {
+        return doJoinMessages;
+    }
+
+    @NotNull
+    public String getJoinMessageFormat() {
+        return joinMessageFormat;
+    }
+
+    public boolean doQuitMessages() {
+        return doQuitMessages;
+    }
+
+    @NotNull
+    public String getQuitMessageFormat() {
+        return quitMessageFormat;
+    }
+
+    @NotNull
+    public Channel.BroadcastScope getJoinQuitBroadcastScope() {
+        return joinQuitBroadcastScope;
     }
 
     @NotNull

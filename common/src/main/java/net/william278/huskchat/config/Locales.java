@@ -174,8 +174,8 @@ public class Locales {
                 .thenAccept(replaced -> {
                     final TextComponent.Builder componentBuilder = Component.text()
                             .append(new MineDown(replaced.replace("%spy_color%", spyColor.colorCode)
-                                                         .replace("%channel%", channel.getId()) +
-                                                 MineDown.escape(message)).toComponent());
+                                    .replace("%channel%", channel.getId()) +
+                                    MineDown.escape(message)).toComponent());
                     spy.sendMessage(componentBuilder.build());
                 });
     }
@@ -205,6 +205,28 @@ public class Locales {
         componentBuilder.append(new MineDown(plugin.getSettings().getBroadcastMessageFormat()).toComponent());
         componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
         player.sendMessage(componentBuilder.build());
+    }
+
+    public void sendJoinMessage(@NotNull Player player) {
+        plugin.replacePlaceholders(player, plugin.getSettings().getJoinMessageFormat())
+                .thenAccept(replaced -> sendJoinQuitMessage(player, new MineDown(replaced).toComponent()));
+    }
+
+    public void sendQuitMessage(@NotNull Player player) {
+        plugin.replacePlaceholders(player, plugin.getSettings().getQuitMessageFormat())
+                .thenAccept(replaced -> sendJoinQuitMessage(player, new MineDown(replaced).toComponent()));
+    }
+
+    // Dispatch a join/quit message to the correct server
+    private void sendJoinQuitMessage(@NotNull Player player, @NotNull Component component) {
+        boolean local = List.of(Channel.BroadcastScope.LOCAL, Channel.BroadcastScope.LOCAL_PASSTHROUGH)
+                .contains(plugin.getSettings().getJoinQuitBroadcastScope());
+        for (Player online : plugin.getOnlinePlayers()) {
+            if (local && !online.getServerName().equals(player.getServerName())) {
+                continue;
+            }
+            online.sendMessage(component);
+        }
     }
 
     // Returns a newline-separated list of player names

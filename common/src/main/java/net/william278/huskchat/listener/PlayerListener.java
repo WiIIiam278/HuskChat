@@ -37,10 +37,10 @@ public abstract class PlayerListener {
     /**
      * Handle a player switching server
      *
-     * @param player      The player changing server
-     * @param newServer   The name of the server they are changing to
+     * @param player    The player changing server
+     * @param newServer The name of the server they are changing to
      */
-    public final void handlePlayerSwitchServer(Player player, String newServer) {
+    public final void handlePlayerSwitchServer(@NotNull Player player, @NotNull String newServer) {
         final Map<String, String> defaultChannels = plugin.getSettings().getServerDefaultChannels();
         if (defaultChannels.containsKey(newServer)) {
             plugin.getPlayerCache().switchPlayerChannel(player, defaultChannels.get(newServer));
@@ -56,6 +56,24 @@ public abstract class PlayerListener {
                     break;
                 }
             }
+        }
+    }
+
+    public final void handlePlayerJoin(@NotNull Player player) {
+        if (plugin.getSettings().getJoinQuitBroadcastScope() == Channel.BroadcastScope.PASSTHROUGH) {
+            return;
+        }
+        if (plugin.getSettings().doJoinMessages()) {
+            plugin.getLocales().sendJoinMessage(player);
+        }
+    }
+
+    public final void handlePlayerQuit(@NotNull Player player) {
+        if (plugin.getSettings().getJoinQuitBroadcastScope() == Channel.BroadcastScope.PASSTHROUGH) {
+            return;
+        }
+        if (plugin.getSettings().doQuitMessages()) {
+            plugin.getLocales().sendQuitMessage(player);
         }
     }
 

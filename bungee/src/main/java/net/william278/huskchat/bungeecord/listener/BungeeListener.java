@@ -21,6 +21,8 @@ package net.william278.huskchat.bungeecord.listener;
 
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
+import net.md_5.bungee.api.event.PlayerDisconnectEvent;
+import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.ServerSwitchEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -56,6 +58,16 @@ public class BungeeListener extends PlayerListener implements Listener {
         final String server = e.getPlayer().getServer().getInfo().getName();
         final BungeePlayer player = BungeePlayer.adapt(e.getPlayer());
         this.handlePlayerSwitchServer(player, server);
+    }
+
+    @EventHandler
+    public void onPlayerJoinNetwork(PostLoginEvent e) {
+        super.handlePlayerJoin(BungeePlayer.adapt(e.getPlayer()));
+    }
+
+    @EventHandler
+    public void onPlayerQuitNetwork(PlayerDisconnectEvent e) {
+        super.handlePlayerQuit(BungeePlayer.adapt(e.getPlayer()));
     }
 
 }
