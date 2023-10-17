@@ -10,6 +10,7 @@
 * 🤫 [[Filters and Replacers]]
 * 🔎 [[Social and Local Spy]]
 * ⚙️ [[Backend Chat Entry]]
+* 📜 [[Join and Quit Messages]]
 * 🔵 [[Discord Hook]]
 
 ## Links

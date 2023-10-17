@@ -212,6 +212,19 @@ message_replacers:
       ':-(': '☹'
       ':fire:': '🔥'
 
+
+# Options for customizing player join and quit messages
+join_and_quit_messages:
+  join:
+    enabled: false
+    # Use the huskchat.join.[text] permission to override this per-group if needed
+    format: '&e%name% joined the network'
+  quit:
+    enabled: false
+    # Use the huskchat.quit.[text] permission to override this per-group if needed
+    format: '&e%name% left the network'
+  broadcast_scope: GLOBAL # Note that on Velocity/Bungee, PASSTHROUGH modes won't cancel local join/quit messages
+
 # Discord webhook options, which lets you send messages to a Discord channel
 discord:
   enabled: false

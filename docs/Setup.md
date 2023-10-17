@@ -15,8 +15,10 @@ This will walk you through installing HuskChat on your Velocity or BungeeCord/Wa
 ### Velocity Installation
 1. Turn off your Velocity proxy
 2. Download the [latest version of HuskChat](https://github.com/WiIIiam278/HuskChat/releases/latest). 
-3. Download both the latest version of [UnsignedVelocity](https://modrinth.com/plugin/unsignedvelocity) and [VPacketEvents](https://modrinth.com/plugin/vpacketevents/)
-4. Add all three jar files to your Velocity proxy server's `~/plugins` folder
+3. Download the [latest version of SignedVelocity](https://modrinth.com/plugin/unsignedvelocity) for Velocity
+4. Add both jar files to your Velocity proxy server's `~/plugins` folder. 
+   1. Additionally, download [SignedVelocity](https://modrinth.com/plugin/unsignedvelocity) for your backend server add the plugin to your `/plugins/~` folders there. Restart your backend servers.
+   2. You may alternatively use UnsignedVelocity and VPacketEvents, which only need installing on your proxy if you are using Fabric for your backend servers.
 5. Start your Velocity proxy. Let HuskChat generate its config files, then stop the proxy again.
 6. Modify your HuskChat config files as needed, then start your Velocity proxy again.
 
