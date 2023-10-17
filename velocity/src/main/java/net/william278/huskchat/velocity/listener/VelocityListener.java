@@ -38,14 +38,14 @@ public class VelocityListener extends PlayerListener {
         super(plugin);
     }
 
-    @Subscribe(order = PostOrder.LAST)
+    @Subscribe(order = PostOrder.LATE)
     public void onPlayerChat(PlayerChatEvent e) {
-        if (e.getMessage().startsWith("/") || !e.getResult().isAllowed()) {
+        if (!e.getResult().isAllowed()) {
             return;
         }
 
         final Player player = VelocityPlayer.adapt(e.getPlayer());
-        boolean shouldCancel = new ChatMessage(plugin.getPlayerCache().getPlayerChannel(player.getUuid()),
+        final boolean shouldCancel = new ChatMessage(plugin.getPlayerCache().getPlayerChannel(player.getUuid()),
                 player, e.getMessage(), plugin)
                 .dispatch();
 
