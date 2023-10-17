@@ -15,7 +15,7 @@ dependencies {
     api 'dev.vankka:mcdiscordreserializer:4.3.0'
 
     compileOnly 'org.jetbrains:annotations:24.0.1'
-    compileOnly 'net.william278:papiproxybridge:1.2.2'
+    compileOnly 'net.william278:papiproxybridge:1.4.2-83cc181'
     compileOnly 'net.kyori:adventure-api:4.14.0'
     compileOnly 'net.luckperms:api:5.4'
     compileOnly 'com.github.Spicord.Spicord:spicord-common:v5-SNAPSHOT'
