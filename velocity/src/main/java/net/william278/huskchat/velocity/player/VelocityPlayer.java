@@ -27,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Velocity implementation of a cross-platform {@link Player}
@@ -61,9 +60,8 @@ public class VelocityPlayer implements Player {
     @Override
     @NotNull
     public String getServerName() {
-        AtomicReference<ServerConnection> connection = new AtomicReference<>();
-        player.getCurrentServer().ifPresent(connection::set);
-        if (connection.get() != null) {
+        final Optional<ServerConnection> connection = player.getCurrentServer();
+        if (connection.isPresent()) {
             return connection.get().getServerInfo().getName();
         }
         return "";
@@ -71,9 +69,8 @@ public class VelocityPlayer implements Player {
 
     @Override
     public int getPlayersOnServer() {
-        AtomicReference<ServerConnection> connection = new AtomicReference<>();
-        player.getCurrentServer().ifPresent(connection::set);
-        if (connection.get() != null) {
+        final Optional<ServerConnection> connection = player.getCurrentServer();
+        if (connection.isPresent()) {
             return connection.get().getServer().getPlayersConnected().size();
         }
         return 0;
