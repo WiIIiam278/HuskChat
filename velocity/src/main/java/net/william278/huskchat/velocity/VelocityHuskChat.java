@@ -106,6 +106,11 @@ public class VelocityHuskChat implements HuskChat {
 
         // Load config and locale files
         this.loadConfig();
+
+        // Load discord hook
+        this.loadDiscordHook();
+
+        // Load event dispatcher
         this.eventDispatcher = new VelocityEventDispatcher(server);
 
         // Load saved social spy state

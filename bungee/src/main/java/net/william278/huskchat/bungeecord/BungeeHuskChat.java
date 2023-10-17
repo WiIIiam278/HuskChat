@@ -87,6 +87,9 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
         // Load config and locale files
         this.loadConfig();
 
+        // Load discord hook
+        this.loadDiscordHook();
+
         // Load saved social spy state
         this.playerCache = new PlayerCache(this);
 

@@ -128,7 +128,7 @@ public class SpicordHook implements DiscordHook {
 
         @Override
         public boolean hasPermission(@NotNull String node) {
-            return discordUser.isSystem();
+            return true;
         }
 
         @Override

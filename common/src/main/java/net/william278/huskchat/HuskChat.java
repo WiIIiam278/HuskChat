@@ -72,14 +72,16 @@ public interface HuskChat {
                     UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build()
             )));
             this.setLocales(new Locales(this));
-
-            // Initialize webhook dispatcher
-            if (getSettings().doDiscordIntegration()) {
-                setDiscordHook(getSettings().useSpicord() && isPluginPresent("Spicord")
-                        ? new SpicordHook(this) : new WebHook(this));
-            }
         } catch (Throwable e) {
             log(Level.SEVERE, "Failed to load plugin config/locale files", e);
+        }
+    }
+
+    // Initialize webhook dispatcher
+    default void loadDiscordHook() {
+        if (getSettings().doDiscordIntegration()) {
+            setDiscordHook(getSettings().useSpicord() && isPluginPresent("Spicord")
+                    ? new SpicordHook(this) : new WebHook(this));
         }
     }
 
