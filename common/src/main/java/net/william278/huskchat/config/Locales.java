@@ -208,12 +208,16 @@ public class Locales {
     }
 
     public void sendJoinMessage(@NotNull Player player) {
-        plugin.replacePlaceholders(player, plugin.getSettings().getJoinMessageFormat())
+        plugin.replacePlaceholders(player,
+                        plugin.getDataGetter().getTextFromNode(player, "huskchat.join_message")
+                                .orElse(plugin.getSettings().getJoinMessageFormat()))
                 .thenAccept(replaced -> sendJoinQuitMessage(player, new MineDown(replaced).toComponent()));
     }
 
     public void sendQuitMessage(@NotNull Player player) {
-        plugin.replacePlaceholders(player, plugin.getSettings().getQuitMessageFormat())
+        plugin.replacePlaceholders(player,
+                        plugin.getDataGetter().getTextFromNode(player, "huskchat.quit_message")
+                                .orElse(plugin.getSettings().getQuitMessageFormat()))
                 .thenAccept(replaced -> sendJoinQuitMessage(player, new MineDown(replaced).toComponent()));
     }
 

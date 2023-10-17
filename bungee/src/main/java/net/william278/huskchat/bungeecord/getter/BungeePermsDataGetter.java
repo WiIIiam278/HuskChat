@@ -89,6 +89,13 @@ public class BungeePermsDataGetter extends DataGetter {
         }
     }
 
+    @Override
+    public Optional<String> getTextFromNode(@NotNull Player player, @NotNull String nodePrefix) {
+        final String prefix = nodePrefix.endsWith(".") ? nodePrefix : nodePrefix + ".";
+        return getUser(player).getPerms().stream().filter(node -> node.startsWith(prefix)).findFirst()
+                .map(node -> node.length() > prefix.length() ? node.substring(prefix.length()) : "");
+    }
+
     private User getUser(Player player) {
         return permissionsManager.getUser(player.getUuid());
     }

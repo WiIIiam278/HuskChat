@@ -41,4 +41,6 @@ public abstract class DataGetter {
 
     public abstract Optional<String> getPlayerGroupDisplayName(@NotNull Player player);
 
+    public abstract Optional<String> getTextFromNode(@NotNull Player player, @NotNull String nodePrefix);
+
 }

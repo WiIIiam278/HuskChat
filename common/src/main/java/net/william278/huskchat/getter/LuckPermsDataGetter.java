@@ -106,8 +106,13 @@ public class LuckPermsDataGetter extends DataGetter {
             }
             return Optional.of(group.getDisplayName());
         });
+    }
 
-
+    @Override
+    public Optional<String> getTextFromNode(@NotNull Player player, @NotNull String nodePrefix) {
+        return getUser(player.getUuid()).flatMap(user -> Optional.ofNullable(
+                user.getCachedData().getMetaData().getMetaValue(nodePrefix)
+        ));
     }
 
     private Optional<User> getUser(@NotNull UUID uuid) {

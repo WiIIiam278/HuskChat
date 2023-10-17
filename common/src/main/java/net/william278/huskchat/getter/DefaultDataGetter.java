@@ -63,4 +63,9 @@ public class DefaultDataGetter extends DataGetter {
         return Optional.empty();
     }
 
+    @Override
+    public Optional<String> getTextFromNode(@NotNull Player player, @NotNull String nodePrefix) {
+        return Optional.empty();
+    }
+
 }
