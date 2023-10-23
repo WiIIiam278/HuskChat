@@ -19,7 +19,7 @@ dependencies {
     compileOnly 'net.kyori:adventure-api:4.14.0'
     compileOnly 'net.luckperms:api:5.4'
     compileOnly 'com.github.Spicord.Spicord:spicord-common:v5-SNAPSHOT'
-    compileOnly 'net.dv8tion:JDA:5.0.0-beta.4'
+    compileOnly 'net.dv8tion:JDA:5.0.0-beta.16'
 
     testImplementation 'net.william278:ProfanityCheckerAPI:2.0.1'
     testImplementation 'net.kyori:adventure-api:4.14.0'
