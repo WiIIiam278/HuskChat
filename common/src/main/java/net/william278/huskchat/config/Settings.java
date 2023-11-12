@@ -191,10 +191,10 @@ public class Settings {
         chatFilters = fetchChatFilters(configFile);
 
         // Join and Quit messages
-        doJoinMessages = configFile.getBoolean("join_and_quit_messages.join.enabled", true);
-        joinMessageFormat = configFile.getString("join_and_quit_messages.join.format", "&e%player_name% joined the network");
-        doQuitMessages = configFile.getBoolean("join_and_quit_messages.quit.enabled", true);
-        quitMessageFormat = configFile.getString("join_and_quit_messages.quit.format", "&e%player_name% left the network");
+        doJoinMessages = configFile.getBoolean("join_and_quit_messages.join.enabled", false);
+        joinMessageFormat = configFile.getString("join_and_quit_messages.join.format", "&e%name% joined the network");
+        doQuitMessages = configFile.getBoolean("join_and_quit_messages.quit.enabled", false);
+        quitMessageFormat = configFile.getString("join_and_quit_messages.quit.format", "&e%name% left the network");
         joinQuitBroadcastScope = Channel.BroadcastScope.valueOf(configFile.getString("join_and_quit_messages.broadcast_scope", "GLOBAL").toUpperCase(Locale.ENGLISH));
 
         // Discord integration
