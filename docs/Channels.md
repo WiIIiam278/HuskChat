@@ -42,10 +42,9 @@ These scopes are available when running HuskChat on a proxy server (Velocity or 
 * `GLOBAL` - Message is broadcast globally to those with permissions via the proxy
 * `LOCAL` - Message is broadcast via the proxy to players who have permission and are on the same server as the source
 * `PASSTHROUGH` - Message is not handled by the proxy and is instead passed to the backend server
-* `GLOBAL_PASSTHROUGH` - Message is broadcast globally to those with permissions via the proxy and is additionally passed
+* `GLOBAL_PASSTHROUGH` - Message is broadcast globally to those with permissions via the proxy and is additionally passed to the backend server
 * `LOCAL_PASSTHROUGH` - Message is broadcast via the proxy to players who have permission and are on the same server as
   the source and is additionally passed to the backend server
-  to the backend server
 
 #### Single-server scopes
 These scopes are available when running HuskChat on a single-server Spigot server
