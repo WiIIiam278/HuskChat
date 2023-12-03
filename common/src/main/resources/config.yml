@@ -205,10 +205,12 @@ join_and_quit_messages:
   join:
     enabled: false
     # Use the huskchat.join_message.[text] permission to override this per-group if needed
+    # Use the huskchat.silent_join permission for a player to join without sending a message
     format: '&e%name% joined the network'
   quit:
     enabled: false
     # Use the huskchat.quit_message.[text] permission to override this per-group if needed
+    # Use the huskchat.silent_quit permission for a player to quit without sending a message
     format: '&e%name% left the network'
   broadcast_scope: GLOBAL # Note that on Velocity/Bungee, PASSTHROUGH modes won't cancel local join/quit messages
 
