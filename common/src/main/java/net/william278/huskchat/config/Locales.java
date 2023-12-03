@@ -208,6 +208,8 @@ public class Locales {
     }
 
     public void sendJoinMessage(@NotNull Player player) {
+        if(player.hasPermission("huskchat.silent_join"))
+            return;
         plugin.replacePlaceholders(player,
                         plugin.getDataGetter().getTextFromNode(player, "huskchat.join_message")
                                 .orElse(plugin.getSettings().getJoinMessageFormat()))
@@ -215,6 +217,8 @@ public class Locales {
     }
 
     public void sendQuitMessage(@NotNull Player player) {
+        if(player.hasPermission("huskchat.silent_leave"))
+            return;
         plugin.replacePlaceholders(player,
                         plugin.getDataGetter().getTextFromNode(player, "huskchat.quit_message")
                                 .orElse(plugin.getSettings().getQuitMessageFormat()))
