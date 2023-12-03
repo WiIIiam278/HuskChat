@@ -41,6 +41,8 @@ public class Locales {
 
     private final HuskChat plugin;
     private final Map<String, String> locales = new LinkedHashMap<>();
+    private static final String SILENT_JOIN_PERMISSION = "huskchat.silent_join";
+    private static final String SILENT_QUIT_PERMISSION = "huskchat.silent_quit";
 
     public Locales(@NotNull HuskChat plugin) {
         this.plugin = plugin;
@@ -208,6 +210,9 @@ public class Locales {
     }
 
     public void sendJoinMessage(@NotNull Player player) {
+        if (player.hasPermission(SILENT_JOIN_PERMISSION)) {
+            return;
+        }
         plugin.replacePlaceholders(player,
                         plugin.getDataGetter().getTextFromNode(player, "huskchat.join_message")
                                 .orElse(plugin.getSettings().getJoinMessageFormat()))
@@ -215,6 +220,9 @@ public class Locales {
     }
 
     public void sendQuitMessage(@NotNull Player player) {
+        if (player.hasPermission(SILENT_QUIT_PERMISSION)) {
+            return;
+        }
         plugin.replacePlaceholders(player,
                         plugin.getDataGetter().getTextFromNode(player, "huskchat.quit_message")
                                 .orElse(plugin.getSettings().getQuitMessageFormat()))
