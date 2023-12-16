@@ -109,8 +109,8 @@ message_command:
 # Options for the /socialspy command
 social_spy:
   enabled: true
-  format: '&e[Spy] &7%sender_name% &8→ &7%receiver_name%:%spy_color% '
-  group_format: '&e[Spy] &7%sender_name% &8→ &7%receiver_name% [₍₊%group_amount_subscript%₎](gray show_text=&7%group_members% suggest_command=/msg %group_members_comma_separated% ):%spy_color% '
+  format: '&e[Spy] &7%name% &8→ &7%receiver_name%:%spy_color% '
+  group_format: '&e[Spy] &7%name% &8→ &7%receiver_name% [₍₊%group_amount_subscript%₎](gray show_text=&7%group_members% suggest_command=/msg %group_members_comma_separated% ):%spy_color% '
   socialspy_aliases:
     - /socialspy
     - /ss

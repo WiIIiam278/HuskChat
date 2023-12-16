@@ -165,7 +165,7 @@ public class Settings {
         // Social spy
         doSocialSpyCommand = configFile.getBoolean("social_spy.enabled", true);
         socialSpyFormat = configFile.getString("social_spy.format", "&e[Spy] &7%sender% &8→ &7%receiver%:%spy_color% ");
-        socialSpyGroupFormat = configFile.getString("social_spy.group_format", "&e[Spy] &7%sender_name% &8→ &7%receiver_name%[₍₊%group_amount_subscript%₎](gray show_text=&7%group_members%):%spy_color% ");
+        socialSpyGroupFormat = configFile.getString("social_spy.group_format", "&e[Spy] &7%name% &8→ &7%receiver_name%[₍₊%group_amount_subscript%₎](gray show_text=&7%group_members%):%spy_color% ");
         socialSpyCommandAliases = (configFile.contains("social_spy.socialspy_aliases")) ?
                 getCommandsFromList(configFile.getStringList("social_spy.socialspy_aliases")) :
                 Collections.singletonList("socialspy");
