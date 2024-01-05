@@ -1,5 +1,5 @@
 {
-  "avatar_url": "https://crafatar.com/avatars/{SENDER_UUID}?size=128",
+  "avatar_url": "https://minotar.net/avatar/{SENDER_UUID}/128",
   "username": "[{SENDER_CHANNEL}] {SENDER_USERNAME}",
   "content": "{CHAT_MESSAGE}",
   "allowed_mentions": { "parse": [] }
