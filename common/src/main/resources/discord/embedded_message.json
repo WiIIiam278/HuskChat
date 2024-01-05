@@ -9,7 +9,7 @@
       "color": 64410,
       "footer": {
         "text": "{SENDER_USERNAME} • {SENDER_CHANNEL}",
-        "icon_url": "https://crafatar.com/avatars/{SENDER_UUID}?size=64"
+        "icon_url": "https://minotar.net/avatar/{SENDER_UUID}/64"
       },
       "timestamp": "{CURRENT_TIMESTAMP}"
     }

@@ -213,7 +213,7 @@ public class SpicordHook implements DiscordHook {
                                             message.sender.getName(),
                                             message.sender.getServerName()
                                     ),
-                                    String.format("https://crafatar.com/avatars/%s?size=64",
+                                    String.format("https://minotar.net/avatar/%s/64",
                                             message.sender.getUuid()
                                     )
                             )
