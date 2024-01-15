@@ -157,4 +157,5 @@ public interface HuskChat {
 
     void log(@NotNull Level level, @NotNull String message, @NotNull Throwable... throwable);
 
+    HuskChatAPI getAPI();
 }

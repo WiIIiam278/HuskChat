@@ -23,6 +23,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.william278.desertwell.util.Version;
 import net.william278.huskchat.HuskChat;
+import net.william278.huskchat.HuskChatAPI;
 import net.william278.huskchat.bukkit.command.BukkitCommand;
 import net.william278.huskchat.bukkit.event.BukkitEventDispatcher;
 import net.william278.huskchat.bukkit.listener.BukkitListener;
@@ -67,11 +68,13 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat {
     private DataGetter playerDataGetter;
     private PlayerCache playerCache;
     private List<PlaceholderReplacer> placeholders;
+    private BukkitHuskChatAPI api;
 
     @Override
     public void onLoad() {
         // Set instance for easy cross-class referencing
         instance = this;
+        api = new BukkitHuskChatAPI(this);
     }
 
     @Override
@@ -241,6 +244,11 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat {
             return;
         }
         getLogger().log(level, message);
+    }
+
+    @Override
+    public HuskChatAPI getAPI() {
+        return api;
     }
 
     @NotNull

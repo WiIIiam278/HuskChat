@@ -26,6 +26,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.william278.desertwell.util.Version;
 import net.william278.huskchat.HuskChat;
+import net.william278.huskchat.HuskChatAPI;
 import net.william278.huskchat.bungeecord.command.BungeeCommand;
 import net.william278.huskchat.bungeecord.event.BungeeEventDispatcher;
 import net.william278.huskchat.bungeecord.getter.BungeePermsDataGetter;
@@ -71,6 +72,8 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
     private DataGetter playerDataGetter;
     private PlayerCache playerCache;
     private List<PlaceholderReplacer> placeholders;
+    private BungeeHuskChatAPI api;
+
 
     @Override
     public void onLoad() {
@@ -80,6 +83,7 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
         // Create the event dispatcher, register audiences
         eventDispatcher = new BungeeEventDispatcher(getProxy());
         audiences = BungeeAudiences.create(this);
+        api = new BungeeHuskChatAPI(this);
     }
 
     @Override
@@ -283,4 +287,8 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
         return optionalPlayer;
     }
 
+    @Override
+    public HuskChatAPI getAPI() {
+        return api;
+    }
 }
