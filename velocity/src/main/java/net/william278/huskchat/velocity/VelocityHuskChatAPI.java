@@ -19,10 +19,11 @@
 
 package net.william278.huskchat.velocity;
 
+import com.velocitypowered.api.proxy.Player;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.HuskChatAPI;
-import net.william278.huskchat.player.Player;
 import net.william278.huskchat.velocity.player.VelocityPlayer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 public class VelocityHuskChatAPI extends HuskChatAPI {
@@ -30,12 +31,24 @@ public class VelocityHuskChatAPI extends HuskChatAPI {
         super(plugin);
     }
 
-    @Override
-    public Player adaptPlayer(@NotNull Object player) {
-        if (!(player instanceof com.velocitypowered.api.proxy.Player)) {
-            throw new IllegalArgumentException("Player object must be a Velocity Player");
-        }
+    public static VelocityHuskChatAPI getInstance() {
+        return (VelocityHuskChatAPI) instance;
+    }
 
-        return VelocityPlayer.adapt((com.velocitypowered.api.proxy.Player) player);
+    /**
+     * @hidden
+     */
+    @ApiStatus.Internal
+    public static void register(@NotNull VelocityHuskChat plugin) {
+        HuskChatAPI.instance = new VelocityHuskChatAPI(plugin);
+    }
+
+    /**
+     * Adapts a platform-specific Player object to a cross-platform Player object
+     * @param player Must be a platform-specific Player object, e.g. a Velocity Player
+     * @return {@link VelocityPlayer}
+     */
+    public VelocityPlayer adaptPlayer(@NotNull Player player) {
+        return VelocityPlayer.adapt(player);
     }
 }

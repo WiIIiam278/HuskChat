@@ -28,19 +28,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public abstract class HuskChatAPI {
-    private final HuskChat plugin;
+public class HuskChatAPI {
+    protected static HuskChatAPI instance;
+    protected final HuskChat plugin;
 
-    public HuskChatAPI(HuskChat plugin) {
+    protected HuskChatAPI(@NotNull HuskChat plugin) {
         this.plugin = plugin;
     }
 
-    /**
-     * Adapts a platform-specific Player object to a cross-platform Player object
-     * @param player Must be a platform-specific Player object, e.g. a Velocity Player
-     * @return {@link Player}
-     */
-    abstract public Player adaptPlayer(@NotNull Object player);
+    public static HuskChatAPI getInstance() {
+        return instance;
+    }
 
     /**
      * Returns the player's current channel

@@ -76,7 +76,6 @@ public class VelocityHuskChat implements HuskChat {
     private final Metrics.Factory metrics;
     private final Path dataDirectory;
     private final ProxyServer server;
-    private final VelocityHuskChatAPI api;
     private List<VelocityCommand> commands;
     private Settings settings;
     private VelocityEventDispatcher eventDispatcher;
@@ -98,7 +97,7 @@ public class VelocityHuskChat implements HuskChat {
         this.metrics = metrics;
         this.container = pluginContainer;
 
-        this.api = new VelocityHuskChatAPI(this);
+        VelocityHuskChatAPI.register(this);
     }
 
     @Subscribe
@@ -348,7 +347,7 @@ public class VelocityHuskChat implements HuskChat {
     }
 
     @Override
-    public HuskChatAPI getAPI() {
-        return api;
+    public VelocityHuskChatAPI getAPI() {
+        return VelocityHuskChatAPI.getInstance();
     }
 }

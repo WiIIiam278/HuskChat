@@ -23,6 +23,7 @@ import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.HuskChatAPI;
 import net.william278.huskchat.bukkit.player.BukkitPlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 public class BukkitHuskChatAPI extends HuskChatAPI {
@@ -30,12 +31,24 @@ public class BukkitHuskChatAPI extends HuskChatAPI {
         super(plugin);
     }
 
-    @Override
-    public net.william278.huskchat.player.Player adaptPlayer(@NotNull Object player) {
-        if (!(player instanceof Player)) {
-            throw new IllegalArgumentException("Player object must be a Bukkit Player");
-        }
+    public static BukkitHuskChatAPI getInstance() {
+        return (BukkitHuskChatAPI) instance;
+    }
 
+    /**
+     * @hidden
+     */
+    @ApiStatus.Internal
+    public static void register(@NotNull BukkitHuskChat plugin) {
+        HuskChatAPI.instance = new BukkitHuskChatAPI(plugin);
+    }
+
+    /**
+     * Adapts a platform-specific Player object to a cross-platform Player object
+     * @param player Must be a platform-specific Player object, e.g. a Velocity Player
+     * @return {@link BukkitPlayer}
+     */
+    public BukkitPlayer adaptPlayer(@NotNull Player player) {
         return BukkitPlayer.adapt((Player) player);
     }
 }

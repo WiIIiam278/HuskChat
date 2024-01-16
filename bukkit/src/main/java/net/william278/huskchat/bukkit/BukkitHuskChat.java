@@ -68,13 +68,12 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat {
     private DataGetter playerDataGetter;
     private PlayerCache playerCache;
     private List<PlaceholderReplacer> placeholders;
-    private BukkitHuskChatAPI api;
 
     @Override
     public void onLoad() {
         // Set instance for easy cross-class referencing
         instance = this;
-        api = new BukkitHuskChatAPI(this);
+        BukkitHuskChatAPI.register(this);
     }
 
     @Override
@@ -247,8 +246,8 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat {
     }
 
     @Override
-    public HuskChatAPI getAPI() {
-        return api;
+    public BukkitHuskChatAPI getAPI() {
+        return BukkitHuskChatAPI.getInstance();
     }
 
     @NotNull

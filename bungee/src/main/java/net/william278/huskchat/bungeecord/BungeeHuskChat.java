@@ -72,7 +72,6 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
     private DataGetter playerDataGetter;
     private PlayerCache playerCache;
     private List<PlaceholderReplacer> placeholders;
-    private BungeeHuskChatAPI api;
 
 
     @Override
@@ -83,7 +82,7 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
         // Create the event dispatcher, register audiences
         eventDispatcher = new BungeeEventDispatcher(getProxy());
         audiences = BungeeAudiences.create(this);
-        api = new BungeeHuskChatAPI(this);
+        BungeeHuskChatAPI.register(this);
     }
 
     @Override
@@ -288,7 +287,7 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
     }
 
     @Override
-    public HuskChatAPI getAPI() {
-        return api;
+    public BungeeHuskChatAPI getAPI() {
+        return BungeeHuskChatAPI.getInstance();
     }
 }

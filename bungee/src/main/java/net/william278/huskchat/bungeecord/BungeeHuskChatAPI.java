@@ -23,7 +23,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.HuskChatAPI;
 import net.william278.huskchat.bungeecord.player.BungeePlayer;
-import net.william278.huskchat.player.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 public class BungeeHuskChatAPI extends HuskChatAPI {
@@ -31,12 +31,24 @@ public class BungeeHuskChatAPI extends HuskChatAPI {
         super(plugin);
     }
 
-    @Override
-    public Player adaptPlayer(@NotNull Object player) {
-        if (!(player instanceof ProxiedPlayer)) {
-            throw new IllegalArgumentException("Player object must be a Bungee ProxiedPlayer");
-        }
+    public static BungeeHuskChatAPI getInstance() {
+        return (BungeeHuskChatAPI) instance;
+    }
 
-        return BungeePlayer.adapt((ProxiedPlayer) player);
+    /**
+     * @hidden
+     */
+    @ApiStatus.Internal
+    public static void register(@NotNull BungeeHuskChat plugin) {
+        HuskChatAPI.instance = new BungeeHuskChatAPI(plugin);
+    }
+
+    /**
+     * Adapts a platform-specific Player object to a cross-platform Player object
+     * @param player Must be a platform-specific Player object, e.g. a Velocity Player
+     * @return {@link BungeePlayer}
+     */
+    public BungeePlayer adaptPlayer(@NotNull ProxiedPlayer player) {
+        return BungeePlayer.adapt(player);
     }
 }
