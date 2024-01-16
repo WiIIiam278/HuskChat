@@ -49,6 +49,6 @@ public class BukkitHuskChatAPI extends HuskChatAPI {
      * @return {@link BukkitPlayer}
      */
     public BukkitPlayer adaptPlayer(@NotNull Player player) {
-        return BukkitPlayer.adapt((Player) player);
+        return BukkitPlayer.adapt(player);
     }
 }
