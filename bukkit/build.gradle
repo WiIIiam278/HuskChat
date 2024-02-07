@@ -32,4 +32,6 @@ shadowJar {
         //noinspection GroovyAssignabilityCheck
         exclude dependency(':slf4j-api')
     }
+
+    minimize()
 }
