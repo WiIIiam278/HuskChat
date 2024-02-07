@@ -1,8 +1,8 @@
 This will walk you through installing HuskChat on your Velocity or BungeeCord/Waterfall-based proxy server.
 
 ## Requirements
-* Java 16+
-* A Spigot (1.16.5+) Minecraft server (for single-server setups) OR a Velocity (recommended) or BungeeCord/Waterfall-based proxy server
+* Java 17+
+* A Spigot (1.17.1+) Minecraft server (for single-server setups) OR a Velocity (recommended) or BungeeCord/Waterfall-based proxy server
 
 > **Warning:** The Spigot plugin "NoChatReports" will not work with HuskChat. Use FreedomChat instead if you wish to eliminate chat report warnings.
 

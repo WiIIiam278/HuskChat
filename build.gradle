@@ -24,7 +24,7 @@ allprojects {
     apply plugin: 'java'
 
     compileJava.options.encoding = 'UTF-8'
-    compileJava.options.release.set 16
+    compileJava.options.release.set 17
 
     repositories {
         mavenLocal()

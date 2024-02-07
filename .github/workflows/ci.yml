@@ -21,10 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 16
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: '16'
+          java-version: '17'
           distribution: 'temurin'
       - name: Install Python
         uses: actions/setup-python@v4
@@ -70,12 +70,6 @@ jobs:
           hangar-version-type: Alpha
           modrinth-version-type: alpha
           game-versions: |
-            1.16
-            1.16.1
-            1.16.2
-            1.16.3
-            1.16.4
-            1.16.5
             1.17
             1.17.1
             1.18
@@ -100,7 +94,7 @@ jobs:
             spigot
             paper
             folia
-          java: 16
+          java: 17
       - name: Upload GitHub Artifact
         if: success() || failure()
         uses: actions/upload-artifact@v2
