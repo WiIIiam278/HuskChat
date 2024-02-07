@@ -29,6 +29,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import net.kyori.adventure.audience.Audience;
 import net.william278.desertwell.util.Version;
 import net.william278.huskchat.HuskChat;
+import net.william278.huskchat.HuskChatAPI;
 import net.william278.huskchat.command.ShortcutCommand;
 import net.william278.huskchat.config.Locales;
 import net.william278.huskchat.config.Settings;
@@ -95,6 +96,8 @@ public class VelocityHuskChat implements HuskChat {
         this.dataDirectory = dataDirectory;
         this.metrics = metrics;
         this.container = pluginContainer;
+
+        VelocityHuskChatAPI.register(this);
     }
 
     @Subscribe
@@ -343,4 +346,8 @@ public class VelocityHuskChat implements HuskChat {
         }
     }
 
+    @Override
+    public VelocityHuskChatAPI getAPI() {
+        return VelocityHuskChatAPI.getInstance();
+    }
 }
