@@ -20,6 +20,7 @@
 package net.william278.huskchat.api;
 
 import net.william278.huskchat.HuskChat;
+import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.message.BroadcastMessage;
 import net.william278.huskchat.message.ChatMessage;
 import net.william278.huskchat.message.PrivateMessage;
@@ -28,6 +29,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * The HuskChat API
+ *
+ * @since 3.0
+ */
 @SuppressWarnings("unused")
 public class HuskChatAPI {
     protected static HuskChatAPI instance;
@@ -44,28 +50,48 @@ public class HuskChatAPI {
 
     /**
      * Returns the player's current channel
+     *
+     * @param player The player to get the channel for
+     * @since 3.0
      */
     @NotNull
     public String getPlayerChannel(@NotNull OnlineUser player) {
-        return plugin.getPlayerCache().getPlayerChannel(player.getUuid());
+        return plugin.getUserCache().getPlayerChannel(player.getUuid());
     }
 
     /**
      * Sets the player's channel
+     *
+     * @param player  The player to set the channel for
+     * @param channel The channel to set
+     * @since 3.0
      */
     public void setPlayerChannel(@NotNull OnlineUser player, @NotNull String channel) {
-        plugin.getPlayerCache().setPlayerChannel(player.getUuid(), channel);
+        plugin.getUserCache().setPlayerChannel(player.getUuid(), channel);
     }
 
     /**
      * Sends a chat message on behalf of a player
+     *
+     * @param targetChannelId The ID of the channel to send the message to
+     * @param sender          The player sending the message
+     * @param message         The message to send
+     * @throws IllegalArgumentException if the target channel does not exist
+     * @since 3.0
      */
     public void sendChatMessage(@NotNull String targetChannelId, @NotNull OnlineUser sender, @NotNull String message) {
-        new ChatMessage(targetChannelId, sender, message, plugin).dispatch();
+        final Channel channel = plugin.getChannels().getChannel(targetChannelId).orElseThrow(
+                () -> new IllegalArgumentException("The target channel does not exist")
+        );
+        new ChatMessage(channel, sender, message, plugin).dispatch();
     }
 
     /**
      * Sends a broadcast message
+     *
+     * @param sender  The player sending the message
+     * @param message The message to send
+     * @since 3.0
      */
     public void sendBroadcastMessage(@NotNull OnlineUser sender, @NotNull String message) {
         new BroadcastMessage(sender, message, plugin).dispatch();
@@ -73,8 +99,14 @@ public class HuskChatAPI {
 
     /**
      * Sends a private message on behalf of a player
+     *
+     * @param sender          The player sending the message
+     * @param targetUsernames The usernames of the players to send the message to
+     * @param message         The message to send
+     * @since 3.0
      */
-    public void sendPrivateMessage(@NotNull OnlineUser sender, @NotNull List<String> targetUsernames, @NotNull String message) {
+    public void sendPrivateMessage(@NotNull OnlineUser sender, @NotNull List<String> targetUsernames,
+                                   @NotNull String message) {
         new PrivateMessage(sender, targetUsernames, message, plugin).dispatch();
     }
 }

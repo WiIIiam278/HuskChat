@@ -26,32 +26,30 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class BungeeEventDispatcher implements EventDispatcher {
-    private final ProxyServer server;
+public interface BungeeEventProvider extends EventProvider {
 
-    public BungeeEventDispatcher(ProxyServer server) {
-        this.server = server;
-    }
-
-    // In order to keep compatibility with the Velocity implementation, the Bungee events also return CompletableFuture
+    // To keep compatibility with the Velocity implementation, the Bungee events also return CompletableFuture
     @Override
-    public CompletableFuture<ChatMessageEvent> fireChatMessageEvent(@NotNull OnlineUser sender, @NotNull String message, @NotNull String channelId) {
+    default CompletableFuture<ChatMessageEvent> fireChatMessageEvent(@NotNull OnlineUser sender, @NotNull String message, @NotNull String channelId) {
         final CompletableFuture<ChatMessageEvent> completableFuture = new CompletableFuture<>();
-        completableFuture.complete(server.getPluginManager().callEvent(new BungeeChatMessageEvent(sender, message, channelId)));
+        completableFuture.complete(getProxy().getPluginManager().callEvent(new BungeeChatMessageEvent(sender, message, channelId)));
         return completableFuture;
     }
 
     @Override
-    public CompletableFuture<PrivateMessageEvent> firePrivateMessageEvent(@NotNull OnlineUser sender, @NotNull List<OnlineUser> receivers, @NotNull String message) {
+    default CompletableFuture<PrivateMessageEvent> firePrivateMessageEvent(@NotNull OnlineUser sender, @NotNull List<OnlineUser> receivers, @NotNull String message) {
         final CompletableFuture<PrivateMessageEvent> completableFuture = new CompletableFuture<>();
-        completableFuture.complete(server.getPluginManager().callEvent(new BungeePrivateMessageEvent(sender, receivers, message)));
+        completableFuture.complete(getProxy().getPluginManager().callEvent(new BungeePrivateMessageEvent(sender, receivers, message)));
         return completableFuture;
     }
 
     @Override
-    public CompletableFuture<BroadcastMessageEvent> fireBroadcastMessageEvent(@NotNull OnlineUser sender, @NotNull String message) {
+    default CompletableFuture<BroadcastMessageEvent> fireBroadcastMessageEvent(@NotNull OnlineUser sender, @NotNull String message) {
         final CompletableFuture<BroadcastMessageEvent> completableFuture = new CompletableFuture<>();
-        completableFuture.complete(server.getPluginManager().callEvent(new BungeeBroadcastMessageEvent(sender, message)));
+        completableFuture.complete(getProxy().getPluginManager().callEvent(new BungeeBroadcastMessageEvent(sender, message)));
         return completableFuture;
     }
+
+    ProxyServer getProxy();
+
 }

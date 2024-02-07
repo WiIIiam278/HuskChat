@@ -19,63 +19,65 @@
 
 package net.william278.huskchat.message;
 
+import de.themoep.minedown.adventure.MineDown;
+import de.themoep.minedown.adventure.MineDownParser;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.william278.huskchat.HuskChat;
-import net.william278.huskchat.filter.ChatFilter;
-import net.william278.huskchat.replacer.ReplacerFilter;
+import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.logging.Level;
 
 /**
  * Represents a broadcast message to be sent to everyone
  */
 public class BroadcastMessage {
+
+    private final Settings.BroadcastSettings settings;
     private final OnlineUser sender;
-    private String message;
     private final HuskChat plugin;
+    private String message;
 
     public BroadcastMessage(@NotNull OnlineUser sender, @NotNull String message, @NotNull HuskChat plugin) {
         this.sender = sender;
-        this.message = message;
         this.plugin = plugin;
+        this.settings = plugin.getSettings().getBroadcastCommand();
+        this.message = message;
     }
 
     /**
      * Dispatch the broadcast message to be sent
      */
     public void dispatch() {
-        plugin.getEventDispatcher().fireBroadcastMessageEvent(sender, message).thenAccept(event -> {
-            if (event.isCancelled()) return;
-
+        plugin.fireBroadcastMessageEvent(sender, message).thenAccept(event -> {
+            if (event.isCancelled()) {
+                return;
+            }
             message = event.getMessage();
 
             // If the message is to be filtered, then perform filter checks (unless they have the bypass permission)
-            if (!sender.hasPermission("huskchat.bypass_filters")) {
-                for (ChatFilter filter : plugin.getSettings().getChatFilters().get("broadcast_messages")) {
-                    if (sender.hasPermission(filter.getFilterIgnorePermission())) {
-                        continue;
-                    }
-                    if (!filter.isAllowed(sender, message)) {
-                        plugin.getLocales().sendMessage(sender, filter.getFailureErrorMessageId());
-                        return;
-                    }
-                    if (filter instanceof ReplacerFilter replacer) {
-                        message = replacer.replace(message);
-                    }
-                }
+            final Optional<String> filtered = plugin.filter(sender, message, plugin.getBroadcastFilters());
+            if (filtered.isEmpty()) {
+                return;
             }
+            message = filtered.get();
 
-            // Dispatch the broadcast to all players
-            for (OnlineUser player : plugin.getOnlinePlayers()) {
-                plugin.getLocales().sendFormattedBroadcastMessage(player, message);
-            }
-
-            // Log to console if enabled
-            if (plugin.getSettings().doLogBroadcasts()) {
-                plugin.log(Level.INFO, plugin.getSettings().getBroadcastLogFormat() + message);
+            // Send the broadcast
+            plugin.getOnlinePlayers().forEach(this::sendMessage);
+            if (settings.isLogToConsole()) {
+                plugin.log(Level.INFO, settings.getLogFormat() + message);
             }
         });
+    }
+
+    public void sendMessage(@NotNull OnlineUser player) {
+        final TextComponent.Builder componentBuilder = Component.text();
+        componentBuilder.append(new MineDown(plugin.getSettings().getBroadcastCommand().getFormat()).toComponent());
+        componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
+        player.sendMessage(componentBuilder.build());
     }
 
 }

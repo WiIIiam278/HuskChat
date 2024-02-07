@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 public class AdvertisingFilterTests {
 
-    AdvertisingFilterer filterer = new AdvertisingFilterer();
+    AdvertisingFilterer filterer = new AdvertisingFilterer(new ChatFilter.FilterSettings());
 
     @Test
     public void testSentence() {

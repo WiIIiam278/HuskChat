@@ -31,7 +31,7 @@ import java.util.*;
 public class ReplyCommand extends CommandBase {
 
     public ReplyCommand(@NotNull HuskChat plugin) {
-        super(plugin.getSettings().getReplyCommandAliases(), "<message>", plugin);
+        super(plugin.getSettings().getMessageCommand().getReplyAliases(), "<message>", plugin);
     }
 
     @Override

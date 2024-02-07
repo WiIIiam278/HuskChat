@@ -20,9 +20,9 @@
 package net.william278.huskchat.listener;
 
 import net.william278.huskchat.HuskChat;
+import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.message.ChatMessage;
 import net.william278.huskchat.user.BukkitUser;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -30,6 +30,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public class BukkitListener extends PlayerListener implements Listener {
 
@@ -39,14 +41,18 @@ public class BukkitListener extends PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent e) {
-        final Player player = e.getPlayer();
-        boolean shouldCancel = new ChatMessage(
-                plugin.getPlayerCache().getPlayerChannel(player.getUniqueId()),
-                BukkitUser.adapt(player, plugin),
-                e.getMessage(),
-                plugin
-        ).dispatch();
-        if (shouldCancel) {
+        // Verify they are in a channel
+        final BukkitUser player = BukkitUser.adapt(e.getPlayer(), plugin);
+        final Optional<Channel> channel = plugin.getChannels().getChannel(
+                plugin.getUserCache().getPlayerChannel(player.getUuid())
+        );
+        if (channel.isEmpty()) {
+            plugin.getLocales().sendMessage(player, "error_no_channel");
+            return;
+        }
+
+        // Send the chat message, determine if the event should be canceled
+        if (new ChatMessage(channel.get(), player, e.getMessage(), plugin).dispatch()) {
             e.setCancelled(true);
         }
     }
@@ -55,7 +61,8 @@ public class BukkitListener extends PlayerListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         final BukkitUser player = BukkitUser.adapt(e.getPlayer(), plugin);
         super.handlePlayerSwitchServer(player, player.getServerName());
-        if (plugin.getSettings().doJoinMessages() || !plugin.getSettings().getJoinQuitBroadcastScope().isPassThrough) {
+        if (plugin.getSettings().getJoinAndQuitMessages().getJoin().isEnabled()
+                || !plugin.getSettings().getJoinAndQuitMessages().getBroadcastScope().isPassThrough()) {
             e.setJoinMessage(null);
         }
         super.handlePlayerJoin(player);
@@ -63,7 +70,8 @@ public class BukkitListener extends PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
-        if (plugin.getSettings().doQuitMessages() || !plugin.getSettings().getJoinQuitBroadcastScope().isPassThrough) {
+        if (plugin.getSettings().getJoinAndQuitMessages().getQuit().isEnabled()
+                || !plugin.getSettings().getJoinAndQuitMessages().getBroadcastScope().isPassThrough()) {
             e.setQuitMessage(null);
         }
         super.handlePlayerQuit(BukkitUser.adapt(e.getPlayer(), plugin));

@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 public class AsciiFilterTests {
 
-    AsciiFilter asciiFilter = new AsciiFilter();
+    AsciiFilter asciiFilter = new AsciiFilter(new ChatFilter.FilterSettings());
 
     @Test
     public void testAsciiSentence() {

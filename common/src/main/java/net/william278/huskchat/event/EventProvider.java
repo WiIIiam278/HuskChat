@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public interface EventDispatcher {
+public interface EventProvider {
 
     CompletableFuture<ChatMessageEvent> fireChatMessageEvent(@NotNull OnlineUser player, @NotNull String message, @NotNull String channelId);
 

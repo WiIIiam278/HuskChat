@@ -29,6 +29,10 @@ import java.util.regex.Pattern;
  */
 public class AdvertisingFilterer extends ChatFilter {
 
+    public AdvertisingFilterer(@NotNull FilterSettings settings) {
+        super(settings);
+    }
+
     /**
      * Lifted from <a href=https://gist.github.com/dperini/729294>https://gist.github.com/dperini/729294</a>
      * Licensed under MIT 3.0
@@ -75,6 +79,11 @@ public class AdvertisingFilterer extends ChatFilter {
                     "$",
             Pattern.CASE_INSENSITIVE);
 
+    @NotNull
+    public static FilterSettings getDefaultSettings() {
+        return new FilterSettings();
+    }
+
     @Override
     public boolean isAllowed(@NotNull OnlineUser player, @NotNull String message) {
         return !(domainPattern.matcher(message).matches());
@@ -82,14 +91,15 @@ public class AdvertisingFilterer extends ChatFilter {
 
     @Override
     @NotNull
-    public String getFailureErrorMessageId() {
+    public String getDisallowedLocale() {
         return "error_chat_filter_advertising";
     }
 
     @Override
     @NotNull
-    public String getFilterIgnorePermission() {
+    public String getIgnorePermission() {
         return "huskchat.ignore_filters.advertising";
     }
+
 
 }

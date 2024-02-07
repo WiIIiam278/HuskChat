@@ -32,7 +32,7 @@ public class PAPIProxyBridgeReplacer implements PlaceholderReplacer {
 
     public PAPIProxyBridgeReplacer(@NotNull HuskChat plugin) {
         this.instance = PlaceholderAPI.createInstance();
-        instance.setCacheExpiry(plugin.getSettings().getPapiProxyBridgeCacheTime());
+        instance.setCacheExpiry(plugin.getSettings().getPlaceholder().getCacheTime());
     }
 
     @Override

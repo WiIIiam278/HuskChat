@@ -26,15 +26,21 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.audience.Audience;
 import net.william278.desertwell.util.Version;
 import net.william278.huskchat.api.VelocityHuskChatAPI;
 import net.william278.huskchat.command.ShortcutCommand;
 import net.william278.huskchat.command.VelocityCommand;
+import net.william278.huskchat.config.Channels;
+import net.william278.huskchat.config.Filters;
 import net.william278.huskchat.config.Locales;
 import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.discord.DiscordHook;
-import net.william278.huskchat.event.VelocityEventDispatcher;
+import net.william278.huskchat.event.VelocityEventProvider;
+import net.william278.huskchat.filter.ChatFilter;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.getter.DefaultDataGetter;
 import net.william278.huskchat.getter.LuckPermsDataGetter;
@@ -50,14 +56,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
-import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.logging.Level;
 
 @Plugin(id = "huskchat")
-public class VelocityHuskChat implements HuskChat {
+@Getter
+public class VelocityHuskChat implements HuskChat, VelocityEventProvider {
 
     // bStats ID
     private static final int METRICS_ID = 14187;
@@ -66,23 +72,32 @@ public class VelocityHuskChat implements HuskChat {
     private final PluginContainer container;
     private final Logger logger;
     private final Metrics.Factory metrics;
-    private final Path dataDirectory;
+    private final Path configDirectory;
     private final ProxyServer server;
+    private final List<ChatFilter> filtersAndReplacers = new ArrayList<>();
+    private final UserCache userCache = new UserCache();
+    private final List<PlaceholderReplacer> placeholderReplacers = new ArrayList<>();
+
+    @Setter
     private Settings settings;
-    private VelocityEventDispatcher eventDispatcher;
-    private DiscordHook discordHook;
+    @Setter
     private Locales locales;
-    private DataGetter playerDataGetter;
-    private UserCache userCache;
-    private List<PlaceholderReplacer> placeholders;
+    @Setter
+    private Channels channels;
+    @Setter
+    private Filters filterSettings;
+    @Setter
+    @Getter(AccessLevel.NONE)
+    private DiscordHook discordHook;
+    private DataGetter dataGetter;
 
     @Inject
     public VelocityHuskChat(@NotNull ProxyServer server, @NotNull org.slf4j.Logger logger,
-                            @DataDirectory Path dataDirectory, @NotNull Metrics.Factory metrics,
+                            @DataDirectory Path configDirectory, @NotNull Metrics.Factory metrics,
                             @NotNull PluginContainer pluginContainer) {
         this.server = server;
         this.logger = logger;
-        this.dataDirectory = dataDirectory;
+        this.configDirectory = configDirectory;
         this.metrics = metrics;
         this.container = pluginContainer;
     }
@@ -100,24 +115,17 @@ public class VelocityHuskChat implements HuskChat {
         // Load discord hook
         this.loadDiscordHook();
 
-        // Load event dispatcher
-        this.eventDispatcher = new VelocityEventDispatcher(server);
-
-        // Load saved social spy state
-        this.userCache = new UserCache(this);
-
         // Setup player data getter
         if (isPluginPresent("luckperms")) {
-            this.playerDataGetter = new LuckPermsDataGetter();
+            this.dataGetter = new LuckPermsDataGetter();
         } else {
-            this.playerDataGetter = new DefaultDataGetter();
+            this.dataGetter = new DefaultDataGetter();
         }
 
         // Setup PlaceholderParser
-        this.placeholders = new ArrayList<>();
-        this.placeholders.add(new DefaultReplacer(this));
-        if (getSettings().doPlaceholderAPI() && isPluginPresent("papiproxybridge")) {
-            this.placeholders.add(new PAPIProxyBridgeReplacer(this));
+        this.placeholderReplacers.add(new DefaultReplacer(this));
+        if (getSettings().getPlaceholder().isUsePapi() && isPluginPresent("papiproxybridge")) {
+            this.placeholderReplacers.add(new PAPIProxyBridgeReplacer(this));
         }
 
         // Register events
@@ -125,7 +133,7 @@ public class VelocityHuskChat implements HuskChat {
 
         // Register commands & channel shortcuts
         VelocityCommand.Type.registerAll(this);
-        getSettings().getChannels().values().forEach(channel -> channel.getShortcutCommands()
+        getChannels().getChannels().forEach(channel -> channel.getShortcutCommands()
                 .forEach(command -> new VelocityCommand(
                         new ShortcutCommand(command, channel.getId(), this), this
                 )));
@@ -158,49 +166,10 @@ public class VelocityHuskChat implements HuskChat {
         return true;
     }
 
-    @NotNull
-    @Override
-    public Locales getLocales() {
-        return locales;
-    }
-
-    @Override
-    public void setLocales(@NotNull Locales locales) {
-        this.locales = locales;
-    }
-
-    @Override
-    @NotNull
-    public Settings getSettings() {
-        return settings;
-    }
-
-    @Override
-    public void setSettings(@NotNull Settings settings) {
-        this.settings = settings;
-    }
-
-    @NotNull
-    @Override
-    public VelocityEventDispatcher getEventDispatcher() {
-        return eventDispatcher;
-    }
-
-    @Override
-    @NotNull
-    public UserCache getPlayerCache() {
-        return userCache;
-    }
-
 
     @Override
     public Optional<DiscordHook> getDiscordHook() {
         return Optional.ofNullable(discordHook);
-    }
-
-    @Override
-    public void setDiscordHook(@NotNull DiscordHook discordHook) {
-        this.discordHook = discordHook;
     }
 
     @NotNull
@@ -223,31 +192,19 @@ public class VelocityHuskChat implements HuskChat {
     }
 
 
-    @NotNull
-    @Override
-    public List<PlaceholderReplacer> getPlaceholderReplacers() {
-        return placeholders;
-    }
-
-    @Override
-    @NotNull
-    public DataGetter getDataGetter() {
-        return playerDataGetter;
-    }
-
     @Override
     public Optional<OnlineUser> getPlayer(@NotNull UUID uuid) {
         return getProxyServer().getPlayer(uuid).map(player -> VelocityUser.adapt(player, this));
     }
 
     @Override
-    public Collection<OnlineUser> getOnlinePlayers() {
+    public @NotNull Collection<OnlineUser> getOnlinePlayers() {
         return getProxyServer().getAllPlayers().stream()
                 .map(player -> (OnlineUser) VelocityUser.adapt(player, this)).toList();
     }
 
     @Override
-    public Collection<OnlineUser> getOnlinePlayersOnServer(@NotNull OnlineUser user) {
+    public @NotNull Collection<OnlineUser> getOnlinePlayersOnServer(@NotNull OnlineUser user) {
         return ((VelocityUser) user).getPlayer().getCurrentServer()
                 .map(conn -> conn.getServer().getPlayersConnected().stream()
                         .map(player -> (OnlineUser) VelocityUser.adapt(player, this)).toList())
@@ -274,14 +231,6 @@ public class VelocityHuskChat implements HuskChat {
             }
         }
         return optionalPlayer;
-    }
-
-
-    // Get the data folder
-    @NotNull
-    @Override
-    public File getDataFolder() {
-        return dataDirectory.toFile();
     }
 
     @Nullable

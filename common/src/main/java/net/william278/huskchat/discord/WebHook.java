@@ -40,7 +40,7 @@ public class WebHook implements DiscordHook {
 
     // Get the webhook URL for a channel by its ID
     private Optional<URL> getWebhookUrl(@NotNull String channelId) {
-        final Map<String, URL> urls = plugin.getSettings().getWebhookUrls();
+        final Map<String, URL> urls = plugin.getSettings().getDiscord().getChannelWebhooks();
         if (urls.containsKey(channelId)) {
             return Optional.of(urls.get(channelId));
         }
@@ -58,7 +58,7 @@ public class WebHook implements DiscordHook {
      */
     @Override
     public void postMessage(@NotNull ChatMessage message) {
-        CompletableFuture.runAsync(() -> getWebhookUrl(message.targetChannelId).ifPresent(webhookUrl -> {
+        CompletableFuture.runAsync(() -> getWebhookUrl(message.getChannel().getId()).ifPresent(webhookUrl -> {
             try {
                 final HttpURLConnection webhookConnection = (HttpURLConnection) webhookUrl.openConnection();
                 webhookConnection.setRequestMethod("POST");

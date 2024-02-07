@@ -70,15 +70,15 @@ public class BukkitCommand extends Command {
     public enum Type {
         HUSKCHAT((plugin) -> Optional.of(new BukkitCommand(new HuskChatCommand(plugin), plugin))),
         CHANNEL((plugin) -> Optional.of(new BukkitCommand(new ChannelCommand(plugin), plugin))),
-        MESSAGE((plugin) -> plugin.getSettings().isDoMessageCommand()
+        MESSAGE((plugin) -> plugin.getSettings().getMessageCommand().isEnabled()
                 ? Optional.of(new BukkitCommand(new MessageCommand(plugin), plugin)) : Optional.empty()),
-        REPLY((plugin) -> plugin.getSettings().isDoMessageCommand()
+        REPLY((plugin) -> plugin.getSettings().getMessageCommand().isEnabled()
                 ? Optional.of(new BukkitCommand(new ReplyCommand(plugin), plugin)) : Optional.empty()),
-        OPT_OUT_MESSAGE((plugin) -> plugin.getSettings().isDoMessageCommand()
+        OPT_OUT_MESSAGE((plugin) -> plugin.getSettings().getMessageCommand().isEnabled()
                 ? Optional.of(new BukkitCommand(new OptOutMessageCommand(plugin), plugin)) : Optional.empty()),
-        BROADCAST((plugin) -> plugin.getSettings().isDoBroadcastCommand()
+        BROADCAST((plugin) -> plugin.getSettings().getBroadcastCommand().isEnabled()
                 ? Optional.of(new BukkitCommand(new BroadcastCommand(plugin), plugin)) : Optional.empty()),
-        SOCIAL_SPY((plugin) -> plugin.getSettings().doSocialSpyCommand()
+        SOCIAL_SPY((plugin) -> plugin.getSettings().getSocialSpy().isEnabled()
                 ? Optional.of(new BukkitCommand(new SocialSpyCommand(plugin), plugin)) : Optional.empty());
 
         private final Function<BukkitHuskChat, Optional<BukkitCommand>> commandSupplier;

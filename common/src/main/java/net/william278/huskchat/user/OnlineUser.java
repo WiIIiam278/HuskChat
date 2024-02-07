@@ -33,7 +33,6 @@ import java.util.UUID;
  */
 public abstract class OnlineUser extends User {
 
-
     protected HuskChat plugin;
 
     protected OnlineUser(@NotNull String username, @NotNull UUID uuid, @NotNull HuskChat plugin) {

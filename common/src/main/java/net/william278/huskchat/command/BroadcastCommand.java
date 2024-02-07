@@ -30,7 +30,7 @@ import java.util.StringJoiner;
 public class BroadcastCommand extends CommandBase {
 
     public BroadcastCommand(@NotNull HuskChat plugin) {
-        super(plugin.getSettings().getBroadcastCommandAliases(), "<message>", plugin);
+        super(plugin.getSettings().getBroadcastCommand().getBroadcastAliases(), "<message>", plugin);
     }
 
     @Override

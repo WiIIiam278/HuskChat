@@ -19,6 +19,9 @@
 
 package net.william278.huskchat;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
 import net.md_5.bungee.api.ProxyServer;
@@ -28,10 +31,13 @@ import net.william278.desertwell.util.Version;
 import net.william278.huskchat.api.BungeeHuskChatAPI;
 import net.william278.huskchat.command.BungeeCommand;
 import net.william278.huskchat.command.ShortcutCommand;
+import net.william278.huskchat.config.Channels;
+import net.william278.huskchat.config.Filters;
 import net.william278.huskchat.config.Locales;
 import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.discord.DiscordHook;
-import net.william278.huskchat.event.BungeeEventDispatcher;
+import net.william278.huskchat.event.BungeeEventProvider;
+import net.william278.huskchat.filter.ChatFilter;
 import net.william278.huskchat.getter.BungeePermsDataGetter;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.getter.DefaultDataGetter;
@@ -47,65 +53,73 @@ import org.bstats.bungeecord.Metrics;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.logging.Level;
 
-public final class BungeeHuskChat extends Plugin implements HuskChat {
+@Getter
+public final class BungeeHuskChat extends Plugin implements HuskChat, BungeeEventProvider {
 
     // bStats ID
     private static final int METRICS_ID = 11882;
 
+    private final List<ChatFilter> filtersAndReplacers = new ArrayList<>();
+    private final UserCache userCache = new UserCache();
+    private final List<PlaceholderReplacer> placeholderReplacers = new ArrayList<>();
+
+    @Getter(AccessLevel.NONE)
     private BungeeAudiences audiences;
+    @Setter
     private Settings settings;
-    private BungeeEventDispatcher eventDispatcher;
-    private DiscordHook discordHook;
+    @Setter
     private Locales locales;
-    private DataGetter playerDataGetter;
-    private UserCache userCache;
-    private List<PlaceholderReplacer> placeholders;
+    @Setter
+    private Channels channels;
+    @Setter
+    private Filters filterSettings;
+    @Setter
+    @Getter(AccessLevel.NONE)
+    private DiscordHook discordHook;
+    private DataGetter dataGetter;
 
     @Override
     public void onEnable() {
         // Setup audiences
         audiences = BungeeAudiences.create(this);
 
-        // Load config and locale files
+        // Load config files
         this.loadConfig();
+        this.loadFilters();
 
-        // Load discord hook
-        this.loadDiscordHook();
-
-        // Load saved social spy state
-        this.userCache = new UserCache(this);
-
-        // Setup event dispatcher
-        eventDispatcher = new BungeeEventDispatcher(getProxy());
+        // Load API
         BungeeHuskChatAPI.register(this);
 
         // Setup player data getter
         if (isPluginPresent("LuckPerms")) {
-            this.playerDataGetter = new LuckPermsDataGetter();
+            this.dataGetter = new LuckPermsDataGetter();
         } else {
             if (isPluginPresent("BungeePerms")) {
-                this.playerDataGetter = new BungeePermsDataGetter();
+                this.dataGetter = new BungeePermsDataGetter();
             } else {
-                this.playerDataGetter = new DefaultDataGetter();
+                this.dataGetter = new DefaultDataGetter();
             }
         }
 
         // Setup placeholder parser
-        this.placeholders = new ArrayList<>();
-        this.placeholders.add(new DefaultReplacer(this));
-        if (getSettings().doPlaceholderAPI() && isPluginPresent("PAPIProxyBridge")) {
-            this.placeholders.add(new PAPIProxyBridgeReplacer(this));
+        this.placeholderReplacers.add(new DefaultReplacer(this));
+        if (getSettings().getPlaceholder().isUsePapi() && isPluginPresent("PAPIProxyBridge")) {
+            this.placeholderReplacers.add(new PAPIProxyBridgeReplacer(this));
         }
+
+        // Setup Discord
+        this.loadDiscordHook();
 
         // Register events
         getProxy().getPluginManager().registerListener(this, new BungeeListener(this));
 
         // Register commands & channel shortcuts
         BungeeCommand.Type.registerAll(this);
-        getSettings().getChannels().values().forEach(channel -> channel.getShortcutCommands()
+        getChannels().getChannels().forEach(channel -> channel.getShortcutCommands()
                 .forEach(command -> new BungeeCommand(
                         new ShortcutCommand(command, channel.getId(), this), this
                 )));
@@ -116,27 +130,6 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
         log(Level.INFO, "Enabled HuskChat version " + this.getVersion());
     }
 
-    @Override
-    @NotNull
-    public Settings getSettings() {
-        return settings;
-    }
-
-    @Override
-    public void setSettings(@NotNull Settings settings) {
-        this.settings = settings;
-    }
-
-    @NotNull
-    @Override
-    public Locales getLocales() {
-        return locales;
-    }
-
-    @Override
-    public void setLocales(@NotNull Locales locales) {
-        this.locales = locales;
-    }
 
     @NotNull
     @Override
@@ -156,37 +149,9 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
         return ProxyServer.getInstance().getName();
     }
 
-    @NotNull
-    @Override
-    public List<PlaceholderReplacer> getPlaceholderReplacers() {
-        return placeholders;
-    }
-
-    @Override
-    @NotNull
-    public DataGetter getDataGetter() {
-        return playerDataGetter;
-    }
-
     @Override
     public Optional<DiscordHook> getDiscordHook() {
         return Optional.ofNullable(discordHook);
-    }
-
-    @Override
-    public void setDiscordHook(@NotNull DiscordHook discordHook) {
-        this.discordHook = discordHook;
-    }
-
-    @NotNull
-    public BungeeEventDispatcher getEventDispatcher() {
-        return eventDispatcher;
-    }
-
-    @Override
-    @NotNull
-    public UserCache getPlayerCache() {
-        return userCache;
     }
 
     @Override
@@ -200,6 +165,7 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
     }
 
     @Override
+    @NotNull
     public Collection<OnlineUser> getOnlinePlayers() {
         ArrayList<OnlineUser> crossPlatform = new ArrayList<>();
         for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
@@ -209,6 +175,7 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
     }
 
     @Override
+    @NotNull
     public Collection<OnlineUser> getOnlinePlayersOnServer(@NotNull OnlineUser user) {
         return ((BungeeUser) user).getPlayer().getServer().getInfo().getPlayers().stream()
                 .map(player -> (OnlineUser) BungeeUser.adapt(player, this)).toList();
@@ -217,6 +184,12 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
     @Override
     public InputStream getResource(@NotNull String path) {
         return getResourceAsStream(path);
+    }
+
+    @Override
+    @NotNull
+    public Path getConfigDirectory() {
+        return getDataFolder().toPath();
     }
 
     @Override
@@ -272,4 +245,5 @@ public final class BungeeHuskChat extends Plugin implements HuskChat {
     public HuskChat getPlugin() {
         return this;
     }
+
 }

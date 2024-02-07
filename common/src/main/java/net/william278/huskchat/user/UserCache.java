@@ -19,64 +19,33 @@
 
 package net.william278.huskchat.user;
 
-import dev.dejvokep.boostedyaml.YamlDocument;
-import dev.dejvokep.boostedyaml.block.implementation.Section;
+import de.exlll.configlib.Configuration;
+import lombok.NoArgsConstructor;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * A cache for persisting player data
  */
+@Configuration
+@NoArgsConstructor
 public class UserCache {
 
-    private final HuskChat plugin;
-    private final Map<UUID, String> playerChannels;
-    private final HashMap<UUID, SpyColor> localSpies = new HashMap<>();
-    private final HashMap<UUID, SpyColor> socialSpies = new HashMap<>();
+    private Map<UUID, String> playerChannels = new HashMap<>();
+    private HashMap<UUID, SpyColor> localSpies = new HashMap<>();
+    private HashMap<UUID, SpyColor> socialSpies = new HashMap<>();
 
-    public UserCache(@NotNull HuskChat plugin) {
-        this.plugin = plugin;
-        this.playerChannels = new LinkedHashMap<>();
-
-        try {
-            final YamlDocument spies = YamlDocument.create(new File(plugin.getDataFolder(), "spies.yml"));
-            if (spies.contains("local")) {
-                Section local = spies.getSection("local");
-
-                for (Object name : local.getKeys()) {
-                    localSpies.put(UUID.fromString(name.toString()),
-                            SpyColor.valueOf(local.getSection(name.toString()).getString("color")));
-                }
-            }
-
-            if (spies.contains("social")) {
-                Section social = spies.getSection("social");
-
-                for (Object name : social.getKeys()) {
-                    socialSpies.put(UUID.fromString(name.toString()),
-                            SpyColor.valueOf(social.getSection(name.toString()).getString("color")));
-                }
-            }
-        } catch (IOException e) {
-            plugin.log(Level.WARNING, "Error loading spy data", e);
-        }
-    }
-
-    public String getPlayerChannel(UUID uuid) {
-        if (!playerChannels.containsKey(uuid)) {
-            return plugin.getSettings().getDefaultChannel();
-        }
+    @NotNull
+    public String getPlayerChannel(@NotNull UUID uuid) {
         return playerChannels.get(uuid);
     }
 
-    public void setPlayerChannel(UUID uuid, String playerChannel) {
-        playerChannels.put(uuid, playerChannel);
+    public void setPlayerChannel(@NotNull UUID uuid, @NotNull String channelId) {
+        playerChannels.put(uuid, channelId);
     }
 
 
@@ -84,20 +53,19 @@ public class UserCache {
      * Switch the {@link OnlineUser}'s channel
      *
      * @param player    {@link OnlineUser} to switch the channel of
-     * @param channelID ID of the channel to switch to
+     * @param channelId ID of the channel to switch to
      */
-    public void switchPlayerChannel(@NotNull OnlineUser player, @NotNull String channelID) {
-        final Channel channel = plugin.getSettings().getChannels().get(channelID);
-        if (channel == null) {
+    public void switchPlayerChannel(@NotNull OnlineUser player, @NotNull String channelId, @NotNull HuskChat plugin) {
+        final Optional<Channel> optionalChannel = plugin.getChannels().getChannel(channelId);
+        if (optionalChannel.isEmpty()) {
             plugin.getLocales().sendMessage(player, "error_invalid_channel");
             return;
         }
 
-        if (channel.getSendPermission() != null) {
-            if (!player.hasPermission(channel.getSendPermission())) {
-                plugin.getLocales().sendMessage(player, "error_no_permission_send", channel.getId());
-                return;
-            }
+        final Channel channel = optionalChannel.get();
+        if (!channel.canUserSend(player)) {
+            plugin.getLocales().sendMessage(player, "error_no_permission_send", channel.getId());
+            return;
         }
         setPlayerChannel(player.getUuid(), channel.getId());
         plugin.getLocales().sendMessage(player, "channel_switched", channel.getId());
@@ -129,22 +97,19 @@ public class UserCache {
 
     public void setSocialSpy(@NotNull OnlineUser player) throws IOException {
         socialSpies.put(player.getUuid(), SpyColor.DEFAULT_SPY_COLOR);
-        addSpy("social", player.getUuid(), SpyColor.DEFAULT_SPY_COLOR);
     }
 
     public void setSocialSpy(@NotNull OnlineUser player, @NotNull SpyColor spyColor) throws IOException {
         socialSpies.put(player.getUuid(), spyColor);
-        addSpy("social", player.getUuid(), spyColor);
     }
 
     public void removeSocialSpy(@NotNull OnlineUser player) throws IOException {
         socialSpies.remove(player.getUuid());
-        removeSpy("social", player.getUuid());
     }
 
     // Determines who is going to receive a spy message
     @NotNull
-    public Map<OnlineUser, SpyColor> getSocialSpyMessageReceivers(@NotNull List<OnlineUser> messageRecipients) {
+    public Map<OnlineUser, SpyColor> getSocialSpies(@NotNull List<OnlineUser> recipients, @NotNull HuskChat plugin) {
         final Map<OnlineUser, SpyColor> receivers = new LinkedHashMap<>();
 
         calculateSpies:
@@ -154,7 +119,7 @@ public class UserCache {
             if (spy.isEmpty()) {
                 continue;
             }
-            for (OnlineUser messageRecipient : messageRecipients) {
+            for (OnlineUser messageRecipient : recipients) {
                 if (player.equals(messageRecipient.getUuid())) {
                     continue calculateSpies;
                 }
@@ -170,73 +135,31 @@ public class UserCache {
 
     public void setLocalSpy(OnlineUser player) throws IOException {
         localSpies.put(player.getUuid(), SpyColor.DEFAULT_SPY_COLOR);
-        addSpy("local", player.getUuid(), SpyColor.DEFAULT_SPY_COLOR);
     }
 
     public void setLocalSpy(OnlineUser player, SpyColor spyColor) throws IOException {
         localSpies.put(player.getUuid(), spyColor);
-        addSpy("local", player.getUuid(), spyColor);
     }
 
     public void removeLocalSpy(OnlineUser player) throws IOException {
         localSpies.remove(player.getUuid());
-        removeSpy("local", player.getUuid());
     }
 
     @NotNull
-    public Map<OnlineUser, SpyColor> getLocalSpyMessageReceivers(String localMessageServer, HuskChat implementor) {
+    public Map<OnlineUser, SpyColor> getLocalSpies(@NotNull String server, @NotNull HuskChat plugin) {
         final Map<OnlineUser, SpyColor> receivers = new LinkedHashMap<>();
         for (UUID player : localSpies.keySet()) {
             final SpyColor color = localSpies.get(player);
-            final Optional<OnlineUser> spy = implementor.getPlayer(player);
+            final Optional<OnlineUser> spy = plugin.getPlayer(player);
             if (spy.isEmpty()) {
                 continue;
             }
-            if (spy.get().getServerName().equals(localMessageServer)) {
+            if (spy.get().getServerName().equals(server)) {
                 continue;
             }
             receivers.put(spy.get(), color);
         }
         return receivers;
-    }
-
-    // Adds spy state to data file
-    public void addSpy(String type, UUID uuid, SpyColor spyColor) throws IOException {
-        if (!type.equals("local") && !type.equals("social")) {
-            return;
-        }
-        final YamlDocument spies = YamlDocument.create(new File(plugin.getDataFolder(), "spies.yml"));
-
-        if (!spies.contains(type)) {
-            spies.createSection(type);
-        }
-        if (!spies.getSection(type).contains(uuid.toString())) {
-            spies.getSection(type).createSection(uuid.toString());
-        }
-
-        spies.getSection(type)
-                .getSection(uuid.toString())
-                .set("color", spyColor.toString());
-        spies.save();
-    }
-
-    // Removes spy state from data file
-    public void removeSpy(String type, UUID uuid) throws IOException {
-        if (!type.equals("local") && !type.equals("social")) return;
-
-        YamlDocument spies = YamlDocument.create(new File(plugin.getDataFolder(), "spies.yml"));
-
-        if (!spies.contains(type)) return;
-        if (!spies.getSection(type).contains(uuid.toString())) return;
-
-        spies.getSection(type)
-                .remove(uuid.toString());
-
-        if (spies.getSection(type).getKeys().size() == 0) {
-            spies.remove(type);
-        }
-
-        spies.save();
     }
 
 
@@ -280,7 +203,7 @@ public class UserCache {
         public static Optional<SpyColor> getColor(@NotNull String colorInput) {
             for (SpyColor color : SpyColor.values()) {
                 if (color.colorCode.replace("&", "").equals(colorInput.replace("&", ""))
-                    || color.name().equalsIgnoreCase(colorInput.toUpperCase())) {
+                        || color.name().equalsIgnoreCase(colorInput.toUpperCase())) {
                     return Optional.of(color);
                 }
             }

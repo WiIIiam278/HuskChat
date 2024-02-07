@@ -26,50 +26,46 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class BukkitEventDispatcher implements EventDispatcher {
-
-    private final BukkitHuskChat plugin;
-
-    public BukkitEventDispatcher(@NotNull BukkitHuskChat plugin) {
-        this.plugin = plugin;
-    }
+public interface BukkitEventProvider extends EventProvider {
 
     @Override
-    public CompletableFuture<ChatMessageEvent> fireChatMessageEvent(@NotNull OnlineUser player,
+    default CompletableFuture<ChatMessageEvent> fireChatMessageEvent(@NotNull OnlineUser player,
                                                                     @NotNull String message,
                                                                     @NotNull String channelId) {
         final CompletableFuture<ChatMessageEvent> completableFuture = new CompletableFuture<>();
         final BukkitChatMessageEvent event = new BukkitChatMessageEvent(player, message, channelId);
-        plugin.getServer().getScheduler().runTask(plugin, () -> {
-            plugin.getServer().getPluginManager().callEvent(event);
+        getPlugin().getServer().getScheduler().runTask(getPlugin(), () -> {
+            getPlugin().getServer().getPluginManager().callEvent(event);
             completableFuture.complete(event);
         });
         return completableFuture;
     }
 
     @Override
-    public CompletableFuture<PrivateMessageEvent> firePrivateMessageEvent(@NotNull OnlineUser sender,
+    default CompletableFuture<PrivateMessageEvent> firePrivateMessageEvent(@NotNull OnlineUser sender,
                                                                           @NotNull List<OnlineUser> receivers,
                                                                           @NotNull String message) {
         final CompletableFuture<PrivateMessageEvent> completableFuture = new CompletableFuture<>();
         final BukkitPrivateMessageEvent event = new BukkitPrivateMessageEvent(sender, receivers, message);
-        plugin.getServer().getScheduler().runTask(plugin, () -> {
-            plugin.getServer().getPluginManager().callEvent(event);
+        getPlugin().getServer().getScheduler().runTask(getPlugin(), () -> {
+            getPlugin().getServer().getPluginManager().callEvent(event);
             completableFuture.complete(event);
         });
         return completableFuture;
     }
 
     @Override
-    public CompletableFuture<BroadcastMessageEvent> fireBroadcastMessageEvent(@NotNull OnlineUser sender,
+    default CompletableFuture<BroadcastMessageEvent> fireBroadcastMessageEvent(@NotNull OnlineUser sender,
                                                                               @NotNull String message) {
         final CompletableFuture<BroadcastMessageEvent> completableFuture = new CompletableFuture<>();
         final BukkitBroadcastMessageEvent event = new BukkitBroadcastMessageEvent(sender, message);
-        plugin.getServer().getScheduler().runTask(plugin, () -> {
-            plugin.getServer().getPluginManager().callEvent(event);
+        getPlugin().getServer().getScheduler().runTask(getPlugin(), () -> {
+            getPlugin().getServer().getPluginManager().callEvent(event);
             completableFuture.complete(event);
         });
         return completableFuture;
     }
+
+    BukkitHuskChat getPlugin();
 
 }

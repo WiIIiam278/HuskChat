@@ -19,35 +19,39 @@
 
 package net.william278.huskchat.message;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
-import net.william278.huskchat.filter.ChatFilter;
-import net.william278.huskchat.replacer.ReplacerFilter;
 import net.william278.huskchat.user.ConsoleUser;
 import net.william278.huskchat.user.OnlineUser;
-import net.william278.huskchat.user.UserCache;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 /**
  * Represents a message to be sent in a chat channel
  */
+@Getter
 public class ChatMessage {
 
-    public final HuskChat plugin;
-    public final String targetChannelId;
-    public OnlineUser sender;
-    public String message;
+    @Getter(AccessLevel.PRIVATE)
+    private final HuskChat plugin;
 
-    public ChatMessage(@NotNull String targetChannelId, @NotNull OnlineUser sender,
-                       @NotNull String message, @NotNull HuskChat plugin) {
-        this.targetChannelId = targetChannelId;
+    @Setter
+    private Channel channel;
+    @Setter
+    private OnlineUser sender;
+    @Setter
+    private String message;
+
+    public ChatMessage(@NotNull Channel channel, @NotNull OnlineUser sender, @NotNull String message,
+                       @NotNull HuskChat plugin) {
+        this.channel = channel;
         this.sender = sender;
         this.message = message;
         this.plugin = plugin;
@@ -56,53 +60,46 @@ public class ChatMessage {
     /**
      * Dispatch the message to be sent
      *
-     * @return true if the (Player)ChatEvent should be canceled in the proxy-specific code
+     * @return true if the message should be canceled (thus not passed through)
      */
     public boolean dispatch() {
-        AtomicReference<Channel> channel = new AtomicReference<>(plugin.getSettings().getChannels().get(targetChannelId));
-
-        if (channel.get() == null) {
-            plugin.getLocales().sendMessage(sender, "error_no_channel");
+        final AtomicReference<Channel> channel = new AtomicReference<>(this.getChannel());
+        final Optional<String> sendPermission = channel.get().getPermissions().getSend();
+        if (sendPermission.isPresent() && !getSender().hasPermission(sendPermission.get())) {
+            getPlugin().getLocales().sendMessage(getSender(), "error_no_permission_send", channel.get().getId());
             return true;
-        }
-
-        // Verify that the player has permission to send in the channel
-        if (channel.get().getSendPermission() != null) {
-            if (!sender.hasPermission(channel.get().getSendPermission())) {
-                plugin.getLocales().sendMessage(sender, "error_no_permission_send", channel.get().getId());
-                return true;
-            }
         }
 
         // Verify that the player is not sending a message from a server where channel access is restricted
         for (String restrictedServer : channel.get().getRestrictedServers()) {
-            if (restrictedServer.equalsIgnoreCase(sender.getServerName())) {
-                plugin.getLocales().sendMessage(sender, "error_channel_restricted_server", channel.get().getId());
+            if (restrictedServer.equalsIgnoreCase(getSender().getServerName())) {
+                getPlugin().getLocales().sendMessage(getSender(), "error_channel_restricted_server", channel.get().getId());
                 return true;
             }
         }
 
         // Determine the players who will receive the message;
-        Channel.BroadcastScope broadcastScope = channel.get().getBroadcastScope();
+        Channel.BroadcastScope scope = channel.get().getBroadcastScope();
 
         // There's no point in allowing the console to send to local chat as it's not actually in any servers;
         // the message won't get sent to anyone
-        if (sender instanceof ConsoleUser && (broadcastScope == Channel.BroadcastScope.LOCAL ||
-                broadcastScope == Channel.BroadcastScope.LOCAL_PASSTHROUGH)) {
-            plugin.getLocales().sendMessage(sender, "error_console_local_scope");
+        if (getSender() instanceof ConsoleUser && (scope == Channel.BroadcastScope.LOCAL ||
+                scope == Channel.BroadcastScope.LOCAL_PASSTHROUGH)) {
+            getPlugin().getLocales().sendMessage(getSender(), "error_console_local_scope");
             return true;
         }
 
-        StringBuilder msg = new StringBuilder(message);
-        if (!ChatMessage.passesFilters(plugin, sender, msg, channel.get())) {
+        final Optional<String> formatted = getPlugin().filter(getSender(), getMessage(), getPlugin().getChannelFilters(channel.get()));
+        if (formatted.isEmpty()) {
             return true;
         }
-        message = msg.toString();
+        setMessage(formatted.get());
 
         HashSet<OnlineUser> messageRecipients = new HashSet<>();
-        switch (broadcastScope) {
-            case GLOBAL, GLOBAL_PASSTHROUGH -> messageRecipients.addAll(plugin.getOnlinePlayers());
-            case LOCAL, LOCAL_PASSTHROUGH -> messageRecipients.addAll(plugin.getOnlinePlayersOnServer(sender));
+        switch (scope) {
+            case GLOBAL, GLOBAL_PASSTHROUGH -> messageRecipients.addAll(getPlugin().getOnlinePlayers());
+            case LOCAL, LOCAL_PASSTHROUGH ->
+                    messageRecipients.addAll(getPlugin().getOnlinePlayersOnServer(getSender()));
             default -> {
             } // No message recipients if the channel is exclusively passed through; let the backend handle it
         }
@@ -110,102 +107,72 @@ public class ChatMessage {
         // The events API has no effect on messages in passthrough channels.
         // Local/global passthrough channels will have their proxy-side message affected,
         // and non-passthrough messages will also be affected by the API.
-        plugin.getEventDispatcher().fireChatMessageEvent(sender, message, targetChannelId).thenAccept(event -> {
-            if (event.isCancelled()) return;
-
-            sender = event.getSender();
-
-            if (!event.getChannelId().equals(channel.get().getId())) {
-                if (plugin.getSettings().getChannels().containsKey(event.getChannelId())) {
-                    channel.set(plugin.getSettings().getChannels().get(event.getChannelId()));
-                }
+        getPlugin().fireChatMessageEvent(getSender(), getMessage(), channel.get().getId()).thenAccept(event -> {
+            if (event.isCancelled()) {
+                return;
             }
 
-            message = event.getMessage();
+            // Handle event changes
+            setSender(event.getSender());
+            setMessage(event.getMessage());
+            if (!event.getChannelId().equals(channel.get().getId())) {
+                getPlugin().getChannels().getChannel(event.getChannelId()).ifPresent(channel::set);
+            }
 
             // Dispatch message to all applicable users in the scope with permission who are not on a restricted server
-            MESSAGE_DISPATCH:
-            for (OnlineUser recipient : messageRecipients) {
-                if (channel.get().getReceivePermission() != null) {
-                    if (!recipient.hasPermission(channel.get().getReceivePermission()) && !(recipient.getUuid().equals(sender.getUuid()))) {
-                        continue;
-                    }
+            messageRecipients.forEach(recipient -> {
+                final Optional<String> receivePermission = channel.get().getPermissions().getReceive();
+                boolean isSender = recipient.getUuid().equals(getSender().getUuid());
+                if (!isSender && receivePermission.isPresent() && !recipient.hasPermission(receivePermission.get())) {
+                    return;
                 }
 
-                for (String restrictedServer : channel.get().getRestrictedServers()) {
-                    if (restrictedServer.equalsIgnoreCase(recipient.getServerName())) {
-                        continue MESSAGE_DISPATCH;
-                    }
+                if (channel.get().isServerRestricted(recipient.getServerName())) {
+                    return;
                 }
+                getPlugin().getLocales().sendChannelMessage(recipient, getSender(), channel.get(), getMessage(), getPlugin());
 
-                plugin.getLocales().sendChannelMessage(recipient, sender, channel.get(), message);
-            }
 
-            // If the message is on a local channel, dispatch local spy messages to appropriate spies.
-            if (broadcastScope == Channel.BroadcastScope.LOCAL || broadcastScope == Channel.BroadcastScope.LOCAL_PASSTHROUGH) {
-                if (plugin.getSettings().doLocalSpyCommand()) {
-                    if (!plugin.getSettings().isLocalSpyChannelExcluded(channel.get())) {
-                        final Map<OnlineUser, UserCache.SpyColor> spies = plugin.getPlayerCache().getLocalSpyMessageReceivers(sender.getServerName(), plugin);
-                        for (OnlineUser spy : spies.keySet()) {
-                            if (spy.getUuid().equals(sender.getUuid())) {
-                                continue;
-                            }
-                            if (!spy.hasPermission("huskchat.command.localspy")) {
-                                try {
-                                    plugin.getPlayerCache().removeLocalSpy(spy);
-                                } catch (IOException e) {
-                                    plugin.log(Level.SEVERE, "Failed to remove local spy after failed permission check", e);
-                                }
-                                continue;
-                            }
-                            final UserCache.SpyColor color = spies.get(spy);
-                            plugin.getLocales().sendLocalSpy(spy, color, sender, channel.get(), message);
+                // If the message is on a local channel, dispatch local spy messages to appropriate spies.
+                if (getPlugin().getSettings().getLocalSpy().isEnabled()
+                        && !getPlugin().getSettings().getLocalSpy().getExcludedLocalChannels().contains(channel.get().getId())
+                        && scope.isOneOf(Channel.BroadcastScope.LOCAL, Channel.BroadcastScope.LOCAL_PASSTHROUGH)) {
+                    /*final Map<OnlineUser, UserCache.SpyColor> spies = getPlugin().getPlayerCache()
+                            .getLocalSpyMessageReceivers(getSender().getServerName(), getPlugin());
+                    for (OnlineUser spy : spies.keySet()) {
+                        if (spy.getUuid().equals(getSender().getUuid())) {
+                            continue;
                         }
-                    }
+                        if (!spy.hasPermission("huskchat.command.localspy")) {
+                            try {
+                                getPlugin().getPlayerCache().removeLocalSpy(spy);
+                            } catch (IOException e) {
+                                getPlugin().log(Level.SEVERE, "Failed to remove local spy after failed permission check", e);
+                            }
+                            continue;
+                        }
+                        final UserCache.SpyColor color = spies.get(spy);
+                        getPlugin().getLocales().sendLocalSpy(spy, color, getSender(), channel.get(), getMessage(), getPlugin());
+                    }*/
                 }
-            }
 
-            // Log a message to console if enabled on the channel
-            if (channel.get().doLogMessages()) {
-                final String logFormat = plugin.getSettings().getChannelLogFormat()
-                        .replaceAll("%channel%", channel.get().getId().toUpperCase())
-                        .replaceAll("%sender%", sender.getName());
-                plugin.log(Level.INFO, logFormat + message);
-            }
+                // Log a message to console if enabled on the channel
+                if (channel.get().isLogToConsole()) {
+                    final String logFormat = getPlugin().getChannels().getChannelLogFormat()
+                            .replaceAll("%channel%", channel.get().getId().toUpperCase())
+                            .replaceAll("%sender%", getSender().getName());
+                    getPlugin().log(Level.INFO, logFormat + getMessage());
+                }
 
-            // Dispatch message to a Discord webhook if enabled
-            if (plugin.getSettings().doDiscordIntegration()) {
-                plugin.getDiscordHook().ifPresent(hook -> hook.postMessage(this));
-            }
+                // Dispatch message to a Discord webhook if enabled
+                if (getPlugin().getSettings().getDiscord().isEnabled()) {
+                    getPlugin().getDiscordHook().ifPresent(hook -> hook.postMessage(this));
+                }
+            });
         });
 
         // Non-passthrough messages should always be canceled in the proxy-specific code
-        return !broadcastScope.isPassThrough;
+        return !scope.isPassThrough();
     }
 
-    // This is a static method to allow for filters to be applied to passthrough channels due to those not going through this class
-    // The StringBuilder allows us to modify the message if a replacer requires it.
-    // Returns true if it passes all chat filters.
-    public static boolean passesFilters(@NotNull HuskChat plugin, @NotNull OnlineUser sender, @NotNull StringBuilder message, @NotNull Channel channel) {
-        // If the message is to be filtered, then perform filter checks (unless they have the bypass permission)
-        if (channel.isFilter() && !sender.hasPermission("huskchat.bypass_filters")) {
-            for (ChatFilter filter : plugin.getSettings().getChatFilters().getOrDefault(channel.getId(), List.of())) {
-                if (sender.hasPermission(filter.getFilterIgnorePermission())) {
-                    continue;
-                }
-                if (!filter.isAllowed(sender, message.toString())) {
-                    plugin.getLocales().sendMessage(sender, filter.getFailureErrorMessageId());
-                    return false;
-                }
-
-                if (filter instanceof ReplacerFilter replacer && !channel.getBroadcastScope().isPassThrough) {
-                    String msg = message.toString();
-                    message.delete(0, message.length());
-                    message.append(replacer.replace(msg));
-                }
-            }
-        }
-
-        return true;
-    }
 }

@@ -73,17 +73,17 @@ public class VelocityCommand implements SimpleCommand {
     public enum Type {
         HUSKCHAT((plugin) -> Optional.of(new VelocityCommand(new HuskChatCommand(plugin), plugin))),
         CHANNEL((plugin) -> Optional.of(new VelocityCommand(new ChannelCommand(plugin), plugin))),
-        MESSAGE((plugin) -> plugin.getSettings().isDoMessageCommand()
+        MESSAGE((plugin) -> plugin.getSettings().getMessageCommand().isEnabled()
                 ? Optional.of(new VelocityCommand(new MessageCommand(plugin), plugin)) : Optional.empty()),
-        REPLY((plugin) -> plugin.getSettings().isDoMessageCommand()
+        REPLY((plugin) -> plugin.getSettings().getMessageCommand().isEnabled()
                 ? Optional.of(new VelocityCommand(new ReplyCommand(plugin), plugin)) : Optional.empty()),
-        OPT_OUT_MESSAGE((plugin) -> plugin.getSettings().isDoMessageCommand()
+        OPT_OUT_MESSAGE((plugin) -> plugin.getSettings().getMessageCommand().isEnabled()
                 ? Optional.of(new VelocityCommand(new OptOutMessageCommand(plugin), plugin)) : Optional.empty()),
-        BROADCAST((plugin) -> plugin.getSettings().isDoBroadcastCommand()
+        BROADCAST((plugin) -> plugin.getSettings().getBroadcastCommand().isEnabled()
                 ? Optional.of(new VelocityCommand(new BroadcastCommand(plugin), plugin)) : Optional.empty()),
-        SOCIAL_SPY((plugin) -> plugin.getSettings().doSocialSpyCommand()
+        SOCIAL_SPY((plugin) -> plugin.getSettings().getSocialSpy().isEnabled()
                 ? Optional.of(new VelocityCommand(new SocialSpyCommand(plugin), plugin)) : Optional.empty()),
-        LOCAL_SPY((plugin) -> plugin.getSettings().doLocalSpyCommand()
+        LOCAL_SPY((plugin) -> plugin.getSettings().getLocalSpy().isEnabled()
                 ? Optional.of(new VelocityCommand(new LocalSpyCommand(plugin), plugin)) : Optional.empty());
 
         private final Function<VelocityHuskChat, Optional<VelocityCommand>> commandSupplier;
@@ -101,5 +101,5 @@ public class VelocityCommand implements SimpleCommand {
         }
 
     }
-    
+
 }

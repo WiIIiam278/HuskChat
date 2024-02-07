@@ -17,26 +17,27 @@
  *  limitations under the License.
  */
 
-package net.william278.huskchat.replacer;
+package net.william278.huskchat.filter;
 
+import de.exlll.configlib.Configuration;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.StringJoiner;
 
 /**
  * A {@link ReplacerFilter} that replaces chat emoji with the character emote
  */
-public class EmojiReplacer extends ReplacerFilter {
+public class EmojiReplacer extends ChatFilter.ReplacerFilter {
 
-    private final HashMap<String, String> emoticons;
-    private final boolean caseInsensitive;
-
-    public EmojiReplacer(HashMap<String, String> emoticons, boolean caseInsensitive) {
-        this.emoticons = emoticons;
-        this.caseInsensitive = caseInsensitive;
+    public EmojiReplacer(@NotNull FilterSettings settings) {
+        super(settings);
     }
 
     @Override
@@ -44,16 +45,17 @@ public class EmojiReplacer extends ReplacerFilter {
     public String replace(@NotNull String message) {
         String[] words = message.split(" ");
         StringJoiner replacedMessage = new StringJoiner(" ");
+        final EmojiReplacerSettings settings = (EmojiReplacerSettings) this.settings;
         for (String word : words) {
-            for (String emoteFormat : emoticons.keySet()) {
-                if (!caseInsensitive) {
+            for (String emoteFormat : settings.getEmoji().keySet()) {
+                if (!settings.isCaseInsensitive()) {
                     if (word.equals(emoteFormat)) {
-                        word = emoticons.get(emoteFormat);
+                        word = settings.getEmoji().get(emoteFormat);
                         break;
                     }
                 } else {
                     if (word.toLowerCase(Locale.ROOT).equals(emoteFormat)) {
-                        word = emoticons.get(emoteFormat);
+                        word = settings.getEmoji().get(emoteFormat);
                         break;
                     }
                 }
@@ -63,6 +65,11 @@ public class EmojiReplacer extends ReplacerFilter {
         return replacedMessage.toString();
     }
 
+    @NotNull
+    public static FilterSettings getDefaultSettings() {
+        return new EmojiReplacerSettings();
+    }
+
     @Override
     public boolean isAllowed(@NotNull OnlineUser sender, @NotNull String message) {
         return true;
@@ -70,14 +77,33 @@ public class EmojiReplacer extends ReplacerFilter {
 
     @Override
     @NotNull
-    public String getFailureErrorMessageId() {
+    public String getDisallowedLocale() {
         throw new UnsupportedOperationException("EmojiReplacer does not support failure messages");
     }
 
     @Override
     @NotNull
-    public String getFilterIgnorePermission() {
+    public String getIgnorePermission() {
         return "huskchat.ignore_filters.emoji_replacer";
+    }
+
+    @Getter
+    @Configuration
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class EmojiReplacerSettings extends FilterSettings {
+        private boolean caseInsensitive = false;
+        private Map<String, String> emoji = new HashMap<>(Map.of(
+                ":)", "☺",
+                ":smile:", "☺",
+                ":-)", "☺",
+                ":(", "☹",
+                ":frown:", "☹",
+                ":-(", "☹",
+                ":fire:", "🔥",
+                ":heart:", "❤",
+                "<3", "❤",
+                ":star:", "⭐"
+        ));
     }
 
 }

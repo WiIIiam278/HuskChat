@@ -28,9 +28,12 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 import net.william278.huskchat.HuskChat;
+import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.message.ChatMessage;
 import net.william278.huskchat.user.BungeeUser;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public class BungeeListener extends PlayerListener implements Listener {
 
@@ -44,15 +47,18 @@ public class BungeeListener extends PlayerListener implements Listener {
             return;
         }
 
-        final ProxiedPlayer player = (ProxiedPlayer) e.getSender();
-        boolean shouldCancel = new ChatMessage(
-                plugin.getPlayerCache().getPlayerChannel(player.getUniqueId()),
-                BungeeUser.adapt(player, plugin),
-                e.getMessage(),
-                plugin
-        ).dispatch();
+        // Verify they are in a channel
+        final BungeeUser player = BungeeUser.adapt((ProxiedPlayer) e.getSender(), plugin);
+        final Optional<Channel> channel = plugin.getChannels().getChannel(
+                plugin.getUserCache().getPlayerChannel(player.getUuid())
+        );
+        if (channel.isEmpty()) {
+            plugin.getLocales().sendMessage(player, "error_no_channel");
+            return;
+        }
 
-        if (shouldCancel) {
+        // Send the chat message, determine if the event should be canceled
+        if (new ChatMessage(channel.get(), player, e.getMessage(), plugin).dispatch()) {
             e.setCancelled(true);
         }
     }

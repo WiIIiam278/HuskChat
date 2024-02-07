@@ -25,9 +25,9 @@ import org.junit.jupiter.api.Test;
 
 public class CapsFilterTests {
 
-    CapsFilter capsFilter50Percent = new CapsFilter(0.5);
-    CapsFilter capsFilter25Percent = new CapsFilter(0.25);
-    CapsFilter capsFilter100Percent = new CapsFilter(1D);
+    CapsFilter capsFilter50Percent = new CapsFilter(new CapsFilter.CapsFilterSettings(0.5));
+    CapsFilter capsFilter25Percent = new CapsFilter(new CapsFilter.CapsFilterSettings(0.25));
+    CapsFilter capsFilter100Percent = new CapsFilter(new CapsFilter.CapsFilterSettings(1.0));
 
     @Test
     public void testCapsFilter_50PercentCaps_FullCaps() {

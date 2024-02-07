@@ -27,7 +27,10 @@ import org.junit.jupiter.api.Test;
 public class ProfanityFilterTests {
 
     private final ProfanityFilterer filterer = new ProfanityFilterer(
-            ProfanityFilterer.ProfanityFilterMode.TOLERANCE, 0.8d, null);
+            new ProfanityFilterer.ProfanityFilterSettings(
+                    "", ProfanityFilterer.ProfanityFilterMode.TOLERANCE, 0.8d
+            )
+    );
 
     @Test
     public void givenSentenceContainingProfanity_testIsProfane() {

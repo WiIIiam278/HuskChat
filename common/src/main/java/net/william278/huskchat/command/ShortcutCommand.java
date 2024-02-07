@@ -27,6 +27,7 @@ import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.StringJoiner;
 
 public class ShortcutCommand extends CommandBase {
@@ -47,21 +48,25 @@ public class ShortcutCommand extends CommandBase {
                     plugin.getLocales().sendMessage(player, "error_console_switch_channels");
                     return;
                 }
-                plugin.getPlayerCache().switchPlayerChannel(player, channelId);
+                plugin.getUserCache().switchPlayerChannel(player, channelId, plugin);
             } else {
                 StringJoiner message = new StringJoiner(" ");
                 for (String arg : args) {
                     message.add(arg);
                 }
 
-                Channel channel = plugin.getSettings().getChannels().get(channelId);
-
-                if (channel.getBroadcastScope().isPassThrough) {
-                    plugin.getLocales().sendMessage(player, "error_passthrough_shortcut_command");
+                final Optional<Channel> optionalChannel = plugin.getChannels().getChannel(channelId);
+                if (optionalChannel.isEmpty()) {
+                    plugin.getLocales().sendMessage(player, "error_no_channel");
                     return;
                 }
 
-                new ChatMessage(channelId, player, message.toString(), plugin).dispatch();
+                final Channel channel = optionalChannel.get();
+                if (channel.getBroadcastScope().isPassThrough()) {
+                    plugin.getLocales().sendMessage(player, "error_passthrough_shortcut_command");
+                    return;
+                }
+                new ChatMessage(channel, player, message.toString(), plugin).dispatch();
             }
         } else {
             plugin.getLocales().sendMessage(player, "error_no_permission");

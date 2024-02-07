@@ -33,7 +33,7 @@ import java.util.logging.Level;
 public class SocialSpyCommand extends CommandBase {
 
     public SocialSpyCommand(@NotNull HuskChat plugin) {
-        super(plugin.getSettings().getSocialSpyCommandAliases(), "[color]", plugin);
+        super(plugin.getSettings().getSocialSpy().getSocialspyAliases(), "[color]", plugin);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class SocialSpyCommand extends CommandBase {
                 if (selectedColor.isPresent()) {
                     try {
                         color = selectedColor.get();
-                        plugin.getPlayerCache().setSocialSpy(player, color);
+                        plugin.getUserCache().setSocialSpy(player, color);
                         plugin.getLocales().sendMessage(player, "social_spy_toggled_on_color",
                                 color.colorCode, color.name().toLowerCase().replaceAll("_", " "));
                     } catch (IOException e) {
@@ -58,16 +58,16 @@ public class SocialSpyCommand extends CommandBase {
                     return;
                 }
             }
-            if (!plugin.getPlayerCache().isSocialSpying(player)) {
+            if (!plugin.getUserCache().isSocialSpying(player)) {
                 try {
-                    plugin.getPlayerCache().setSocialSpy(player);
+                    plugin.getUserCache().setSocialSpy(player);
                     plugin.getLocales().sendMessage(player, "social_spy_toggled_on");
                 } catch (IOException e) {
                     plugin.log(Level.SEVERE, "Failed to save social spy state to spies file");
                 }
             } else {
                 try {
-                    plugin.getPlayerCache().removeSocialSpy(player);
+                    plugin.getUserCache().removeSocialSpy(player);
                     plugin.getLocales().sendMessage(player, "social_spy_toggled_off");
                 } catch (IOException e) {
                     plugin.log(Level.SEVERE, "Failed to save social spy state to spies file");

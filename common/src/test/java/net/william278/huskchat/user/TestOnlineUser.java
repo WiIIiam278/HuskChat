@@ -24,15 +24,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-    public class TestOnlineUser extends OnlineUser {
+public class TestOnlineUser extends OnlineUser {
 
     private final static int TEST_PLAYER_PING = 5;
     private final static String TEST_PLAYER_SERVER = "test";
     private final static int TEST_PLAYER_SERVER_PLAYER_COUNT = 1;
 
-    /**
-     * Implementation of a {@link OnlineUser} for unit testing
-     */
     public TestOnlineUser() {
         super(UUID.randomUUID().toString().split("-")[0], UUID.randomUUID());
     }

@@ -19,17 +19,22 @@
 
 package net.william278.huskchat;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.william278.desertwell.util.Version;
 import net.william278.huskchat.api.BukkitHuskChatAPI;
 import net.william278.huskchat.command.BukkitCommand;
 import net.william278.huskchat.command.ShortcutCommand;
+import net.william278.huskchat.config.Channels;
+import net.william278.huskchat.config.Filters;
 import net.william278.huskchat.config.Locales;
 import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.discord.DiscordHook;
-import net.william278.huskchat.event.BukkitEventDispatcher;
-import net.william278.huskchat.event.EventDispatcher;
+import net.william278.huskchat.event.BukkitEventProvider;
+import net.william278.huskchat.filter.ChatFilter;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.getter.DefaultDataGetter;
 import net.william278.huskchat.getter.LuckPermsDataGetter;
@@ -45,20 +50,31 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import space.arim.morepaperlib.MorePaperLib;
 
+import java.nio.file.Path;
 import java.util.*;
 import java.util.logging.Level;
 
-public class BukkitHuskChat extends JavaPlugin implements HuskChat {
+@Getter
+public class BukkitHuskChat extends JavaPlugin implements HuskChat, BukkitEventProvider {
 
     private MorePaperLib morePaperLib;
     private BukkitAudiences audiences;
+    private final List<ChatFilter> filtersAndReplacers = new ArrayList<>();
+    private final UserCache userCache = new UserCache();
+    private final List<PlaceholderReplacer> placeholderReplacers = new ArrayList<>();
+
+    @Setter
     private Settings settings;
-    private BukkitEventDispatcher eventDispatcher;
-    private DiscordHook discordHook;
+    @Setter
     private Locales locales;
-    private DataGetter playerDataGetter;
-    private UserCache userCache;
-    private List<PlaceholderReplacer> placeholders;
+    @Setter
+    private Channels channels;
+    @Setter
+    private Filters filterSettings;
+    @Setter
+    @Getter(AccessLevel.NONE)
+    private DiscordHook discordHook;
+    private DataGetter dataGetter;
 
     @Override
     public void onEnable() {
@@ -74,32 +90,25 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat {
         // Load discord hook
         this.loadDiscordHook();
 
-        // Load saved social spy state
-        this.userCache = new UserCache(this);
-
         // Setup player data getter
         if (isPluginPresent("LuckPerms")) {
-            this.playerDataGetter = new LuckPermsDataGetter();
+            this.dataGetter = new LuckPermsDataGetter();
         } else {
-            this.playerDataGetter = new DefaultDataGetter();
+            this.dataGetter = new DefaultDataGetter();
         }
 
         // Setup placeholder parser
-        this.placeholders = new ArrayList<>();
-        this.placeholders.add(new DefaultReplacer(this));
-        if (getSettings().doPlaceholderAPI() && isPluginPresent("PlaceholderAPI")) {
-            this.placeholders.add(new BukkitPlaceholderAPIReplacer());
+        this.placeholderReplacers.add(new DefaultReplacer(this));
+        if (getSettings().getPlaceholder().isUsePapi() && isPluginPresent("PlaceholderAPI")) {
+            this.placeholderReplacers.add(new BukkitPlaceholderAPIReplacer());
         }
-
-        // Create the event dispatcher
-        eventDispatcher = new BukkitEventDispatcher(this);
 
         // Register events
         getServer().getPluginManager().registerEvents(new BukkitListener(this), this);
 
         // Register commands & channel shortcuts
         BukkitCommand.Type.registerAll(this);
-        getSettings().getChannels().values().forEach(channel -> channel.getShortcutCommands()
+        getChannels().getChannels().forEach(channel -> channel.getShortcutCommands()
                 .forEach(command -> new BukkitCommand(
                         new ShortcutCommand(command, channel.getId(), this), this
                 )));
@@ -112,60 +121,9 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat {
         log(Level.INFO, "Enabled HuskChat version " + this.getVersion());
     }
 
-    @NotNull
-    @Override
-    public Settings getSettings() {
-        return settings;
-    }
-
-    @Override
-    public void setSettings(@NotNull Settings settings) {
-        this.settings = settings;
-    }
-
-    @NotNull
-    @Override
-    public Locales getLocales() {
-        return locales;
-    }
-
-    @Override
-    public void setLocales(@NotNull Locales locales) {
-        this.locales = locales;
-    }
-
-    @NotNull
-    @Override
-    public EventDispatcher getEventDispatcher() {
-        return eventDispatcher;
-    }
-
-    @NotNull
-    @Override
-    public UserCache getPlayerCache() {
-        return userCache;
-    }
-
-    @NotNull
-    @Override
-    public List<PlaceholderReplacer> getPlaceholderReplacers() {
-        return placeholders;
-    }
-
-    @NotNull
-    @Override
-    public DataGetter getDataGetter() {
-        return playerDataGetter;
-    }
-
     @Override
     public Optional<DiscordHook> getDiscordHook() {
         return Optional.ofNullable(discordHook);
-    }
-
-    @Override
-    public void setDiscordHook(@NotNull DiscordHook discordHook) {
-        this.discordHook = discordHook;
     }
 
     @NotNull
@@ -200,14 +158,14 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat {
     }
 
     @Override
-    public Collection<OnlineUser> getOnlinePlayers() {
+    public @NotNull Collection<OnlineUser> getOnlinePlayers() {
         return getServer().getOnlinePlayers().stream()
                 .map(user -> (OnlineUser) BukkitUser.adapt(user, this))
                 .toList();
     }
 
     @Override
-    public Collection<OnlineUser> getOnlinePlayersOnServer(@NotNull OnlineUser player) {
+    public @NotNull Collection<OnlineUser> getOnlinePlayersOnServer(@NotNull OnlineUser player) {
         return getOnlinePlayers();
     }
 
@@ -243,9 +201,15 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat {
         return audiences.console();
     }
 
+    @Override
+    @NotNull
+    public Path getConfigDirectory() {
+        return getDataFolder().toPath();
+    }
+
     @NotNull
     @Override
-    public HuskChat getPlugin() {
+    public BukkitHuskChat getPlugin() {
         return this;
     }
 

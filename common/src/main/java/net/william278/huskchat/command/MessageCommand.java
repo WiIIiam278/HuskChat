@@ -30,9 +30,11 @@ public class MessageCommand extends CommandBase {
 
     public MessageCommand(@NotNull HuskChat plugin) {
         super(
-                plugin.getSettings().getMessageCommandAliases(),
-                plugin.getSettings().doGroupMessages() ? "<player(s)> <message>" : "<player> <message>",
-                plugin);
+                plugin.getSettings().getMessageCommand().getMsgAliases(),
+                plugin.getSettings().getMessageCommand().getGroupMessages().isEnabled()
+                        ? "<player(s)> <message>" : "<player> <message>",
+                plugin
+        );
     }
 
     @Override

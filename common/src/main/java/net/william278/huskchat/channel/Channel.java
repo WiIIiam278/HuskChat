@@ -19,174 +19,132 @@
 
 package net.william278.huskchat.channel;
 
+import de.exlll.configlib.Configuration;
+import lombok.*;
+import net.william278.huskchat.config.Settings;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
+@Builder
+@Getter
+@Setter
+@Configuration
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Channel {
 
-    private final String id;
-    private final String format;
-    private final BroadcastScope broadcastScope;
-    private List<String> shortcutCommands = new ArrayList<>();
+    private String id;
+
+    @Builder.Default
+    private String format = "<%sender%> ";
+
+    private BroadcastScope broadcastScope;
+
+    @Builder.Default
+    private boolean logToConsole = true;
+
+    @Builder.Default
     private List<String> restrictedServers = new ArrayList<>();
-    private String sendPermission;
-    private String receivePermission;
-    private boolean logMessages;
-    private boolean filter;
 
-    /**
-     * Creates a channel with the specified ID and basic format
-     *
-     * @param id             The ID of the channel
-     * @param format         The channel format
-     * @param broadcastScope The {@link BroadcastScope} of this channel
-     */
-    public Channel(@NotNull String id, @NotNull String format, @NotNull BroadcastScope broadcastScope) {
-        this.id = id;
-        this.format = format;
-        this.broadcastScope = broadcastScope;
-    }
+    @Builder.Default
+    private boolean filtered = true;
 
-    /**
-     * The ID of the channel
-     */
-    @NotNull
-    public String getId() {
-        return id;
-    }
+    @Builder.Default
+    private ChannelPermissions permissions = new ChannelPermissions();
 
-    /**
-     * Message format of the channel
-     */
-    @NotNull
-    public String getFormat() {
-        return format;
-    }
+    @Builder.Default
+    @Getter(AccessLevel.NONE)
+    private List<String> shortcutCommands = new ArrayList<>();
 
-    /**
-     * {@link BroadcastScope} of the channel
-     */
-    @NotNull
-    public BroadcastScope getBroadcastScope() {
-        return broadcastScope;
-    }
+    @Builder
+    @Configuration
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @Setter
+    public static class ChannelPermissions {
+        @Nullable
+        @Builder.Default
+        private String send = null;
 
+        @Nullable
+        @Builder.Default
+        private String receive = null;
 
-    /**
-     * A {@link Set} of shortcut commands users can execute to access the channel
-     */
-    @NotNull
-    public List<String> getShortcutCommands() {
-        return shortcutCommands;
-    }
+        public Optional<String> getSend() {
+            return Optional.ofNullable(send);
+        }
 
-
-    /**
-     * A {@link ArrayList} of servers where this channel cannot be used
-     */
-    public void setShortcutCommands(List<String> shortcutCommands) {
-        this.shortcutCommands = shortcutCommands;
-    }
-
-
-    /**
-     * Permission node required to switch to and send messages to this channel
-     */
-    @NotNull
-    public List<String> getRestrictedServers() {
-        return restrictedServers;
-    }
-
-    /**
-     * Permission node required to receive messages from this channel. Note that channels with a {@link BroadcastScope} of {@code PASSTHROUGH}, {@code LOCAL_PASSTHROUGH} or {@code GLOBAL_PASSTHROUGH} will pass messages to the backend server, which will not necessarily check for this node, meaning players without permission may receive channel messages.,
-     */
-    public void setRestrictedServers(List<String> restrictedServers) {
-        this.restrictedServers = restrictedServers;
-    }
-
-    /**
-     * Whether this channel should have its messages logged to console
-     */
-    @Nullable
-    public String getSendPermission() {
-        return sendPermission;
-    }
-
-    /**
-     * String identifier of the channel
-     */
-    public void setSendPermission(@Nullable String sendPermission) {
-        this.sendPermission = sendPermission;
-    }
-
-    /**
-     * Whether this channel should automatically apply filters to messages
-     */
-    @Nullable
-    public String getReceivePermission() {
-        return receivePermission;
-    }
-
-    public void setReceivePermission(@Nullable String receivePermission) {
-        this.receivePermission = receivePermission;
-    }
-
-    public boolean doLogMessages() {
-        return logMessages;
-    }
-
-    public void setLogMessages(boolean logMessages) {
-        this.logMessages = logMessages;
-    }
-
-    public boolean isFilter() {
-        return filter;
-    }
-
-    public void setFilter(boolean filter) {
-        this.filter = filter;
+        public Optional<String> getReceive() {
+            return Optional.ofNullable(receive);
+        }
     }
 
     /**
      * The broadcast scope of a channel, defining how messages will be handled
      */
+    @Getter
+    @AllArgsConstructor
     public enum BroadcastScope {
         /**
-         * Message is broadcast globally to those with permissions via the proxy
+         * The message is broadcast globally to those with permissions via the proxy
          */
         GLOBAL(false),
 
         /**
-         * Message is broadcast via the proxy to players who have permission and are on the same server as the source
+         * The message is broadcast via the proxy to players who have permission and are on
+         * the same server as the source
          */
         LOCAL(false),
 
         /**
-         * Message is not handled by the proxy and is instead passed to the backend server
+         * The message is not handled by the proxy and is instead passed to the backend server
          */
         PASSTHROUGH(true),
 
         /**
-         * Message is broadcast via the proxy to players who have permission and are on the same server as the source and is additionally passed to the backend server
+         * The message is broadcast via the proxy to players who have permission and are on the same server
+         * as the source and is additionally passed to the backend server
          */
         LOCAL_PASSTHROUGH(true),
 
         /**
-         * Message is broadcast globally to those with permissions via the proxy and is additionally passed to the backend server
+         * The message is broadcast globally to those with permissions via the proxy
+         * and is additionally passed to the backend server
          */
         GLOBAL_PASSTHROUGH(true);
 
-        /**
-         * Whether the broadcast should be passed to the backend server
-         */
-        public final boolean isPassThrough;
+        private final boolean passThrough;
 
-        BroadcastScope(boolean isPassThrough) {
-            this.isPassThrough = isPassThrough;
+        public boolean isOneOf(BroadcastScope... scopes) {
+            for (BroadcastScope scope : scopes) {
+                if (this == scope) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
+
+    @NotNull
+    public List<String> getShortcutCommands() {
+        return Settings.formatCommands(shortcutCommands);
+    }
+
+    public boolean isServerRestricted(@NotNull String server) {
+        return restrictedServers.stream().anyMatch(server::equalsIgnoreCase);
+    }
+
+    public boolean canUserSend(@NotNull OnlineUser user) {
+        return permissions.getSend().isEmpty() || user.hasPermission(permissions.getSend().get());
+    }
+
+    public boolean canUserReceive(@NotNull OnlineUser user) {
+        return permissions.getReceive().isEmpty() || user.hasPermission(permissions.getReceive().get());
+    }
+
 }

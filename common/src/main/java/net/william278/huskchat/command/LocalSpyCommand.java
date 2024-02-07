@@ -33,7 +33,7 @@ import java.util.logging.Level;
 public class LocalSpyCommand extends CommandBase {
 
     public LocalSpyCommand(@NotNull HuskChat plugin) {
-        super(plugin.getSettings().getLocalSpyCommandAliases(), "[color]", plugin);
+        super(plugin.getSettings().getLocalSpy().getLocalspyAliases(), "[color]", plugin);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class LocalSpyCommand extends CommandBase {
                 if (selectedColor.isPresent()) {
                     try {
                         color = selectedColor.get();
-                        plugin.getPlayerCache().setLocalSpy(player, color);
+                        plugin.getUserCache().setLocalSpy(player, color);
                         plugin.getLocales().sendMessage(player, "local_spy_toggled_on_color",
                                 color.colorCode, color.name().toLowerCase().replaceAll("_", " "));
                     } catch (IOException e) {
@@ -58,16 +58,16 @@ public class LocalSpyCommand extends CommandBase {
                     return;
                 }
             }
-            if (!plugin.getPlayerCache().isLocalSpying(player)) {
+            if (!plugin.getUserCache().isLocalSpying(player)) {
                 try {
-                    plugin.getPlayerCache().setLocalSpy(player);
+                    plugin.getUserCache().setLocalSpy(player);
                     plugin.getLocales().sendMessage(player, "local_spy_toggled_on");
                 } catch (IOException e) {
                     plugin.log(Level.SEVERE, "Failed to save local spy state to spies file");
                 }
             } else {
                 try {
-                    plugin.getPlayerCache().removeLocalSpy(player);
+                    plugin.getUserCache().removeLocalSpy(player);
                     plugin.getLocales().sendMessage(player, "local_spy_toggled_off");
                 } catch (IOException e) {
                     plugin.log(Level.SEVERE, "Failed to save local spy state to spies file");
