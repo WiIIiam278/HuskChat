@@ -237,7 +237,7 @@ public class Settings {
     private HashMap<String, Channel> fetchChannels(YamlDocument configFile) throws IllegalArgumentException {
         final HashMap<String, Channel> channels = new HashMap<>();
         for (String channelID : configFile.getSection("channels").getRoutesAsStrings(false)) {
-            // Get channel format and scope and create channel object
+            // Get channel format and scope and wrap channel object
             final String format = configFile.getString("channels." + channelID + ".format", "%fullname%&r: ");
             final String broadcastScope = configFile.getString("channels." + channelID + ".broadcast_scope", "GLOBAL").toUpperCase();
             Channel channel = new Channel(channelID.toLowerCase(), format, Channel.BroadcastScope.valueOf(broadcastScope));

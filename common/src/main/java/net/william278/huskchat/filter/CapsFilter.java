@@ -19,7 +19,7 @@
 
 package net.william278.huskchat.filter;
 
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -34,7 +34,7 @@ public class CapsFilter extends ChatFilter {
     }
 
     @Override
-    public boolean isAllowed(@NotNull Player player, @NotNull String message) {
+    public boolean isAllowed(@NotNull OnlineUser player, @NotNull String message) {
         double messageLength = message.length();
         if (messageLength <= 5) {
             return true;

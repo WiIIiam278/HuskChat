@@ -32,7 +32,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.message.ChatMessage;
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 import org.spicord.Spicord;
 import org.spicord.api.addon.SimpleAddon;
@@ -62,20 +62,18 @@ public class SpicordHook implements DiscordHook {
 
     @Override
     public void postMessage(@NotNull ChatMessage message) {
-        if (message.sender instanceof SpicordPlayer) {
+        if (message.sender instanceof SpicordOnlineUser) {
             return;
         }
         CompletableFuture.runAsync(() -> this.addon.sendMessage(message));
     }
 
-    public static class SpicordPlayer implements Player {
-
-        private final HuskChat plugin;
+    public static class SpicordOnlineUser extends OnlineUser {
         private final User discordUser;
         private final Message context;
 
-        private SpicordPlayer(@NotNull HuskChat plugin, @NotNull User discordUser, @NotNull Message context) {
-            this.plugin = plugin;
+        private SpicordOnlineUser(@NotNull HuskChat plugin, @NotNull User discordUser, @NotNull Message context) {
+            super("", UUID.nameUUIDFromBytes(discordUser.getId().getBytes()), plugin);
             this.discordUser = discordUser;
             this.context = context;
         }
@@ -102,12 +100,6 @@ public class SpicordHook implements DiscordHook {
             } catch (NumberFormatException e) {
                 return Optional.empty();
             }
-        }
-
-        @NotNull
-        @Override
-        public UUID getUuid() {
-            return UUID.nameUUIDFromBytes(discordUser.getId().getBytes());
         }
 
         @Override
@@ -251,7 +243,7 @@ public class SpicordHook implements DiscordHook {
 
             new ChatMessage(
                     serverChannelId.get(),
-                    new SpicordPlayer(plugin, event.getAuthor(), event.getMessage()),
+                    new SpicordOnlineUser(plugin, event.getAuthor(), event.getMessage()),
                     event.getMessage().getContentRaw(),
                     plugin
             ).dispatch();

@@ -19,7 +19,7 @@
 
 package net.william278.huskchat.filter;
 
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import net.william278.profanitycheckerapi.ProfanityChecker;
 import net.william278.profanitycheckerapi.ProfanityCheckerBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -61,7 +61,7 @@ public class ProfanityFilterer extends ChatFilter {
     }
 
     @Override
-    public boolean isAllowed(@NotNull Player player, @NotNull String message) {
+    public boolean isAllowed(@NotNull OnlineUser player, @NotNull String message) {
         try (final ProfanityChecker checker = builder.build()) {
             return !checker.isProfane(message);
         } catch (UnsatisfiedLinkError e) {

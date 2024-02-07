@@ -20,7 +20,7 @@
 package net.william278.huskchat.command;
 
 import net.william278.huskchat.HuskChat;
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -47,19 +47,19 @@ public abstract class CommandBase {
     /**
      * Fires when the command is executed
      *
-     * @param player {@link Player} executing the command
+     * @param player {@link OnlineUser} executing the command
      * @param args   Command arguments
      */
-    public abstract void onExecute(@NotNull Player player, @NotNull String[] args);
+    public abstract void onExecute(@NotNull OnlineUser player, @NotNull String[] args);
 
     /**
      * What should be returned when the player attempts to TAB complete the command
      *
-     * @param player {@link Player} doing the TAB completion
+     * @param player {@link OnlineUser} doing the TAB completion
      * @param args   Current command arguments
      * @return List of String arguments to offer TAB suggestions
      */
-    public abstract List<String> onTabComplete(@NotNull Player player, @NotNull String[] args);
+    public abstract List<String> onTabComplete(@NotNull OnlineUser player, @NotNull String[] args);
 
     /**
      * Get the primary command alias

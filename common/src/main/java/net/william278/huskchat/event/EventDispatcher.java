@@ -19,7 +19,7 @@
 
 package net.william278.huskchat.event;
 
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -27,10 +27,10 @@ import java.util.concurrent.CompletableFuture;
 
 public interface EventDispatcher {
 
-    CompletableFuture<IChatMessageEvent> dispatchChatMessageEvent(@NotNull Player player, @NotNull String message, @NotNull String channelId);
+    CompletableFuture<ChatMessageEvent> fireChatMessageEvent(@NotNull OnlineUser player, @NotNull String message, @NotNull String channelId);
 
-    CompletableFuture<IPrivateMessageEvent> dispatchPrivateMessageEvent(@NotNull Player sender, @NotNull List<Player> receivers, @NotNull String message);
+    CompletableFuture<PrivateMessageEvent> firePrivateMessageEvent(@NotNull OnlineUser sender, @NotNull List<OnlineUser> receivers, @NotNull String message);
 
-    CompletableFuture<IBroadcastMessageEvent> dispatchBroadcastMessageEvent(@NotNull Player sender, @NotNull String message);
+    CompletableFuture<BroadcastMessageEvent> fireBroadcastMessageEvent(@NotNull OnlineUser sender, @NotNull String message);
 
 }

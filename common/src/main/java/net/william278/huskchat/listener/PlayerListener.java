@@ -21,7 +21,7 @@ package net.william278.huskchat.listener;
 
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -40,7 +40,7 @@ public abstract class PlayerListener {
      * @param player    The player changing server
      * @param newServer The name of the server they are changing to
      */
-    public final void handlePlayerSwitchServer(@NotNull Player player, @NotNull String newServer) {
+    public final void handlePlayerSwitchServer(@NotNull OnlineUser player, @NotNull String newServer) {
         final Map<String, String> defaultChannels = plugin.getSettings().getServerDefaultChannels();
         if (defaultChannels.containsKey(newServer)) {
             plugin.getPlayerCache().switchPlayerChannel(player, defaultChannels.get(newServer));
@@ -59,7 +59,7 @@ public abstract class PlayerListener {
         }
     }
 
-    public final void handlePlayerJoin(@NotNull Player player) {
+    public final void handlePlayerJoin(@NotNull OnlineUser player) {
         if (plugin.getSettings().getJoinQuitBroadcastScope() == Channel.BroadcastScope.PASSTHROUGH) {
             return;
         }
@@ -68,7 +68,7 @@ public abstract class PlayerListener {
         }
     }
 
-    public final void handlePlayerQuit(@NotNull Player player) {
+    public final void handlePlayerQuit(@NotNull OnlineUser player) {
         if (plugin.getSettings().getJoinQuitBroadcastScope() == Channel.BroadcastScope.PASSTHROUGH) {
             return;
         }

@@ -25,7 +25,6 @@ import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
 import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
 import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
-import net.kyori.adventure.audience.Audience;
 import net.william278.desertwell.util.UpdateChecker;
 import net.william278.desertwell.util.Version;
 import net.william278.huskchat.config.Locales;
@@ -36,8 +35,9 @@ import net.william278.huskchat.discord.WebHook;
 import net.william278.huskchat.event.EventDispatcher;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.placeholders.PlaceholderReplacer;
-import net.william278.huskchat.player.Player;
-import net.william278.huskchat.player.PlayerCache;
+import net.william278.huskchat.user.OnlineUser;
+import net.william278.huskchat.user.UserCache;
+import net.william278.huskchat.util.AudiencesProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -46,7 +46,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
-public interface HuskChat {
+public interface HuskChat extends AudiencesProvider {
 
     int SPIGOT_RESOURCE_ID = 94496;
 
@@ -89,12 +89,12 @@ public interface HuskChat {
     EventDispatcher getEventDispatcher();
 
     @NotNull
-    PlayerCache getPlayerCache();
+    UserCache getPlayerCache();
 
     @NotNull
     List<PlaceholderReplacer> getPlaceholderReplacers();
 
-    default CompletableFuture<String> replacePlaceholders(@NotNull Player player, @NotNull String message) {
+    default CompletableFuture<String> replacePlaceholders(@NotNull OnlineUser player, @NotNull String message) {
         CompletableFuture<String> future = CompletableFuture.completedFuture(message);
         for (PlaceholderReplacer replacer : getPlaceholderReplacers()) {
             future = future.thenComposeAsync(toFormat -> replacer.formatPlaceholders(toFormat, player));
@@ -118,16 +118,13 @@ public interface HuskChat {
     @NotNull
     String getPlatform();
 
-    Optional<Player> getPlayer(@NotNull UUID uuid);
+    Optional<OnlineUser> getPlayer(@NotNull UUID uuid);
 
-    Optional<Player> findPlayer(@NotNull String username);
+    Optional<OnlineUser> findPlayer(@NotNull String username);
 
-    Collection<Player> getOnlinePlayers();
+    Collection<OnlineUser> getOnlinePlayers();
 
-    Collection<Player> getOnlinePlayersOnServer(@NotNull Player player);
-
-    @NotNull
-    Audience getConsole();
+    Collection<OnlineUser> getOnlinePlayersOnServer(@NotNull OnlineUser player);
 
     File getDataFolder();
 
@@ -157,5 +154,4 @@ public interface HuskChat {
 
     void log(@NotNull Level level, @NotNull String message, @NotNull Throwable... throwable);
 
-    HuskChatAPI getAPI();
 }

@@ -21,10 +21,10 @@ package net.william278.huskchat.message;
 
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.filter.ChatFilter;
-import net.william278.huskchat.player.ConsolePlayer;
-import net.william278.huskchat.player.Player;
-import net.william278.huskchat.player.PlayerCache;
 import net.william278.huskchat.replacer.ReplacerFilter;
+import net.william278.huskchat.user.ConsoleUser;
+import net.william278.huskchat.user.OnlineUser;
+import net.william278.huskchat.user.UserCache;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -39,9 +39,9 @@ public class PrivateMessage {
     private final HuskChat plugin;
     private final List<String> targetUsernames;
     private final String message;
-    private Player sender;
+    private OnlineUser sender;
 
-    public PrivateMessage(@NotNull Player sender, @NotNull List<String> targetUsernames, @NotNull String message,
+    public PrivateMessage(@NotNull OnlineUser sender, @NotNull List<String> targetUsernames, @NotNull String message,
                           @NotNull HuskChat plugin) {
         this.sender = sender;
         this.targetUsernames = targetUsernames;
@@ -68,12 +68,12 @@ public class PrivateMessage {
         }
 
         // Validate message targets
-        final ArrayList<Player> targetPlayers = new ArrayList<>();
+        final ArrayList<OnlineUser> targetPlayers = new ArrayList<>();
         final HashSet<UUID> targetUUIDs = new HashSet<>();
         for (String targetUsername : targetUsernames) {
-            Optional<Player> targetPlayer;
-            if (ConsolePlayer.isConsolePlayer(targetUsername)) {
-                targetPlayer = Optional.of(ConsolePlayer.create(plugin));
+            Optional<OnlineUser> targetPlayer;
+            if (ConsoleUser.isConsolePlayer(targetUsername)) {
+                targetPlayer = Optional.of(ConsoleUser.wrap(plugin));
             } else {
                 targetPlayer = plugin.findPlayer(targetUsername);
             }
@@ -130,24 +130,24 @@ public class PrivateMessage {
             }
         }
 
-        plugin.getEventDispatcher().dispatchPrivateMessageEvent(sender, targetPlayers, finalMessage.get()).thenAccept(event -> {
+        plugin.getEventDispatcher().firePrivateMessageEvent(sender, targetPlayers, finalMessage.get()).thenAccept(event -> {
             if (event.isCancelled()) return;
 
             sender = event.getSender();
-            final List<Player> receivers = event.getRecipients();
+            final List<OnlineUser> receivers = event.getRecipients();
             finalMessage.set(event.getMessage());
 
             // Show that the message has been sent
-            PlayerCache.setLastMessenger(sender.getUuid(), receivers);
+            UserCache.setLastMessenger(sender.getUuid(), receivers);
             plugin.getLocales().sendOutboundPrivateMessage(sender, receivers, finalMessage.get());
 
             // Show the received message
-            for (Player target : receivers) {
-                final ArrayList<Player> receivedMessageFrom = new ArrayList<>(receivers);
+            for (OnlineUser target : receivers) {
+                final ArrayList<OnlineUser> receivedMessageFrom = new ArrayList<>(receivers);
                 receivedMessageFrom.removeIf(player -> player.getUuid().equals(target.getUuid()));
                 receivedMessageFrom.add(0, sender);
 
-                PlayerCache.setLastMessenger(target.getUuid(), receivedMessageFrom);
+                UserCache.setLastMessenger(target.getUuid(), receivedMessageFrom);
             }
             plugin.getLocales().sendInboundPrivateMessage(receivers, sender, finalMessage.get());
 
@@ -156,8 +156,8 @@ public class PrivateMessage {
                 if (!(sender.hasPermission("huskchat.command.socialspy.bypass") || receivers.stream()
                         .findFirst().orElseThrow(() -> new IllegalStateException("No receivers available for message"))
                         .hasPermission("huskchat.command.socialspy.bypass"))) {
-                    final Map<Player, PlayerCache.SpyColor> spies = plugin.getPlayerCache().getSocialSpyMessageReceivers(receivers);
-                    for (Player spy : spies.keySet()) {
+                    final Map<OnlineUser, UserCache.SpyColor> spies = plugin.getPlayerCache().getSocialSpyMessageReceivers(receivers);
+                    for (OnlineUser spy : spies.keySet()) {
                         if (spy.getUuid().equals(sender.getUuid())) {
                             continue;
                         }
@@ -169,7 +169,7 @@ public class PrivateMessage {
                             }
                             continue;
                         }
-                        final PlayerCache.SpyColor color = spies.get(spy);
+                        final UserCache.SpyColor color = spies.get(spy);
                         plugin.getLocales().sendSocialSpy(spy, color, sender, receivers, finalMessage.get());
                     }
                 }
@@ -180,7 +180,7 @@ public class PrivateMessage {
             if (plugin.getSettings().doLogPrivateMessages()) {
                 // Log all recipients of the message
                 final StringJoiner formattedPlayers = new StringJoiner(", ");
-                for (Player player : receivers) {
+                for (OnlineUser player : receivers) {
                     formattedPlayers.add(player.getName());
                 }
 

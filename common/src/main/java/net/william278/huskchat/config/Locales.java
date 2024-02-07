@@ -27,8 +27,8 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
-import net.william278.huskchat.player.Player;
-import net.william278.huskchat.player.PlayerCache;
+import net.william278.huskchat.user.OnlineUser;
+import net.william278.huskchat.user.UserCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,7 +64,7 @@ public class Locales {
         return locales.get(id);
     }
 
-    public void sendMessage(@NotNull Player player, @NotNull String id, @NotNull String... replacements) {
+    public void sendMessage(@NotNull OnlineUser player, @NotNull String id, @NotNull String... replacements) {
         String locale = getRawLocale(id);
 
         // Don't send empty messages
@@ -83,7 +83,7 @@ public class Locales {
         player.sendMessage(new MineDown(locale));
     }
 
-    public void sendChannelMessage(@NotNull Player target, @NotNull Player sender, @NotNull Channel channel,
+    public void sendChannelMessage(@NotNull OnlineUser target, @NotNull OnlineUser sender, @NotNull Channel channel,
                                    @NotNull String message) {
         plugin.replacePlaceholders(sender, channel.getFormat()).thenAccept(replaced -> {
             final Component format = new MineDown(replaced).toComponent();
@@ -99,7 +99,7 @@ public class Locales {
         });
     }
 
-    public void sendOutboundPrivateMessage(@NotNull Player sender, @NotNull List<Player> recipients, @NotNull String message) {
+    public void sendOutboundPrivateMessage(@NotNull OnlineUser sender, @NotNull List<OnlineUser> recipients, @NotNull String message) {
         plugin.replacePlaceholders(recipients.get(0), recipients.size() == 1
                 ? plugin.getSettings().getOutboundMessageFormat()
                 : plugin.getSettings().getGroupOutboundMessageFormat()
@@ -142,7 +142,7 @@ public class Locales {
         return color;
     }
 
-    public void sendInboundPrivateMessage(List<Player> recipients, Player sender, String message) {
+    public void sendInboundPrivateMessage(List<OnlineUser> recipients, OnlineUser sender, String message) {
         plugin.replacePlaceholders(sender, recipients.size() == 1
                 ? plugin.getSettings().getInboundMessageFormat()
                 : plugin.getSettings().getGroupInboundMessageFormat()
@@ -164,13 +164,13 @@ public class Locales {
                 builder.append(Component.text(message).color(getFormatColor(format)));
             }
 
-            for (final Player recipient : recipients) {
+            for (final OnlineUser recipient : recipients) {
                 recipient.sendMessage(builder.build());
             }
         });
     }
 
-    public void sendLocalSpy(@NotNull Player spy, @NotNull PlayerCache.SpyColor spyColor, @NotNull Player sender,
+    public void sendLocalSpy(@NotNull OnlineUser spy, @NotNull UserCache.SpyColor spyColor, @NotNull OnlineUser sender,
                              @NotNull Channel channel, @NotNull String message) {
         plugin.replacePlaceholders(sender, plugin.getSettings().getLocalSpyFormat())
                 .thenAccept(replaced -> {
@@ -182,8 +182,8 @@ public class Locales {
                 });
     }
 
-    public void sendSocialSpy(@NotNull Player spy, @NotNull PlayerCache.SpyColor spyColor, @NotNull Player sender,
-                              @NotNull List<Player> receivers, @NotNull String message) {
+    public void sendSocialSpy(@NotNull OnlineUser spy, @NotNull UserCache.SpyColor spyColor, @NotNull OnlineUser sender,
+                              @NotNull List<OnlineUser> receivers, @NotNull String message) {
         plugin.replacePlaceholders(sender, receivers.size() == 1
                 ? plugin.getSettings().getSocialSpyFormat() : plugin.getSettings().getSocialSpyGroupFormat()
                 .replace("%sender_", "%")
@@ -202,14 +202,14 @@ public class Locales {
         }));
     }
 
-    public void sendFormattedBroadcastMessage(@NotNull Player player, @NotNull String message) {
+    public void sendFormattedBroadcastMessage(@NotNull OnlineUser player, @NotNull String message) {
         final TextComponent.Builder componentBuilder = Component.text();
         componentBuilder.append(new MineDown(plugin.getSettings().getBroadcastMessageFormat()).toComponent());
         componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
         player.sendMessage(componentBuilder.build());
     }
 
-    public void sendJoinMessage(@NotNull Player player) {
+    public void sendJoinMessage(@NotNull OnlineUser player) {
         if (player.hasPermission(SILENT_JOIN_PERMISSION)) {
             return;
         }
@@ -219,7 +219,7 @@ public class Locales {
                 .thenAccept(replaced -> sendJoinQuitMessage(player, new MineDown(replaced).toComponent()));
     }
 
-    public void sendQuitMessage(@NotNull Player player) {
+    public void sendQuitMessage(@NotNull OnlineUser player) {
         if (player.hasPermission(SILENT_QUIT_PERMISSION)) {
             return;
         }
@@ -230,10 +230,10 @@ public class Locales {
     }
 
     // Dispatch a join/quit message to the correct server
-    private void sendJoinQuitMessage(@NotNull Player player, @NotNull Component component) {
+    private void sendJoinQuitMessage(@NotNull OnlineUser player, @NotNull Component component) {
         boolean local = List.of(Channel.BroadcastScope.LOCAL, Channel.BroadcastScope.LOCAL_PASSTHROUGH)
                 .contains(plugin.getSettings().getJoinQuitBroadcastScope());
-        for (Player online : plugin.getOnlinePlayers()) {
+        for (OnlineUser online : plugin.getOnlinePlayers()) {
             if (local && !online.getServerName().equals(player.getServerName())) {
                 continue;
             }
@@ -243,9 +243,9 @@ public class Locales {
 
     // Returns a newline-separated list of player names
     @NotNull
-    public final String getGroupMemberList(@NotNull List<Player> players, @NotNull String delimiter) {
+    public final String getGroupMemberList(@NotNull List<OnlineUser> players, @NotNull String delimiter) {
         final StringJoiner memberList = new StringJoiner(delimiter);
-        for (Player player : players) {
+        for (OnlineUser player : players) {
             memberList.add(player.getName());
         }
         return memberList.toString();

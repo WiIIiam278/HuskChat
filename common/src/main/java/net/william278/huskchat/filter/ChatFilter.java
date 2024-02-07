@@ -19,7 +19,7 @@
 
 package net.william278.huskchat.filter;
 
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -33,7 +33,7 @@ public abstract class ChatFilter {
      * @param message The user's message
      * @return {@code true} if the filter allows the message to pass; {@code false} otherwise
      */
-    public abstract boolean isAllowed(@NotNull Player sender, @NotNull String message);
+    public abstract boolean isAllowed(@NotNull OnlineUser sender, @NotNull String message);
 
     /**
      * The ID of the locale to send the player if their message fails the filter

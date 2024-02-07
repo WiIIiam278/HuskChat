@@ -21,9 +21,9 @@ package net.william278.huskchat.command;
 
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.message.PrivateMessage;
-import net.william278.huskchat.player.ConsolePlayer;
-import net.william278.huskchat.player.Player;
-import net.william278.huskchat.player.PlayerCache;
+import net.william278.huskchat.user.ConsoleUser;
+import net.william278.huskchat.user.OnlineUser;
+import net.william278.huskchat.user.UserCache;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -35,10 +35,10 @@ public class ReplyCommand extends CommandBase {
     }
 
     @Override
-    public void onExecute(@NotNull Player player, @NotNull String[] args) {
+    public void onExecute(@NotNull OnlineUser player, @NotNull String[] args) {
         if (player.hasPermission(getPermission())) {
             if (args.length >= 1) {
-                final Optional<Set<UUID>> lastMessengers = PlayerCache.getLastMessengers(player.getUuid());
+                final Optional<Set<UUID>> lastMessengers = UserCache.getLastMessengers(player.getUuid());
                 if (lastMessengers.isEmpty()) {
                     plugin.getLocales().sendMessage(player, "error_reply_no_messages");
                     return;
@@ -46,8 +46,8 @@ public class ReplyCommand extends CommandBase {
 
                 final ArrayList<String> lastPlayers = new ArrayList<>();
                 for (UUID lastMessenger : lastMessengers.get()) {
-                    if (ConsolePlayer.isConsolePlayer(lastMessenger)) {
-                        lastPlayers.add(ConsolePlayer.create(plugin).getName());
+                    if (ConsoleUser.isConsolePlayer(lastMessenger)) {
+                        lastPlayers.add(ConsoleUser.wrap(plugin).getName());
                     } else {
                         plugin.getPlayer(lastMessenger).ifPresent(onlineMessenger -> lastPlayers.add(onlineMessenger.getName()));
                     }
@@ -84,7 +84,7 @@ public class ReplyCommand extends CommandBase {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull Player player, @NotNull String[] args) {
+    public List<String> onTabComplete(@NotNull OnlineUser player, @NotNull String[] args) {
         return List.of();
     }
 

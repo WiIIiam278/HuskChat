@@ -19,7 +19,7 @@
 
 package net.william278.huskchat.filter;
 
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
@@ -48,7 +48,7 @@ public class SpamFilter extends ChatFilter {
     }
 
     @Override
-    public boolean isAllowed(@NotNull Player player, @NotNull String message) {
+    public boolean isAllowed(@NotNull OnlineUser player, @NotNull String message) {
         if (!userMessageQueues.containsKey(player.getUuid())) {
             userMessageQueues.put(player.getUuid(), new LinkedList<>());
         }

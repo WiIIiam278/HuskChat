@@ -20,9 +20,9 @@
 package net.william278.huskchat.command;
 
 import net.william278.huskchat.HuskChat;
-import net.william278.huskchat.player.ConsolePlayer;
-import net.william278.huskchat.player.Player;
-import net.william278.huskchat.player.PlayerCache;
+import net.william278.huskchat.user.ConsoleUser;
+import net.william278.huskchat.user.OnlineUser;
+import net.william278.huskchat.user.UserCache;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -37,15 +37,15 @@ public class SocialSpyCommand extends CommandBase {
     }
 
     @Override
-    public void onExecute(@NotNull Player player, @NotNull String[] args) {
-        if (player instanceof ConsolePlayer) {
+    public void onExecute(@NotNull OnlineUser player, @NotNull String[] args) {
+        if (player instanceof ConsoleUser) {
             plugin.getLocales().sendMessage(player, "error_in_game_only");
             return;
         }
         if (player.hasPermission(getPermission())) {
             if (args.length == 1) {
-                PlayerCache.SpyColor color;
-                Optional<PlayerCache.SpyColor> selectedColor = PlayerCache.SpyColor.getColor(args[0]);
+                UserCache.SpyColor color;
+                Optional<UserCache.SpyColor> selectedColor = UserCache.SpyColor.getColor(args[0]);
                 if (selectedColor.isPresent()) {
                     try {
                         color = selectedColor.get();
@@ -79,7 +79,7 @@ public class SocialSpyCommand extends CommandBase {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull Player player, @NotNull String[] args) {
+    public List<String> onTabComplete(@NotNull OnlineUser player, @NotNull String[] args) {
         return List.of();
     }
 

@@ -22,10 +22,10 @@ package net.william278.huskchat.message;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.filter.ChatFilter;
-import net.william278.huskchat.player.ConsolePlayer;
-import net.william278.huskchat.player.Player;
-import net.william278.huskchat.player.PlayerCache;
 import net.william278.huskchat.replacer.ReplacerFilter;
+import net.william278.huskchat.user.ConsoleUser;
+import net.william278.huskchat.user.OnlineUser;
+import net.william278.huskchat.user.UserCache;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -42,10 +42,10 @@ public class ChatMessage {
 
     public final HuskChat plugin;
     public final String targetChannelId;
-    public Player sender;
+    public OnlineUser sender;
     public String message;
 
-    public ChatMessage(@NotNull String targetChannelId, @NotNull Player sender,
+    public ChatMessage(@NotNull String targetChannelId, @NotNull OnlineUser sender,
                        @NotNull String message, @NotNull HuskChat plugin) {
         this.targetChannelId = targetChannelId;
         this.sender = sender;
@@ -87,7 +87,7 @@ public class ChatMessage {
 
         // There's no point in allowing the console to send to local chat as it's not actually in any servers;
         // the message won't get sent to anyone
-        if (sender instanceof ConsolePlayer && (broadcastScope == Channel.BroadcastScope.LOCAL ||
+        if (sender instanceof ConsoleUser && (broadcastScope == Channel.BroadcastScope.LOCAL ||
                 broadcastScope == Channel.BroadcastScope.LOCAL_PASSTHROUGH)) {
             plugin.getLocales().sendMessage(sender, "error_console_local_scope");
             return true;
@@ -99,7 +99,7 @@ public class ChatMessage {
         }
         message = msg.toString();
 
-        HashSet<Player> messageRecipients = new HashSet<>();
+        HashSet<OnlineUser> messageRecipients = new HashSet<>();
         switch (broadcastScope) {
             case GLOBAL, GLOBAL_PASSTHROUGH -> messageRecipients.addAll(plugin.getOnlinePlayers());
             case LOCAL, LOCAL_PASSTHROUGH -> messageRecipients.addAll(plugin.getOnlinePlayersOnServer(sender));
@@ -110,7 +110,7 @@ public class ChatMessage {
         // The events API has no effect on messages in passthrough channels.
         // Local/global passthrough channels will have their proxy-side message affected,
         // and non-passthrough messages will also be affected by the API.
-        plugin.getEventDispatcher().dispatchChatMessageEvent(sender, message, targetChannelId).thenAccept(event -> {
+        plugin.getEventDispatcher().fireChatMessageEvent(sender, message, targetChannelId).thenAccept(event -> {
             if (event.isCancelled()) return;
 
             sender = event.getSender();
@@ -125,7 +125,7 @@ public class ChatMessage {
 
             // Dispatch message to all applicable users in the scope with permission who are not on a restricted server
             MESSAGE_DISPATCH:
-            for (Player recipient : messageRecipients) {
+            for (OnlineUser recipient : messageRecipients) {
                 if (channel.get().getReceivePermission() != null) {
                     if (!recipient.hasPermission(channel.get().getReceivePermission()) && !(recipient.getUuid().equals(sender.getUuid()))) {
                         continue;
@@ -145,8 +145,8 @@ public class ChatMessage {
             if (broadcastScope == Channel.BroadcastScope.LOCAL || broadcastScope == Channel.BroadcastScope.LOCAL_PASSTHROUGH) {
                 if (plugin.getSettings().doLocalSpyCommand()) {
                     if (!plugin.getSettings().isLocalSpyChannelExcluded(channel.get())) {
-                        final Map<Player, PlayerCache.SpyColor> spies = plugin.getPlayerCache().getLocalSpyMessageReceivers(sender.getServerName(), plugin);
-                        for (Player spy : spies.keySet()) {
+                        final Map<OnlineUser, UserCache.SpyColor> spies = plugin.getPlayerCache().getLocalSpyMessageReceivers(sender.getServerName(), plugin);
+                        for (OnlineUser spy : spies.keySet()) {
                             if (spy.getUuid().equals(sender.getUuid())) {
                                 continue;
                             }
@@ -158,7 +158,7 @@ public class ChatMessage {
                                 }
                                 continue;
                             }
-                            final PlayerCache.SpyColor color = spies.get(spy);
+                            final UserCache.SpyColor color = spies.get(spy);
                             plugin.getLocales().sendLocalSpy(spy, color, sender, channel.get(), message);
                         }
                     }
@@ -186,7 +186,7 @@ public class ChatMessage {
     // This is a static method to allow for filters to be applied to passthrough channels due to those not going through this class
     // The StringBuilder allows us to modify the message if a replacer requires it.
     // Returns true if it passes all chat filters.
-    public static boolean passesFilters(@NotNull HuskChat plugin, @NotNull Player sender, @NotNull StringBuilder message, @NotNull Channel channel) {
+    public static boolean passesFilters(@NotNull HuskChat plugin, @NotNull OnlineUser sender, @NotNull StringBuilder message, @NotNull Channel channel) {
         // If the message is to be filtered, then perform filter checks (unless they have the bypass permission)
         if (channel.isFilter() && !sender.hasPermission("huskchat.bypass_filters")) {
             for (ChatFilter filter : plugin.getSettings().getChatFilters().getOrDefault(channel.getId(), List.of())) {

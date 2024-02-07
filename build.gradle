@@ -16,6 +16,9 @@ defaultTasks 'licenseFormat', 'build'
 ext {
     set 'version', version.toString()
     set 'description', description.toString()
+
+    set 'velocity_api_version', velocity_api_version.toString()
+    set 'velocity_minimum_build', velocity_minimum_build.toString()
 }
 
 allprojects {
@@ -25,6 +28,8 @@ allprojects {
 
     compileJava.options.encoding = 'UTF-8'
     compileJava.options.release.set 17
+    javadoc.options.encoding = 'UTF-8'
+    javadoc.options.addStringOption('Xdoclint:none', '-quiet')
 
     repositories {
         mavenLocal()
@@ -154,6 +159,14 @@ subprojects {
 
 
 logger.lifecycle("Building HuskChat ${version} by William278")
+
+java {
+    def javaVersion = JavaVersion.toVersion(javaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    withSourcesJar()
+    withJavadocJar()
+}
 
 @SuppressWarnings('GrMethodMayBeStatic')
 def versionMetadata() {

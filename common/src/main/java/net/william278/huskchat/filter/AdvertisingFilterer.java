@@ -19,7 +19,7 @@
 
 package net.william278.huskchat.filter;
 
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
@@ -76,7 +76,7 @@ public class AdvertisingFilterer extends ChatFilter {
             Pattern.CASE_INSENSITIVE);
 
     @Override
-    public boolean isAllowed(@NotNull Player player, @NotNull String message) {
+    public boolean isAllowed(@NotNull OnlineUser player, @NotNull String message) {
         return !(domainPattern.matcher(message).matches());
     }
 

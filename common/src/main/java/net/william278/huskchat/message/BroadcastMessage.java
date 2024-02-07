@@ -21,8 +21,8 @@ package net.william278.huskchat.message;
 
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.filter.ChatFilter;
-import net.william278.huskchat.player.Player;
 import net.william278.huskchat.replacer.ReplacerFilter;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Level;
@@ -31,11 +31,11 @@ import java.util.logging.Level;
  * Represents a broadcast message to be sent to everyone
  */
 public class BroadcastMessage {
-    private final Player sender;
+    private final OnlineUser sender;
     private String message;
     private final HuskChat plugin;
 
-    public BroadcastMessage(@NotNull Player sender, @NotNull String message, @NotNull HuskChat plugin) {
+    public BroadcastMessage(@NotNull OnlineUser sender, @NotNull String message, @NotNull HuskChat plugin) {
         this.sender = sender;
         this.message = message;
         this.plugin = plugin;
@@ -45,7 +45,7 @@ public class BroadcastMessage {
      * Dispatch the broadcast message to be sent
      */
     public void dispatch() {
-        plugin.getEventDispatcher().dispatchBroadcastMessageEvent(sender, message).thenAccept(event -> {
+        plugin.getEventDispatcher().fireBroadcastMessageEvent(sender, message).thenAccept(event -> {
             if (event.isCancelled()) return;
 
             message = event.getMessage();
@@ -67,7 +67,7 @@ public class BroadcastMessage {
             }
 
             // Dispatch the broadcast to all players
-            for (Player player : plugin.getOnlinePlayers()) {
+            for (OnlineUser player : plugin.getOnlinePlayers()) {
                 plugin.getLocales().sendFormattedBroadcastMessage(player, message);
             }
 

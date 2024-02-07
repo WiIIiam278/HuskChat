@@ -21,7 +21,7 @@ package net.william278.huskchat.command;
 
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.message.BroadcastMessage;
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class BroadcastCommand extends CommandBase {
     }
 
     @Override
-    public void onExecute(@NotNull Player player, @NotNull String[] args) {
+    public void onExecute(@NotNull OnlineUser player, @NotNull String[] args) {
         if (player.hasPermission(getPermission())) {
             if (args.length >= 1) {
                 StringJoiner message = new StringJoiner(" ");
@@ -51,7 +51,7 @@ public class BroadcastCommand extends CommandBase {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull Player player, @NotNull String[] args) {
+    public List<String> onTabComplete(@NotNull OnlineUser player, @NotNull String[] args) {
         return List.of();
     }
 }

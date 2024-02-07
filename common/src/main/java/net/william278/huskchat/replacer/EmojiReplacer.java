@@ -19,7 +19,7 @@
 
 package net.william278.huskchat.replacer;
 
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -64,7 +64,7 @@ public class EmojiReplacer extends ReplacerFilter {
     }
 
     @Override
-    public boolean isAllowed(@NotNull Player sender, @NotNull String message) {
+    public boolean isAllowed(@NotNull OnlineUser sender, @NotNull String message) {
         return true;
     }
 
