@@ -155,7 +155,7 @@ public interface ConfigProvider {
             setLocales(store.load(path));
             return;
         }
-
+String a = String.format("locales/%s.yml", getSettings().getLanguage());
         // Otherwise, save and read the default locales
         try (InputStream input = getResource(String.format("locales/%s.yml", getSettings().getLanguage()))) {
             final Locales locales = store.read(input);

@@ -19,8 +19,12 @@
 
 package net.william278.huskchat.config;
 
+import de.exlll.configlib.Configuration;
 import de.themoep.minedown.adventure.MineDown;
 import de.themoep.minedown.adventure.MineDownParser;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
@@ -33,6 +37,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+@SuppressWarnings("FieldMayBeFinal")
+@Getter
+@Configuration
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Locales {
 
     static final String CONFIG_HEADER = """
@@ -46,7 +54,7 @@ public class Locales {
 
     private static final String SILENT_JOIN_PERMISSION = "huskchat.silent_join";
     private static final String SILENT_QUIT_PERMISSION = "huskchat.silent_quit";
-    static final String DEFAULT_LOCALE = "en";
+    static final String DEFAULT_LOCALE = "en-gb";
 
     // The raw set of locales loaded from yaml
     Map<String, String> locales = new TreeMap<>();

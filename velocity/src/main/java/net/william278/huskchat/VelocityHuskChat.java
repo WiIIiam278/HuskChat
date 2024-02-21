@@ -44,7 +44,7 @@ import net.william278.huskchat.filter.ChatFilter;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.getter.DefaultDataGetter;
 import net.william278.huskchat.getter.LuckPermsDataGetter;
-import net.william278.huskchat.listener.VelocityListener;
+import net.william278.huskchat.packet.PacketManager;
 import net.william278.huskchat.placeholders.DefaultReplacer;
 import net.william278.huskchat.placeholders.PAPIProxyBridgeReplacer;
 import net.william278.huskchat.placeholders.PlaceholderReplacer;
@@ -104,11 +104,6 @@ public class VelocityHuskChat implements HuskChat, VelocityEventProvider {
 
     @Subscribe
     public void onProxyInitialization(@NotNull ProxyInitializeEvent event) {
-        // Check plugin compat
-        if (!isSigningPluginInstalled()) {
-            return;
-        }
-
         // Load config and locale files
         this.loadConfig();
 
@@ -129,7 +124,8 @@ public class VelocityHuskChat implements HuskChat, VelocityEventProvider {
         }
 
         // Register events
-        getProxyServer().getEventManager().register(this, new VelocityListener(this));
+//        getProxyServer().getEventManager().register(this, new VelocityListener(this));
+        new PacketManager(this).load(); // todo wip
 
         // Register commands & channel shortcuts
         VelocityCommand.Type.registerAll(this);
@@ -145,27 +141,6 @@ public class VelocityHuskChat implements HuskChat, VelocityEventProvider {
         this.checkForUpdates();
         log(Level.INFO, "Enabled HuskChat version " + getVersion());
     }
-
-    // Ensures a signing plugin is installed
-    private boolean isSigningPluginInstalled() {
-        boolean usvPresent = isPluginPresent("unsignedvelocity");
-        boolean svPresent = isPluginPresent("signedvelocity");
-        if (usvPresent && svPresent) {
-            log(Level.SEVERE, "Both UnsignedVelocity and SignedVelocity are present!\n" +
-                    "Please uninstall UnsignedVelocity. HuskChat will now be disabled."
-            );
-            return false;
-        }
-        if (!(usvPresent || svPresent)) {
-            log(Level.WARNING, "Neither UnsignedVelocity nor SignedVelocity are present!\n" +
-                    "Install SignedVelocity (https://modrinth.com/plugin/signedvelocity) for 1.19+ support.");
-        } else if (usvPresent) {
-            log(Level.WARNING, "UnsignedVelocity is deprecated; please install SignedVelocity " +
-                    " (https://modrinth.com/plugin/signedvelocity) instead for better support.");
-        }
-        return true;
-    }
-
 
     @Override
     public Optional<DiscordHook> getDiscordHook() {
@@ -236,7 +211,7 @@ public class VelocityHuskChat implements HuskChat, VelocityEventProvider {
     @Nullable
     @Override
     public InputStream getResource(@NotNull String path) {
-        return HuskChat.class.getClassLoader().getResourceAsStream(path);
+        return getClass().getClassLoader().getResourceAsStream(path);
     }
 
     @Override

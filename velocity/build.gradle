@@ -1,15 +1,23 @@
+plugins {
+    id 'xyz.jpenilla.run-velocity' version '2.2.2'
+}
+
 dependencies {
     implementation project(path: ':common')
 
     implementation 'org.bstats:bstats-velocity:3.0.2'
+    implementation 'com.github.retrooper.packetevents:velocity:2.2.0'
 
     compileOnly "com.velocitypowered:velocity-api:${velocity_api_version}-SNAPSHOT"
     compileOnly "com.velocitypowered:velocity-proxy:${velocity_api_version}-SNAPSHOT"
 
+    compileOnly 'io.netty:netty-codec-http:4.1.106.Final'
+    compileOnly 'it.unimi.dsi:fastutil:8.5.12'
     compileOnly 'commons-io:commons-io:2.15.1'
     compileOnly 'de.themoep:minedown-adventure:1.7.2-SNAPSHOT'
     compileOnly 'org.jetbrains:annotations:24.1.0'
     compileOnly 'org.projectlombok:lombok:1.18.30'
+    compileOnly 'net.kyori:adventure-nbt:4.15.0'
 
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
@@ -25,6 +33,8 @@ shadowJar {
     relocate 'org.jetbrains', 'net.william278.huskchat.libraries'
     relocate 'org.intellij', 'net.william278.huskchat.libraries'
     relocate 'org.bstats', 'net.william278.huskchat.libraries.bstats'
+    relocate 'com.github.retrooper', 'net.william278.huskchat.libraries'
+    relocate 'io.github.retrooper', 'net.william278.huskchat.libraries'
 
     dependencies {
         //noinspection GroovyAssignabilityCheck
@@ -32,4 +42,10 @@ shadowJar {
     }
 
     minimize()
+}
+
+tasks {
+    runVelocity {
+        velocityVersion("${velocity_api_version}-SNAPSHOT")
+    }
 }

@@ -29,5 +29,5 @@
       "optional": true
     }
   ],
-  "main": "net.william278.huskchat.velocity.VelocityHuskChat"
+  "main": "net.william278.huskchat.VelocityHuskChat"
 }
