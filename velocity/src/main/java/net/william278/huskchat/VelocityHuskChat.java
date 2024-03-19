@@ -44,7 +44,9 @@ import net.william278.huskchat.filter.ChatFilter;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.getter.DefaultDataGetter;
 import net.william278.huskchat.getter.LuckPermsDataGetter;
-import net.william278.huskchat.packet.PacketManager;
+import net.william278.huskchat.listener.VelocityEventChatListener;
+import net.william278.huskchat.listener.VelocityPacketChatListener;
+import net.william278.huskchat.listener.VelocityPlayerListener;
 import net.william278.huskchat.placeholders.DefaultReplacer;
 import net.william278.huskchat.placeholders.PAPIProxyBridgeReplacer;
 import net.william278.huskchat.placeholders.PlaceholderReplacer;
@@ -124,8 +126,12 @@ public class VelocityHuskChat implements HuskChat, VelocityEventProvider {
         }
 
         // Register events
-//        getProxyServer().getEventManager().register(this, new VelocityListener(this));
-        new PacketManager(this).load(); // todo wip
+        getProxyServer().getEventManager().register(this, new VelocityPlayerListener(this));
+        if (getSettings().isUsePacketListening()) {
+            new VelocityPacketChatListener(this).register();
+        } else {
+            getProxyServer().getEventManager().register(this, new VelocityEventChatListener(this));
+        }
 
         // Register commands & channel shortcuts
         VelocityCommand.Type.registerAll(this);
@@ -173,13 +179,15 @@ public class VelocityHuskChat implements HuskChat, VelocityEventProvider {
     }
 
     @Override
-    public @NotNull Collection<OnlineUser> getOnlinePlayers() {
+    @NotNull
+    public Collection<OnlineUser> getOnlinePlayers() {
         return getProxyServer().getAllPlayers().stream()
                 .map(player -> (OnlineUser) VelocityUser.adapt(player, this)).toList();
     }
 
     @Override
-    public @NotNull Collection<OnlineUser> getOnlinePlayersOnServer(@NotNull OnlineUser user) {
+    @NotNull
+    public Collection<OnlineUser> getOnlinePlayersOnServer(@NotNull OnlineUser user) {
         return ((VelocityUser) user).getPlayer().getCurrentServer()
                 .map(conn -> conn.getServer().getPlayersConnected().stream()
                         .map(player -> (OnlineUser) VelocityUser.adapt(player, this)).toList())

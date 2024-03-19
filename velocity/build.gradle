@@ -4,9 +4,7 @@ plugins {
 
 dependencies {
     implementation project(path: ':common')
-
     implementation 'org.bstats:bstats-velocity:3.0.2'
-    implementation 'com.github.retrooper.packetevents:velocity:2.2.0'
 
     compileOnly "com.velocitypowered:velocity-api:${velocity_api_version}-SNAPSHOT"
     compileOnly "com.velocitypowered:velocity-proxy:${velocity_api_version}-SNAPSHOT"

@@ -35,7 +35,6 @@ allprojects {
         mavenLocal()
         mavenCentral()
         maven { url = 'https://repo.william278.net/velocity/' }
-        maven { url = 'https://repo.papermc.io/repository/maven-public/' }
         maven { url = 'https://repo.codemc.io/repository/maven-releases/' }
         maven { url = 'https://repo.william278.net/releases/' }
         maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }

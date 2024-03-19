@@ -60,6 +60,9 @@ public class Settings {
     @Comment("Whether to automatically check for plugin updates on startup")
     private boolean checkForUpdates = true;
 
+    @Comment("Whether to handle chat packets directly for better 1.19+ support (may cause rare compatibility issues)")
+    private boolean usePacketListening = true;
+
     @Comment("Placeholder settings")
     private PlaceholderSettings placeholder = new PlaceholderSettings();
 
@@ -73,10 +76,6 @@ public class Settings {
         @Comment("If using PAPIProxyBridge, how long to cache placeholders for (in milliseconds)")
         private long cacheTime = 3000;
     }
-
-// todo MOVE
-//    @Comment("Enabled chat filters")
-//    private List<ChatFilter> chatFilters = List.of();
 
     @Comment("Message comamnd settings")
     private MessageSettings messageCommand = new MessageSettings();
