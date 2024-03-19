@@ -32,6 +32,6 @@ jobs:
           python -m pip install jep
           python -m pip install alt-profanity-check
       - name: Test Pull Request
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           arguments: build test
