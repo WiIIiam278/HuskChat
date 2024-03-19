@@ -23,7 +23,6 @@ import de.exlll.configlib.Configuration;
 import lombok.Getter;
 import net.william278.huskchat.user.OnlineUser;
 import net.william278.profanitycheckerapi.ProfanityChecker;
-import net.william278.profanitycheckerapi.ProfanityCheckerBuilder;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -34,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 public class ProfanityFilterer extends ChatFilter {
 
     @NotNull
-    private final ProfanityCheckerBuilder builder;
+    private final ProfanityChecker.ProfanityCheckerBuilder builder;
 
     public ProfanityFilterer(@NotNull FilterSettings settings) {
         super(settings);
@@ -42,10 +41,11 @@ public class ProfanityFilterer extends ChatFilter {
         final ProfanityFilterSettings profanitySettings = (ProfanityFilterSettings) settings;
         this.builder = ProfanityChecker.builder();
         if (profanitySettings.getLibraryPath() != null && !profanitySettings.getLibraryPath().isBlank()) {
-            builder.withLibraryPath(profanitySettings.getLibraryPath());
+            builder.libraryPath(profanitySettings.getLibraryPath());
         }
         if (profanitySettings.getMode() == ProfanityFilterMode.TOLERANCE) {
-            builder.withThresholdChecking(profanitySettings.getTolerance());
+            builder.useThreshold(true);
+            builder.threshold(profanitySettings.getTolerance());
         }
         initialize();
     }
