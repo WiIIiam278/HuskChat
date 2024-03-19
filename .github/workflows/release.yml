@@ -52,7 +52,7 @@ jobs:
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           hangar-id: William278/HuskChat
           hangar-token: ${{ secrets.HANGAR_API_KEY }}
-          files-primary: target/HuskChat-Plugin-*.jar
+          files-primary: target/HuskChat-Plugin-${{ github.event.release.tag_name }}.jar
           name: HuskChat v${{ github.event.release.tag_name }}
           version: ${{ github.event.release.tag_name }}
           version-type: release
