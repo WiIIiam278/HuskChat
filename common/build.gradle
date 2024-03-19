@@ -8,7 +8,7 @@ dependencies {
     api 'net.william278:ProfanityCheckerAPI:2.0.1'
     api 'net.william278:desertwell:2.0.4'
     api 'dev.vankka:mcdiscordreserializer:4.3.0'
-    api 'com.github.Exlll.ConfigLib:configlib-yaml:v4.4.0'
+    api 'de.exlll:configlib-yaml:4.5.0'
 
     compileOnly 'net.kyori:adventure-api:4.15.0'
     compileOnly 'net.kyori:adventure-platform-api:4.3.2'
