@@ -86,7 +86,7 @@ jobs:
             placeholderapi | suggests | *
           java: 17
       - name: Upload GitHub Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
           name: HuskChat Plugin
