@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
  * machine learning algorithm to determine the probability that a string contains profanity
  */
 public class ProfanityFilterer extends ChatFilter {
-    
+
     @NotNull
     private final ProfanityCheckerBuilder builder;
 
@@ -58,8 +58,8 @@ public class ProfanityFilterer extends ChatFilter {
             System.out.println("Initialized the profanity checker and hooked into the jep interpreter");
         } catch (UnsatisfiedLinkError | IllegalStateException e) {
             throw new RuntimeException("Failed to initialize ProfanityChecker (" + e.getMessage() + ")" +
-                                       "Please ensure that the jep library is installed and the library path is correct. " +
-                                       "Consult the HuskChat docs for more information on this error.", e);
+                    "Please ensure that the jep library is installed and the library path is correct. " +
+                    "Consult the HuskChat docs for more information on this error.", e);
         }
     }
 
@@ -111,12 +111,13 @@ public class ProfanityFilterer extends ChatFilter {
         public String libraryPath = "";
         public ProfanityFilterMode mode = ProfanityFilterMode.AUTOMATIC;
         public double tolerance = 0.78d;
-        
+
         private ProfanityFilterSettings() {
             this.enabled = false;
         }
 
-        protected ProfanityFilterSettings(String libraryPath, ProfanityFilterMode mode, double tolerance) {
+        protected ProfanityFilterSettings(@NotNull String libraryPath, @NotNull ProfanityFilterMode mode,
+                                          double tolerance) {
             this.libraryPath = libraryPath;
             this.mode = mode;
             this.tolerance = tolerance;

@@ -25,6 +25,7 @@ locales:
   error_chat_filter_spam: '[Bitte warte! Du sendest deine Nachrichten zu schnell.](#ff7e5e)'
   error_chat_filter_ascii: '[Du kannst keine Sonderzeichen im Chat verwenden.](#ff7e5e)'
   error_chat_filter_repeat: '[Du hast diese Nachricht bereits vor kurzem verschickt!](#ff7e5e)'
+  error_chat_filter_regex: '[Your message contains blocked text.](#ff7e5e)'
   error_in_game_only: 'Fehler: Dieser Befehl kann nur im Spiel verwendet werden.'
   error_console_local_scope: 'Fehler: Das Senden von Nachrichten von der Konsole an Kanäle mit einem lokalen Bereich wird nicht unterstützt.'
   error_console_switch_channels: 'Fehler: Du kannst von der Konsole aus nicht zu einem anderen Kanal wechseln. Bitte verwende stattdessen den Shortcut-Befehl.'

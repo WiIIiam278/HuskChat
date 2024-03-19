@@ -25,6 +25,7 @@ locales:
   error_chat_filter_spam: '[Моля изчакайте! Изпращате съобщения прекалено бързо.](#ff7e5e)'
   error_chat_filter_ascii: '[Не можете да използвате специални символи в чата.](#ff7e5e)'
   error_chat_filter_repeat: '[Вие вече сте изпратили това съобщение наскоро!](#ff7e5e)'
+  error_chat_filter_regex: '[Your message contains blocked text.](#ff7e5e)'
   error_in_game_only: 'Грешка: Тази команда може да бъде използвана само от играта.'
   error_console_local_scope: 'Грешка: Изпращането на съобщения от конзолата до канали с локален обхват не се поддържа.'
   error_console_switch_channels: 'Грешка: Не можете да преминете към друг канал от конзолата. Моля, вместо това използвайте съкратената команда.'

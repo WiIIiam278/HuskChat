@@ -25,6 +25,7 @@ locales:
   error_chat_filter_spam: '[Por favor, espera. Estás enviando mensajes demasiado rápido, ya no tomes cafe.](#ff7e5e)'
   error_chat_filter_ascii: '[No puedes usar caracteres especiales en el chat.](#ff7e5e)'
   error_chat_filter_repeat: '[Ya enviaste ese mensaje recientemente.](#ff7e5e)'
+  error_chat_filter_regex: '[Your message contains blocked text.](#ff7e5e)'
   error_in_game_only: 'Error: Ese comando solo puede ser usado dentro del juego.'
   error_console_local_scope: 'No se pueden enviar mensajes desde la consola a canales con alcance local.'
   error_console_switch_channels: 'Error: No puedes cambiar a otro canal desde la consola. Por favor, usa el comando abreviado en su lugar.'

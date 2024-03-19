@@ -25,6 +25,7 @@ locales:
   error_chat_filter_spam: '[Пожалуйста, подождите! Вы отправляете сообщения слишком быстро.](#ff7e5e)'
   error_chat_filter_ascii: '[В чате нельзя использовать специальные символы.](#ff7e5e)'
   error_chat_filter_repeat: '[Вы уже отправили это сообщение недавно!](#ff7e5e)'
+  error_chat_filter_regex: '[Your message contains blocked text.](#ff7e5e)'
   error_in_game_only: 'Ошибка: Эта команда может быть использована только в игре.'
   error_console_local_scope: 'Ошибка: Отправка сообщений из консоли в каналы с локальной областью видимости не поддерживается.'
   error_console_switch_channels: 'Ошибка: Переключение на другой канал с консоли невозможно. Вместо этого используйте команду быстрого доступа.'

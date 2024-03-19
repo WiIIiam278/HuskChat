@@ -25,6 +25,7 @@ locales:
   error_chat_filter_spam: '[Kérlek várj! Túl gyorsan küldesz üzenetet.](#ff7e5e)'
   error_chat_filter_ascii: '[Nem használhatsz speciális karaktereket a chat-en!](#ff7e5e)'
   error_chat_filter_repeat: '[Nemrég már elküldted ezt az üzentet!](#ff7e5e)'
+  error_chat_filter_regex: '[Your message contains blocked text.](#ff7e5e)'
   error_in_game_only: 'Hiba: Ez a parancs csak játékon belül használható!'
   error_console_local_scope: 'Error: Sending messages from console to channels with a local scope is unsupported.'
   error_console_switch_channels: 'Error: You cannot switch to another channel from console. Please use the shortcut command instead.'

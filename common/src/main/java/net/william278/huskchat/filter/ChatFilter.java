@@ -84,6 +84,7 @@ public abstract class ChatFilter {
         PROFANITY(ProfanityFilterer.getDefaultSettings(), ProfanityFilterer::new),
         REPEAT(RepeatFilter.getDefaultSettings(), RepeatFilter::new),
         ASCII(AsciiFilter.getDefaultSettings(), AsciiFilter::new),
+        REGEX(RegexFilter.getDefaultSettings(), RegexFilter::new),
 
         // Replacers
         EMOJI(EmojiReplacer.getDefaultSettings(), EmojiReplacer::new);
