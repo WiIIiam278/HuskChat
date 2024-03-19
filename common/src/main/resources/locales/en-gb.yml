@@ -5,7 +5,7 @@ locales:
   error_no_permission_send: '[Error:](#ff3300) [You do not have permission to talk in %1% chat.](#ff7e5e)'
   error_invalid_channel: '[Error:](#ff3300) [Please specify a valid chat channel.](#ff7e5e)'
   error_invalid_channel_command: '[Error:](#ff3300) [That channel is invalid](#ff7e5e)'
-  error_no_channel: '[Error:](#ff3300) [You are trying to talk in an invalid chat channel.](#ff7e5e) [Use /channel to switch to a valid one.](#ff7e5e show_text=&#ff7e5e&Click here to suggest command suggest_command=/channel )'
+  error_no_channel: '[Error:](#ff3300) [You are trying to talk in an invalid chat channel. Use](#ff7e5e) [/channel](#ff7e5e italic show_text=&#ff7e5e&Click here to suggest command suggest_command=/channel ) [to switch to a valid one.](#ff7e5e)'
   error_player_not_found: '[Error:](#ff3300) [Could not find the specified player; are they online?](#ff7e5e)'
   error_cannot_message_self: '[Error:](#ff3300) [You can''t message yourself!](#ff7e5e)'
   error_reply_no_messages: '[Error:](#ff3300) [There is nobody who has sent you a message to reply to!](#ff7e5e)'

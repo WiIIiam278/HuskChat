@@ -34,7 +34,6 @@ import com.velocitypowered.proxy.protocol.packet.chat.session.SessionPlayerChatP
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPromise;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.william278.desertwell.util.ThrowingConsumer;
@@ -107,13 +106,13 @@ public class VelocityPacketChatListener {
         private final Player player;
 
         @Override
-        public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-            final Optional<String> message = this.extractChatMessage(msg);
+        public void channelRead(@NotNull ChannelHandlerContext ctx, @NotNull Object packet) throws Exception {
+            final Optional<String> message = this.extractChatMessage(packet);
             if (message.isEmpty()) {
-                super.write(ctx, msg, promise);
+                super.channelRead(ctx, packet);
                 return;
             }
-            this.handleChat(message.get(), (passthrough) -> super.write(ctx, msg, promise));
+            this.handleChat(message.get(), (passthrough) -> super.channelRead(ctx, packet));
         }
 
         @NotNull
