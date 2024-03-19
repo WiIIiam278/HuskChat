@@ -19,61 +19,55 @@
 
 package net.william278.huskchat.listener;
 
+import lombok.AllArgsConstructor;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
+@AllArgsConstructor
 public abstract class PlayerListener {
 
     protected final HuskChat plugin;
 
-    public PlayerListener(@NotNull HuskChat plugin) {
-        this.plugin = plugin;
-    }
-
-    /**
-     * Handle a player switching server
-     *
-     * @param player    The player changing server
-     * @param newServer The name of the server they are changing to
-     */
-    public final void handlePlayerSwitchServer(@NotNull Player player, @NotNull String newServer) {
-        final Map<String, String> defaultChannels = plugin.getSettings().getServerDefaultChannels();
+    // Handle server switches
+    public final void handlePlayerSwitchServer(@NotNull OnlineUser player, @NotNull String newServer) {
+        // Switch to the default channel for the server if there is one
+        final Map<String, String> defaultChannels = plugin.getChannels().getServerDefaultChannels();
         if (defaultChannels.containsKey(newServer)) {
-            plugin.getPlayerCache().switchPlayerChannel(player, defaultChannels.get(newServer));
-        } else {
-            for (Channel channel : plugin.getSettings().getChannels().values()) {
-                if (channel.getId().equalsIgnoreCase(plugin.getPlayerCache().getPlayerChannel(player.getUuid()))) {
-                    for (String restrictedServer : channel.getRestrictedServers()) {
-                        if (restrictedServer.equalsIgnoreCase(newServer)) {
-                            plugin.getPlayerCache().switchPlayerChannel(player, plugin.getSettings().getDefaultChannel());
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
+            plugin.getUserCache().switchPlayerChannel(player, defaultChannels.get(newServer), plugin);
+            return;
+        }
+
+        // Switch channels to the default one if their current channel is now restricted
+        final String currentChannel = plugin.getUserCache().getPlayerChannel(player.getUuid());
+        plugin.getChannels().getChannels().stream()
+                .filter(channel -> channel.getId().equalsIgnoreCase(currentChannel))
+                .findFirst().flatMap(channel -> channel.getRestrictedServers().stream()
+                        .filter(restrictedServer -> restrictedServer.equalsIgnoreCase(newServer))
+                        .findFirst()).ifPresent(restricted -> plugin.getUserCache()
+                        .switchPlayerChannel(player, plugin.getChannels().getDefaultChannel(), plugin));
+    }
+
+    // Handle player joins
+    public final void handlePlayerJoin(@NotNull OnlineUser player) {
+        if (plugin.getSettings().getJoinAndQuitMessages().getBroadcastScope() == Channel.BroadcastScope.PASSTHROUGH) {
+            return;
+        }
+        if (plugin.getSettings().getJoinAndQuitMessages().getJoin().isEnabled()) {
+            plugin.getLocales().sendJoinMessage(player, plugin);
         }
     }
 
-    public final void handlePlayerJoin(@NotNull Player player) {
-        if (plugin.getSettings().getJoinQuitBroadcastScope() == Channel.BroadcastScope.PASSTHROUGH) {
+    // Handle player quits
+    public final void handlePlayerQuit(@NotNull OnlineUser player) {
+        if (plugin.getSettings().getJoinAndQuitMessages().getBroadcastScope() == Channel.BroadcastScope.PASSTHROUGH) {
             return;
         }
-        if (plugin.getSettings().doJoinMessages()) {
-            plugin.getLocales().sendJoinMessage(player);
-        }
-    }
-
-    public final void handlePlayerQuit(@NotNull Player player) {
-        if (plugin.getSettings().getJoinQuitBroadcastScope() == Channel.BroadcastScope.PASSTHROUGH) {
-            return;
-        }
-        if (plugin.getSettings().doQuitMessages()) {
-            plugin.getLocales().sendQuitMessage(player);
+        if (plugin.getSettings().getJoinAndQuitMessages().getQuit().isEnabled()) {
+            plugin.getLocales().sendQuitMessage(player, plugin);
         }
     }
 

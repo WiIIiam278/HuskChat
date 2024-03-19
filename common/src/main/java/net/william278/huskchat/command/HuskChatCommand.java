@@ -25,7 +25,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.william278.desertwell.about.AboutMenu;
 import net.william278.desertwell.util.UpdateChecker;
 import net.william278.huskchat.HuskChat;
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -65,7 +65,7 @@ public class HuskChatCommand extends CommandBase {
     }
 
     @Override
-    public void onExecute(@NotNull Player player, @NotNull String[] args) {
+    public void onExecute(@NotNull OnlineUser player, @NotNull String[] args) {
         if (!player.hasPermission(getPermission())) {
             plugin.getLocales().sendMessage(player, "error_no_permission");
             return;
@@ -95,7 +95,7 @@ public class HuskChatCommand extends CommandBase {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull Player player, @NotNull String[] args) {
+    public List<String> onTabComplete(@NotNull OnlineUser player, @NotNull String[] args) {
         if (!player.hasPermission(getPermission())) {
             return List.of();
         }

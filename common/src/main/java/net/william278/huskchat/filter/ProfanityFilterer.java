@@ -19,11 +19,11 @@
 
 package net.william278.huskchat.filter;
 
-import net.william278.huskchat.player.Player;
+import de.exlll.configlib.Configuration;
+import lombok.Getter;
+import net.william278.huskchat.user.OnlineUser;
 import net.william278.profanitycheckerapi.ProfanityChecker;
-import net.william278.profanitycheckerapi.ProfanityCheckerBuilder;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * A {@link ChatFilter} that filters against profanity using machine learning
@@ -31,18 +31,21 @@ import org.jetbrains.annotations.Nullable;
  * machine learning algorithm to determine the probability that a string contains profanity
  */
 public class ProfanityFilterer extends ChatFilter {
-    
-    @NotNull
-    private final ProfanityCheckerBuilder builder;
 
-    public ProfanityFilterer(@NotNull ProfanityFilterMode filterMode, double thresholdValue,
-                             @Nullable String libraryPath) {
+    @NotNull
+    private final ProfanityChecker.ProfanityCheckerBuilder builder;
+
+    public ProfanityFilterer(@NotNull FilterSettings settings) {
+        super(settings);
+
+        final ProfanityFilterSettings profanitySettings = (ProfanityFilterSettings) settings;
         this.builder = ProfanityChecker.builder();
-        if (libraryPath != null && !libraryPath.isBlank()) {
-            builder.withLibraryPath(libraryPath);
+        if (profanitySettings.getLibraryPath() != null && !profanitySettings.getLibraryPath().isBlank()) {
+            builder.libraryPath(profanitySettings.getLibraryPath());
         }
-        if (filterMode == ProfanityFilterMode.TOLERANCE) {
-            builder.withThresholdChecking(thresholdValue);
+        if (profanitySettings.getMode() == ProfanityFilterMode.TOLERANCE) {
+            builder.useThreshold(true);
+            builder.threshold(profanitySettings.getTolerance());
         }
         initialize();
     }
@@ -55,13 +58,18 @@ public class ProfanityFilterer extends ChatFilter {
             System.out.println("Initialized the profanity checker and hooked into the jep interpreter");
         } catch (UnsatisfiedLinkError | IllegalStateException e) {
             throw new RuntimeException("Failed to initialize ProfanityChecker (" + e.getMessage() + ")" +
-                                       "Please ensure that the jep library is installed and the library path is correct. " +
-                                       "Consult the HuskChat docs for more information on this error.", e);
+                    "Please ensure that the jep library is installed and the library path is correct. " +
+                    "Consult the HuskChat docs for more information on this error.", e);
         }
     }
 
+    @NotNull
+    public static FilterSettings getDefaultSettings() {
+        return new ProfanityFilterSettings();
+    }
+
     @Override
-    public boolean isAllowed(@NotNull Player player, @NotNull String message) {
+    public boolean isAllowed(@NotNull OnlineUser player, @NotNull String message) {
         try (final ProfanityChecker checker = builder.build()) {
             return !checker.isProfane(message);
         } catch (UnsatisfiedLinkError e) {
@@ -72,13 +80,13 @@ public class ProfanityFilterer extends ChatFilter {
 
     @Override
     @NotNull
-    public String getFailureErrorMessageId() {
+    public String getDisallowedLocale() {
         return "error_chat_filter_profanity";
     }
 
     @Override
     @NotNull
-    public String getFilterIgnorePermission() {
+    public String getIgnorePermission() {
         return "huskchat.ignore_filters.profanity";
     }
 
@@ -95,6 +103,25 @@ public class ProfanityFilterer extends ChatFilter {
          * The filter will assign a probability score that text is profane and check against a tolerance threshold
          */
         TOLERANCE
+    }
+
+    @Getter
+    @Configuration
+    public static class ProfanityFilterSettings extends FilterSettings {
+        public String libraryPath = "";
+        public ProfanityFilterMode mode = ProfanityFilterMode.AUTOMATIC;
+        public double tolerance = 0.78d;
+
+        private ProfanityFilterSettings() {
+            this.enabled = false;
+        }
+
+        protected ProfanityFilterSettings(@NotNull String libraryPath, @NotNull ProfanityFilterMode mode,
+                                          double tolerance) {
+            this.libraryPath = libraryPath;
+            this.mode = mode;
+            this.tolerance = tolerance;
+        }
     }
 
 }

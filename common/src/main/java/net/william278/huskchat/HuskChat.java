@@ -19,82 +19,47 @@
 
 package net.william278.huskchat;
 
-import dev.dejvokep.boostedyaml.YamlDocument;
-import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
-import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
-import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
-import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
-import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
-import net.kyori.adventure.audience.Audience;
 import net.william278.desertwell.util.UpdateChecker;
 import net.william278.desertwell.util.Version;
-import net.william278.huskchat.config.Locales;
-import net.william278.huskchat.config.Settings;
+import net.william278.huskchat.config.ConfigProvider;
 import net.william278.huskchat.discord.DiscordHook;
 import net.william278.huskchat.discord.SpicordHook;
 import net.william278.huskchat.discord.WebHook;
-import net.william278.huskchat.event.EventDispatcher;
+import net.william278.huskchat.event.EventProvider;
+import net.william278.huskchat.filter.FilterProvider;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.placeholders.PlaceholderReplacer;
-import net.william278.huskchat.player.Player;
-import net.william278.huskchat.player.PlayerCache;
+import net.william278.huskchat.user.OnlineUser;
+import net.william278.huskchat.user.UserCache;
+import net.william278.huskchat.util.AudiencesProvider;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
-public interface HuskChat {
+public interface HuskChat extends AudiencesProvider, ConfigProvider, FilterProvider, EventProvider {
 
     int SPIGOT_RESOURCE_ID = 94496;
 
-    @NotNull
-    Settings getSettings();
-
-    void setSettings(@NotNull Settings settings);
-
-    @NotNull
-    Locales getLocales();
-
-    void setLocales(@NotNull Locales locales);
-
-    default void loadConfig() {
-        try {
-            // Set settings
-            this.setSettings(new Settings(YamlDocument.create(
-                    new File(getDataFolder(), "config.yml"),
-                    Objects.requireNonNull(getResource("config.yml")),
-                    GeneralSettings.builder().setUseDefaults(false).build(),
-                    LoaderSettings.builder().setAutoUpdate(true).build(),
-                    DumperSettings.builder().setEncoding(DumperSettings.Encoding.UNICODE).build(),
-                    UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build()
-            )));
-            this.setLocales(new Locales(this));
-        } catch (Throwable e) {
-            log(Level.SEVERE, "Failed to load plugin config/locale files", e);
-        }
-    }
-
     // Initialize webhook dispatcher
     default void loadDiscordHook() {
-        if (getSettings().doDiscordIntegration()) {
-            setDiscordHook(getSettings().useSpicord() && isPluginPresent("Spicord")
+        if (getSettings().getDiscord().isEnabled()) {
+            setDiscordHook(getSettings().getDiscord().getSpicord().isEnabled() && isPluginPresent("Spicord")
                     ? new SpicordHook(this) : new WebHook(this));
         }
     }
 
     @NotNull
-    EventDispatcher getEventDispatcher();
-
-    @NotNull
-    PlayerCache getPlayerCache();
+    UserCache getUserCache();
 
     @NotNull
     List<PlaceholderReplacer> getPlaceholderReplacers();
 
-    default CompletableFuture<String> replacePlaceholders(@NotNull Player player, @NotNull String message) {
+    default CompletableFuture<String> replacePlaceholders(@NotNull OnlineUser player, @NotNull String message) {
         CompletableFuture<String> future = CompletableFuture.completedFuture(message);
         for (PlaceholderReplacer replacer : getPlaceholderReplacers()) {
             future = future.thenComposeAsync(toFormat -> replacer.formatPlaceholders(toFormat, player));
@@ -118,20 +83,15 @@ public interface HuskChat {
     @NotNull
     String getPlatform();
 
-    Optional<Player> getPlayer(@NotNull UUID uuid);
+    Optional<OnlineUser> getPlayer(@NotNull UUID uuid);
 
-    Optional<Player> findPlayer(@NotNull String username);
-
-    Collection<Player> getOnlinePlayers();
-
-    Collection<Player> getOnlinePlayersOnServer(@NotNull Player player);
+    Optional<OnlineUser> findPlayer(@NotNull String username);
 
     @NotNull
-    Audience getConsole();
+    Collection<OnlineUser> getOnlinePlayers();
 
-    File getDataFolder();
-
-    InputStream getResource(@NotNull String path);
+    @NotNull
+    Collection<OnlineUser> getOnlinePlayersOnServer(@NotNull OnlineUser player);
 
     boolean isPluginPresent(@NotNull String dependency);
 
@@ -145,7 +105,7 @@ public interface HuskChat {
     }
 
     default void checkForUpdates() {
-        if (getSettings().doCheckForUpdates()) {
+        if (getSettings().isCheckForUpdates()) {
             getUpdateChecker().check().thenAccept(checked -> {
                 if (!checked.isUpToDate()) {
                     log(Level.WARNING, "A new version of HuskChat is available: v"
@@ -157,5 +117,4 @@ public interface HuskChat {
 
     void log(@NotNull Level level, @NotNull String message, @NotNull Throwable... throwable);
 
-    HuskChatAPI getAPI();
 }

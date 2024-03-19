@@ -20,8 +20,8 @@
 package net.william278.huskchat.command;
 
 import net.william278.huskchat.HuskChat;
-import net.william278.huskchat.player.Player;
-import net.william278.huskchat.player.PlayerCache;
+import net.william278.huskchat.user.OnlineUser;
+import net.william278.huskchat.user.UserCache;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -35,19 +35,19 @@ public class OptOutMessageCommand extends CommandBase {
     }
 
     @Override
-    public void onExecute(@NotNull Player player, @NotNull String[] args) {
-        PlayerCache.getLastMessengers(player.getUuid()).ifPresentOrElse(lastMessengers -> {
+    public void onExecute(@NotNull OnlineUser player, @NotNull String[] args) {
+        UserCache.getLastMessengers(player.getUuid()).ifPresentOrElse(lastMessengers -> {
             if (lastMessengers.size() <= 1) {
                 plugin.getLocales().sendMessage(player, "error_last_message_not_group");
                 return;
             }
 
             for (UUID uuid : lastMessengers) {
-                PlayerCache.getLastMessengers(uuid).ifPresent(last -> last.remove(player.getUuid()));
+                UserCache.getLastMessengers(uuid).ifPresent(last -> last.remove(player.getUuid()));
             }
 
             String playerList = lastMessengers.stream().flatMap(u -> plugin.getPlayer(u).stream())
-                    .map(Player::getName).collect(Collectors.joining(", "));
+                    .map(OnlineUser::getName).collect(Collectors.joining(", "));
             StringBuilder builder = new StringBuilder();
             int lastComma = playerList.lastIndexOf(',');
             builder.append(playerList, 0, lastComma);
@@ -60,7 +60,7 @@ public class OptOutMessageCommand extends CommandBase {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull Player player, @NotNull String[] args) {
+    public List<String> onTabComplete(@NotNull OnlineUser player, @NotNull String[] args) {
         return List.of();
     }
 

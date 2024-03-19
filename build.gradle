@@ -16,6 +16,9 @@ defaultTasks 'licenseFormat', 'build'
 ext {
     set 'version', version.toString()
     set 'description', description.toString()
+
+    set 'velocity_api_version', velocity_api_version.toString()
+    set 'velocity_minimum_build', velocity_minimum_build.toString()
 }
 
 allprojects {
@@ -24,25 +27,39 @@ allprojects {
     apply plugin: 'java'
 
     compileJava.options.encoding = 'UTF-8'
-    compileJava.options.release.set 16
+    compileJava.options.release.set 17
+    javadoc.options.encoding = 'UTF-8'
+    javadoc.options.addStringOption('Xdoclint:none', '-quiet')
 
     repositories {
         mavenLocal()
         mavenCentral()
-        maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
-        maven { url 'https://repo.velocitypowered.com/snapshots/' }
-        maven { url 'https://repo.minebench.de/' }
-        maven { url 'https://repo.wea-ondara.net/repository/public/' }
-        maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
-        maven { url 'https://jitpack.io' }
-        maven { url 'https://repo.william278.net/releases/' }
-        maven { url 'https://mvn-repo.arim.space/lesser-gpl3/' }
+        maven { url = 'https://repo.william278.net/velocity/' }
+        maven { url = 'https://repo.codemc.io/repository/maven-releases/' }
+        maven { url = 'https://repo.william278.net/releases/' }
+        maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+        maven { url = 'https://repo.minebench.de/' }
+        maven { url = 'https://repo.wea-ondara.net/repository/public/' }
+        maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+        maven { url = 'https://jitpack.io' }
+        maven { url = 'https://mvn-repo.arim.space/lesser-gpl3/' }
+    }
+
+    dependencies {
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
+        testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
+        testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
+        testCompileOnly 'org.jetbrains:annotations:24.1.0'
     }
 
     license {
         header = rootProject.file('HEADER')
         include '**/*.java'
         newLine = true
+    }
+
+    test {
+        useJUnitPlatform()
     }
 
     processResources {
@@ -53,69 +70,103 @@ allprojects {
     }
 }
 
+
 subprojects {
     version rootProject.version
     archivesBaseName = "${rootProject.name}-${project.name.capitalize()}"
-    compileJava.options.encoding = 'UTF-8'
 
     jar {
         from '../LICENSE'
     }
 
-    if (['bungee', 'velocity', 'bukkit', 'plugin'].contains(project.name)) {
-        shadowJar {
+    shadowJar {
+        destinationDirectory.set(file("$rootDir/target"))
+        archiveClassifier.set('')
+    }
+
+    // API publishing
+    if (['common','bukkit', 'velocity', 'bungee'].contains(project.name)) {
+        java {
+            withSourcesJar()
+            withJavadocJar()
+        }
+        sourcesJar {
             destinationDirectory.set(file("$rootDir/target"))
-            archiveClassifier.set('')
         }
+        javadocJar {
+            destinationDirectory.set(file("$rootDir/target"))
+        }
+        shadowJar.dependsOn(sourcesJar, javadocJar)
 
-        jar.dependsOn shadowJar
-        clean.delete "$rootDir/target"
-    }
-
-    if (['plugin'].contains(project.name)) {
         publishing {
-            repositories {
-                if (System.getenv("RELEASES_MAVEN_USERNAME") != null) {
-                    maven {
-                        name = "william278-releases"
-                        url = "https://repo.william278.net/releases"
-                        credentials {
-                            username = System.getenv("RELEASES_MAVEN_USERNAME")
-                            password = System.getenv("RELEASES_MAVEN_PASSWORD")
-                        }
-                        authentication {
-                            basic(BasicAuthentication)
-                        }
-                    }
-                }
-                if (System.getenv("SNAPSHOTS_MAVEN_USERNAME") != null) {
-                    maven {
-                        name = "william278-snapshots"
-                        url = "https://repo.william278.net/snapshots"
-                        credentials {
-                            username = System.getenv("SNAPSHOTS_MAVEN_USERNAME")
-                            password = System.getenv("SNAPSHOTS_MAVEN_PASSWORD")
-                        }
-                        authentication {
-                            basic(BasicAuthentication)
-                        }
+            if (['common'].contains(project.name)) {
+                publications {
+                    mavenJavaCommon(MavenPublication) {
+                        groupId = 'net.william278.huskchat'
+                        artifactId = 'huskchat-common'
+                        version = "$rootProject.version"
+                        artifact shadowJar
+                        artifact sourcesJar
+                        artifact javadocJar
                     }
                 }
             }
 
-            publications {
-                mavenJava(MavenPublication) {
-                    groupId = 'net.william278'
-                    artifactId = "huskchat"
-                    version = "$rootProject.version"
-                    artifact shadowJar
+            if (['bukkit'].contains(project.name)) {
+                publications {
+                    mavenJavaBukkit(MavenPublication) {
+                        groupId = 'net.william278.huskchat'
+                        artifactId = 'huskchat-bukkit'
+                        version = "$rootProject.version"
+                        artifact shadowJar
+                        artifact sourcesJar
+                        artifact javadocJar
+                    }
+                }
+            }
+
+            if (['velocity'].contains(project.name)) {
+                publications {
+                    mavenJavaVelocity(MavenPublication) {
+                        groupId = 'net.william278.huskchat'
+                        artifactId = 'huskchat-velocity'
+                        version = "$rootProject.version"
+                        artifact shadowJar
+                        artifact sourcesJar
+                        artifact javadocJar
+                    }
+                }
+            }
+
+            if (['bungee'].contains(project.name)) {
+                publications {
+                    mavenJavaBungee(MavenPublication) {
+                        groupId = 'net.william278.huskchat'
+                        artifactId = 'huskchat-bungee'
+                        version = "$rootProject.version"
+                        artifact shadowJar
+                        artifact sourcesJar
+                        artifact javadocJar
+                    }
                 }
             }
         }
     }
+
+    jar.dependsOn shadowJar
+    clean.delete "$rootDir/target"
 }
 
+
 logger.lifecycle("Building HuskChat ${version} by William278")
+
+java {
+    def javaVersion = JavaVersion.toVersion(javaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    withSourcesJar()
+    withJavadocJar()
+}
 
 @SuppressWarnings('GrMethodMayBeStatic')
 def versionMetadata() {

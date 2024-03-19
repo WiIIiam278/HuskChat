@@ -31,8 +31,10 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.william278.huskchat.HuskChat;
+import net.william278.huskchat.channel.Channel;
+import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.message.ChatMessage;
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 import org.spicord.Spicord;
 import org.spicord.api.addon.SimpleAddon;
@@ -62,28 +64,28 @@ public class SpicordHook implements DiscordHook {
 
     @Override
     public void postMessage(@NotNull ChatMessage message) {
-        if (message.sender instanceof SpicordPlayer) {
+        if (message.getSender() instanceof SpicordOnlineUser) {
             return;
         }
         CompletableFuture.runAsync(() -> this.addon.sendMessage(message));
     }
 
-    public static class SpicordPlayer implements Player {
-
-        private final HuskChat plugin;
+    public static class SpicordOnlineUser extends OnlineUser {
+        private final Settings.DiscordSettings settings;
         private final User discordUser;
         private final Message context;
 
-        private SpicordPlayer(@NotNull HuskChat plugin, @NotNull User discordUser, @NotNull Message context) {
-            this.plugin = plugin;
+        private SpicordOnlineUser(@NotNull HuskChat plugin, @NotNull User discordUser, @NotNull Message context) {
+            super("", UUID.nameUUIDFromBytes(discordUser.getId().getBytes()), plugin);
             this.discordUser = discordUser;
             this.context = context;
+            this.settings = plugin.getSettings().getDiscord();
         }
 
         @NotNull
         @Override
         public String getName() {
-            return plugin.getSettings().getDiscordUsernameFormat()
+            return settings.getSpicord().getUsernameFormat()
                     .replaceAll(
                             "%discord_handle%",
                             getDiscriminatorString()
@@ -102,12 +104,6 @@ public class SpicordHook implements DiscordHook {
             } catch (NumberFormatException e) {
                 return Optional.empty();
             }
-        }
-
-        @NotNull
-        @Override
-        public UUID getUuid() {
-            return UUID.nameUUIDFromBytes(discordUser.getId().getBytes());
         }
 
         @Override
@@ -153,16 +149,18 @@ public class SpicordHook implements DiscordHook {
     private static class Addon extends SimpleAddon {
 
         private final HuskChat plugin;
+        private final Settings.DiscordSettings settings;
         private DiscordBot bot;
 
         private Addon(@NotNull HuskChat plugin) {
             super("HuskChat", "huskchat", "William278", plugin.getVersion().toString());
             this.plugin = plugin;
+            this.settings = plugin.getSettings().getDiscord();
         }
 
         private void sendMessage(@NotNull ChatMessage message) {
             final Optional<Long> discordChannelId = Optional.ofNullable(
-                    plugin.getSettings().getSpicordReceiveChannelMap().get(message.targetChannelId)
+                    settings.getSpicord().getReceiveChannelMap().get(message.getChannel().getId())
             ).flatMap(id -> {
                 try {
                     return Optional.of(Long.parseLong(id.trim()));
@@ -199,22 +197,22 @@ public class SpicordHook implements DiscordHook {
         }
 
         private void dispatchMessage(@NotNull ChatMessage message, @NotNull GuildMessageChannel channel) {
-            final Format format = plugin.getSettings().getDiscordMessageFormat();
+            final Format format = settings.getFormatStyle();
             channel.sendMessage(new MessageCreateBuilder()
                     // Disable mentions
                     .setAllowedMentions(List.of())
 
                     // Embedded formatting
                     .setEmbeds(format == Format.EMBEDDED ? List.of(new EmbedBuilder()
-                            .setDescription(message.message)
+                            .setDescription(message.getMessage())
                             .setColor(0x00fb9a)
                             .setFooter(
                                     String.format("%s • %s",
-                                            message.sender.getName(),
-                                            message.sender.getServerName()
+                                            message.getSender().getName(),
+                                            message.getSender().getServerName()
                                     ),
                                     String.format("https://minotar.net/avatar/%s/64",
-                                            message.sender.getUuid()
+                                            message.getSender().getUuid()
                                     )
                             )
                             .setTimestamp(OffsetDateTime.now())
@@ -222,7 +220,7 @@ public class SpicordHook implements DiscordHook {
 
                     // Inline formatting
                     .setContent(format == Format.INLINE ? String.format("### %s\n%s",
-                            message.sender.getName(), message.message) : null)
+                            message.getSender().getName(), message.getMessage()) : null)
 
                     .build()
             ).queue();
@@ -242,16 +240,16 @@ public class SpicordHook implements DiscordHook {
             }
 
             // Get the channel ID, send an in-game message.
-            final Optional<String> serverChannelId = Optional.ofNullable(
-                    plugin.getSettings().getSpicordSendChannelMap().get(event.getGuildChannel().getId())
-            );
-            if (serverChannelId.isEmpty()) {
+            final Optional<Channel> serverChannel = Optional.ofNullable(
+                    settings.getSpicord().getSendChannelMap().get(event.getGuildChannel().getId())
+            ).flatMap(plugin.getChannels()::getChannel);
+            if (serverChannel.isEmpty()) {
                 return;
             }
 
             new ChatMessage(
-                    serverChannelId.get(),
-                    new SpicordPlayer(plugin, event.getAuthor(), event.getMessage()),
+                    serverChannel.get(),
+                    new SpicordOnlineUser(plugin, event.getAuthor(), event.getMessage()),
                     event.getMessage().getContentRaw(),
                     plugin
             ).dispatch();

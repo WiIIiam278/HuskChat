@@ -21,7 +21,7 @@ package net.william278.huskchat.command;
 
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.message.PrivateMessage;
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -30,13 +30,15 @@ public class MessageCommand extends CommandBase {
 
     public MessageCommand(@NotNull HuskChat plugin) {
         super(
-                plugin.getSettings().getMessageCommandAliases(),
-                plugin.getSettings().doGroupMessages() ? "<player(s)> <message>" : "<player> <message>",
-                plugin);
+                plugin.getSettings().getMessageCommand().getMsgAliases(),
+                plugin.getSettings().getMessageCommand().getGroupMessages().isEnabled()
+                        ? "<player(s)> <message>" : "<player> <message>",
+                plugin
+        );
     }
 
     @Override
-    public void onExecute(@NotNull Player player, @NotNull String[] args) {
+    public void onExecute(@NotNull OnlineUser player, @NotNull String[] args) {
         if (player.hasPermission(getPermission())) {
             if (args.length >= 2) {
                 StringJoiner message = new StringJoiner(" ");
@@ -67,10 +69,10 @@ public class MessageCommand extends CommandBase {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull Player player, @NotNull String[] args) {
+    public List<String> onTabComplete(@NotNull OnlineUser player, @NotNull String[] args) {
         if (args.length <= 1) {
             final ArrayList<String> userNames = new ArrayList<>();
-            for (Player connectedPlayer : plugin.getOnlinePlayers()) {
+            for (OnlineUser connectedPlayer : plugin.getOnlinePlayers()) {
                 if (!player.getUuid().equals(connectedPlayer.getUuid())) {
                     userNames.add(connectedPlayer.getName());
                 }

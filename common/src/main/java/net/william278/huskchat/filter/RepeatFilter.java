@@ -19,7 +19,11 @@
 
 package net.william278.huskchat.filter;
 
-import net.william278.huskchat.player.Player;
+import de.exlll.configlib.Configuration;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -36,15 +40,18 @@ public class RepeatFilter extends ChatFilter {
      */
     private final HashMap<UUID, LinkedList<String>> userMessageQueues;
 
-    private final int previousMessagesToCheck;
-
-    public RepeatFilter(int previousMessagesToCheck) {
-        this.previousMessagesToCheck = previousMessagesToCheck;
+    public RepeatFilter(@NotNull FilterSettings settings) {
+        super(settings);
         this.userMessageQueues = new HashMap<>();
     }
 
+    @NotNull
+    public static FilterSettings getDefaultSettings() {
+        return new RepeatFilterSettings();
+    }
+
     @Override
-    public boolean isAllowed(@NotNull Player player, @NotNull String message) {
+    public boolean isAllowed(@NotNull OnlineUser player, @NotNull String message) {
         if (!userMessageQueues.containsKey(player.getUuid())) {
             userMessageQueues.put(player.getUuid(), new LinkedList<>());
         }
@@ -54,7 +61,8 @@ public class RepeatFilter extends ChatFilter {
                     return false;
                 }
             }
-            if (userMessageQueues.get(player.getUuid()).size() + 1 > previousMessagesToCheck) {
+            if (userMessageQueues.get(player.getUuid()).size() + 1 >
+                    ((RepeatFilterSettings) settings).getPreviousMessagesToCheck()) {
                 userMessageQueues.get(player.getUuid()).removeLast();
             }
         }
@@ -64,13 +72,22 @@ public class RepeatFilter extends ChatFilter {
 
     @Override
     @NotNull
-    public String getFailureErrorMessageId() {
+    public String getDisallowedLocale() {
         return "error_chat_filter_repeat";
     }
 
     @Override
     @NotNull
-    public String getFilterIgnorePermission() {
+    public String getIgnorePermission() {
         return "huskchat.ignore_filters.spam";
     }
+
+
+    @Getter
+    @Configuration
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class RepeatFilterSettings extends FilterSettings {
+        public int previousMessagesToCheck = 5;
+    }
+    
 }

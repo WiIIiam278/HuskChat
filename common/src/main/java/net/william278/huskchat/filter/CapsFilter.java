@@ -19,7 +19,12 @@
 
 package net.william278.huskchat.filter;
 
-import net.william278.huskchat.player.Player;
+import de.exlll.configlib.Configuration;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -27,14 +32,17 @@ import org.jetbrains.annotations.NotNull;
  */
 public class CapsFilter extends ChatFilter {
 
-    private final double capsPercentage;
+    public CapsFilter(FilterSettings settings) {
+        super(settings);
+    }
 
-    public CapsFilter(double capsPercentage) {
-        this.capsPercentage = capsPercentage;
+    @NotNull
+    public static FilterSettings getDefaultSettings() {
+        return new CapsFilterSettings();
     }
 
     @Override
-    public boolean isAllowed(@NotNull Player player, @NotNull String message) {
+    public boolean isAllowed(@NotNull OnlineUser player, @NotNull String message) {
         double messageLength = message.length();
         if (messageLength <= 5) {
             return true;
@@ -46,19 +54,28 @@ public class CapsFilter extends ChatFilter {
             }
         }
         double capsProportion = (double) capsLetters / messageLength;
-        return !(capsProportion > capsPercentage);
+        return !(capsProportion > ((CapsFilterSettings) settings).getMaxCapsPercentage());
     }
 
     @Override
     @NotNull
-    public String getFailureErrorMessageId() {
+    public String getDisallowedLocale() {
         return "error_chat_filter_caps";
     }
 
     @Override
     @NotNull
-    public String getFilterIgnorePermission() {
+    public String getIgnorePermission() {
         return "huskchat.ignore_filters.caps";
+    }
+
+
+    @Getter
+    @Configuration
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PACKAGE)
+    public static class CapsFilterSettings extends FilterSettings {
+        public double maxCapsPercentage = 0.4d;
     }
 
 }

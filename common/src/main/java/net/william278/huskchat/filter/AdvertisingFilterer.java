@@ -19,7 +19,7 @@
 
 package net.william278.huskchat.filter;
 
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
@@ -28,6 +28,10 @@ import java.util.regex.Pattern;
  * A {@link ChatFilter} that filters against domain names
  */
 public class AdvertisingFilterer extends ChatFilter {
+
+    public AdvertisingFilterer(@NotNull FilterSettings settings) {
+        super(settings);
+    }
 
     /**
      * Lifted from <a href=https://gist.github.com/dperini/729294>https://gist.github.com/dperini/729294</a>
@@ -75,21 +79,27 @@ public class AdvertisingFilterer extends ChatFilter {
                     "$",
             Pattern.CASE_INSENSITIVE);
 
+    @NotNull
+    public static FilterSettings getDefaultSettings() {
+        return new FilterSettings();
+    }
+
     @Override
-    public boolean isAllowed(@NotNull Player player, @NotNull String message) {
+    public boolean isAllowed(@NotNull OnlineUser player, @NotNull String message) {
         return !(domainPattern.matcher(message).matches());
     }
 
     @Override
     @NotNull
-    public String getFailureErrorMessageId() {
+    public String getDisallowedLocale() {
         return "error_chat_filter_advertising";
     }
 
     @Override
     @NotNull
-    public String getFilterIgnorePermission() {
+    public String getIgnorePermission() {
         return "huskchat.ignore_filters.advertising";
     }
+
 
 }

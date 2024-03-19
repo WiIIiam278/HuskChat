@@ -19,27 +19,27 @@
 
 package net.william278.huskchat.filter;
 
-import net.william278.huskchat.player.TestPlayer;
+import net.william278.huskchat.user.TestOnlineUser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class AsciiFilterTests {
 
-    AsciiFilter asciiFilter = new AsciiFilter();
+    AsciiFilter asciiFilter = new AsciiFilter(new ChatFilter.FilterSettings());
 
     @Test
     public void testAsciiSentence() {
-        Assertions.assertTrue(asciiFilter.isAllowed(new TestPlayer(), "This is a test sentence"));
+        Assertions.assertTrue(asciiFilter.isAllowed(new TestOnlineUser(), "This is a test sentence"));
     }
 
     @Test
     public void testAsciiSentenceWithMathematicalSymbolsAndPunctuation() {
-        Assertions.assertTrue(asciiFilter.isAllowed(new TestPlayer(), "This is a (test) sentence with [mathematical symbols], like + - = != etc :-)"));
+        Assertions.assertTrue(asciiFilter.isAllowed(new TestOnlineUser(), "This is a (test) sentence with [mathematical symbols], like + - = != etc :-)"));
     }
 
     @Test
     public void testUnicodeSentence() {
-        Assertions.assertFalse(asciiFilter.isAllowed(new TestPlayer(), "• This is a test sentence with ♣ UNICODE ♣ characters •"));
+        Assertions.assertFalse(asciiFilter.isAllowed(new TestOnlineUser(), "• This is a test sentence with ♣ UNICODE ♣ characters •"));
     }
 
 }

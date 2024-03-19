@@ -23,7 +23,7 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -42,7 +42,7 @@ public class LuckPermsDataGetter extends DataGetter {
     }
 
     @Override
-    public String getPlayerFullName(@NotNull Player player) {
+    public String getPlayerFullName(@NotNull OnlineUser player) {
         return getUser(player.getUuid())
                 .map(User::getCachedData).map(data -> {
                     final StringBuilder fullName = new StringBuilder();
@@ -65,26 +65,26 @@ public class LuckPermsDataGetter extends DataGetter {
     }
 
     @Override
-    public String getPlayerName(@NotNull Player player) {
+    public String getPlayerName(@NotNull OnlineUser player) {
         return player.getName();
     }
 
     @Override
-    public Optional<String> getPlayerPrefix(@NotNull Player player) {
+    public Optional<String> getPlayerPrefix(@NotNull OnlineUser player) {
         return getUser(player.getUuid()).flatMap(user -> Optional.ofNullable(
                 user.getCachedData().getMetaData().getPrefix()
         ));
     }
 
     @Override
-    public Optional<String> getPlayerSuffix(@NotNull Player player) {
+    public Optional<String> getPlayerSuffix(@NotNull OnlineUser player) {
         return getUser(player.getUuid()).flatMap(user -> Optional.ofNullable(
                 user.getCachedData().getMetaData().getSuffix()
         ));
     }
 
     @Override
-    public Optional<String> getPlayerGroupName(@NotNull Player player) {
+    public Optional<String> getPlayerGroupName(@NotNull OnlineUser player) {
         return getUser(player.getUuid()).flatMap(user -> {
             final Group group = api.getGroupManager().getGroup(user.getPrimaryGroup());
             if (group == null) {
@@ -95,7 +95,7 @@ public class LuckPermsDataGetter extends DataGetter {
     }
 
     @Override
-    public Optional<String> getPlayerGroupDisplayName(@NotNull Player player) {
+    public Optional<String> getPlayerGroupDisplayName(@NotNull OnlineUser player) {
         return getUser(player.getUuid()).flatMap(user -> {
             final Group group = api.getGroupManager().getGroup(user.getPrimaryGroup());
             if (group == null) {
@@ -109,7 +109,7 @@ public class LuckPermsDataGetter extends DataGetter {
     }
 
     @Override
-    public Optional<String> getTextFromNode(@NotNull Player player, @NotNull String nodePrefix) {
+    public Optional<String> getTextFromNode(@NotNull OnlineUser player, @NotNull String nodePrefix) {
         return getUser(player.getUuid()).flatMap(user -> Optional.ofNullable(
                 user.getCachedData().getMetaData().getMetaValue(nodePrefix)
         ));

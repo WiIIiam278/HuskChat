@@ -19,7 +19,7 @@
 
 package net.william278.huskchat.getter;
 
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -34,37 +34,37 @@ public class DefaultDataGetter extends DataGetter {
     }
 
     @Override
-    public String getPlayerFullName(@NotNull Player player) {
+    public String getPlayerFullName(@NotNull OnlineUser player) {
         return player.getName();
     }
 
     @Override
-    public String getPlayerName(@NotNull Player player) {
+    public String getPlayerName(@NotNull OnlineUser player) {
         return player.getName();
     }
 
     @Override
-    public Optional<String> getPlayerPrefix(@NotNull Player player) {
+    public Optional<String> getPlayerPrefix(@NotNull OnlineUser player) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<String> getPlayerSuffix(@NotNull Player player) {
+    public Optional<String> getPlayerSuffix(@NotNull OnlineUser player) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<String> getPlayerGroupName(@NotNull Player player) {
+    public Optional<String> getPlayerGroupName(@NotNull OnlineUser player) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<String> getPlayerGroupDisplayName(@NotNull Player player) {
+    public Optional<String> getPlayerGroupDisplayName(@NotNull OnlineUser player) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<String> getTextFromNode(@NotNull Player player, @NotNull String nodePrefix) {
+    public Optional<String> getTextFromNode(@NotNull OnlineUser player, @NotNull String nodePrefix) {
         return Optional.empty();
     }
 

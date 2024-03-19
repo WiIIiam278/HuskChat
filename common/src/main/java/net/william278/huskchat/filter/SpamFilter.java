@@ -19,7 +19,11 @@
 
 package net.william278.huskchat.filter;
 
-import net.william278.huskchat.player.Player;
+import de.exlll.configlib.Configuration;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
@@ -38,26 +42,28 @@ public class SpamFilter extends ChatFilter {
      */
     private final HashMap<UUID, LinkedList<Long>> userMessageQueues;
 
-    private final int periodLength;
-    private final int maxMessagesPerPeriod;
-
-    public SpamFilter(int periodLength, int maxMessagesPerPeriod) {
-        this.periodLength = periodLength;
-        this.maxMessagesPerPeriod = maxMessagesPerPeriod;
+    public SpamFilter(@NotNull FilterSettings settings) {
+        super(settings);
         this.userMessageQueues = new HashMap<>();
     }
 
+    @NotNull
+    public static FilterSettings getDefaultSettings() {
+        return new SpamFilterSettings();
+    }
+
     @Override
-    public boolean isAllowed(@NotNull Player player, @NotNull String message) {
+    public boolean isAllowed(@NotNull OnlineUser player, @NotNull String message) {
         if (!userMessageQueues.containsKey(player.getUuid())) {
             userMessageQueues.put(player.getUuid(), new LinkedList<>());
         }
         final long currentTimestamp = Instant.now().getEpochSecond();
         if (!userMessageQueues.get(player.getUuid()).isEmpty()) {
-            if (currentTimestamp > userMessageQueues.get(player.getUuid()).getLast() + periodLength) {
+            final SpamFilterSettings spam = (SpamFilterSettings) settings;
+            if (currentTimestamp > userMessageQueues.get(player.getUuid()).getLast() + spam.getPeriodSeconds()) {
                 userMessageQueues.get(player.getUuid()).removeLast();
             }
-            if (userMessageQueues.get(player.getUuid()).size() > maxMessagesPerPeriod) {
+            if (userMessageQueues.get(player.getUuid()).size() > spam.getMessagesPerPeriod()) {
                 return false;
             }
         }
@@ -67,13 +73,23 @@ public class SpamFilter extends ChatFilter {
 
     @Override
     @NotNull
-    public String getFailureErrorMessageId() {
+    public String getDisallowedLocale() {
         return "error_chat_filter_spam";
     }
 
     @Override
     @NotNull
-    public String getFilterIgnorePermission() {
+    public String getIgnorePermission() {
         return "huskchat.ignore_filters.spam";
     }
+
+
+    @Getter
+    @Configuration
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class SpamFilterSettings extends FilterSettings {
+        public int periodSeconds = 4;
+        public int messagesPerPeriod = 3;
+    }
+    
 }

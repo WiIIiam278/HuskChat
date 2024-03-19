@@ -19,42 +19,42 @@
 
 package net.william278.huskchat.filter;
 
-import net.william278.huskchat.player.TestPlayer;
+import net.william278.huskchat.user.TestOnlineUser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class AdvertisingFilterTests {
 
-    AdvertisingFilterer filterer = new AdvertisingFilterer();
+    AdvertisingFilterer filterer = new AdvertisingFilterer(new ChatFilter.FilterSettings());
 
     @Test
     public void testSentence() {
-        Assertions.assertTrue(filterer.isAllowed(new TestPlayer(), "This is an example sentence!"));
+        Assertions.assertTrue(filterer.isAllowed(new TestOnlineUser(), "This is an example sentence!"));
     }
 
     @Test
     public void testFullUrl() {
-        Assertions.assertFalse(filterer.isAllowed(new TestPlayer(), "https://william278.net"));
+        Assertions.assertFalse(filterer.isAllowed(new TestOnlineUser(), "https://william278.net"));
     }
 
     @Test
     public void testPartialUrl() {
-        Assertions.assertFalse(filterer.isAllowed(new TestPlayer(), "william278.net"));
+        Assertions.assertFalse(filterer.isAllowed(new TestOnlineUser(), "william278.net"));
     }
 
     @Test
     public void testSubDomainUrl() {
-        Assertions.assertFalse(filterer.isAllowed(new TestPlayer(), "example.william278.net"));
+        Assertions.assertFalse(filterer.isAllowed(new TestOnlineUser(), "example.william278.net"));
     }
 
     @Test
     public void testSubDomainUrlWithPort() {
-        Assertions.assertFalse(filterer.isAllowed(new TestPlayer(), "william278.net:25565"));
+        Assertions.assertFalse(filterer.isAllowed(new TestOnlineUser(), "william278.net:25565"));
     }
 
     @Test
     public void testTopLevelDomain() {
-        Assertions.assertTrue(filterer.isAllowed(new TestPlayer(), ".net"));
+        Assertions.assertTrue(filterer.isAllowed(new TestOnlineUser(), ".net"));
     }
 
 }

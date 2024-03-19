@@ -45,7 +45,7 @@ It's designed to be easy to configure with an elegant out-of-box setup, while al
 
 **⭐ Filters & replacers** &mdash; Customisable spam limiting filter, anti-advertising & special emoji
 
-**⭐ Modern formatting** &mdash;  Utilise modern 1.16+ formatting, with RGB and Gradient support via [MineDown](https://github.com/Phoenix616/MineDown)
+**⭐ Modern formatting** &mdash;  Utilise modern formatting, with RGB and Gradient support via [MineDown](https://github.com/Phoenix616/MineDown)
 
 ## Building
 To build HuskChat, you'll need python (>=`v3.6`) with associated packages installed; `jep` and `alt-profanity-check`. 

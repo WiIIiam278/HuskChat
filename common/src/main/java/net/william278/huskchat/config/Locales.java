@@ -19,52 +19,52 @@
 
 package net.william278.huskchat.config;
 
+import de.exlll.configlib.Configuration;
 import de.themoep.minedown.adventure.MineDown;
 import de.themoep.minedown.adventure.MineDownParser;
-import dev.dejvokep.boostedyaml.YamlDocument;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
-import net.william278.huskchat.player.Player;
-import net.william278.huskchat.player.PlayerCache;
+import net.william278.huskchat.user.OnlineUser;
+import net.william278.huskchat.user.UserCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.*;
-import java.util.logging.Level;
 
+@SuppressWarnings("FieldMayBeFinal")
+@Getter
+@Configuration
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Locales {
 
-    private final HuskChat plugin;
-    private final Map<String, String> locales = new LinkedHashMap<>();
+    static final String CONFIG_HEADER = """
+            ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+            ┃      HuskChat - Locales      ┃
+            ┃    Developed by William278   ┃
+            ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+            ┣╸ See plugin about menu for international locale credits
+            ┣╸ Formatted in MineDown: https://github.com/Phoenix616/MineDown
+            ┗╸ Translate HuskClaims: https://william278.net/docs/huskchat/translations""";
+
     private static final String SILENT_JOIN_PERMISSION = "huskchat.silent_join";
     private static final String SILENT_QUIT_PERMISSION = "huskchat.silent_quit";
+    static final String DEFAULT_LOCALE = "en-gb";
 
-    public Locales(@NotNull HuskChat plugin) {
-        this.plugin = plugin;
-        final String languagePath = "locales/" + plugin.getSettings().getLanguage() + ".yml";
-        try (InputStream stream = Objects.requireNonNull(plugin.getResource(languagePath))) {
-            final YamlDocument document = YamlDocument.create(new File(plugin.getDataFolder(),
-                    "messages-" + plugin.getSettings().getLanguage() + ".yml"), stream);
-            locales.clear();
-            for (String messageId : document.getRoutesAsStrings(false)) {
-                locales.put(messageId, document.getString(messageId, ""));
-            }
-        } catch (Throwable e) {
-            plugin.log(Level.SEVERE, "Failed to load messages file", e);
-        }
-    }
+    // The raw set of locales loaded from yaml
+    Map<String, String> locales = new TreeMap<>();
 
     @Nullable
     public String getRawLocale(@NotNull String id) {
         return locales.get(id);
     }
 
-    public void sendMessage(@NotNull Player player, @NotNull String id, @NotNull String... replacements) {
+    public void sendMessage(@NotNull OnlineUser player, @NotNull String id, @NotNull String... replacements) {
         String locale = getRawLocale(id);
 
         // Don't send empty messages
@@ -83,8 +83,8 @@ public class Locales {
         player.sendMessage(new MineDown(locale));
     }
 
-    public void sendChannelMessage(@NotNull Player target, @NotNull Player sender, @NotNull Channel channel,
-                                   @NotNull String message) {
+    public void sendChannelMessage(@NotNull OnlineUser target, @NotNull OnlineUser sender, @NotNull Channel channel,
+                                   @NotNull String message, @NotNull HuskChat plugin) {
         plugin.replacePlaceholders(sender, channel.getFormat()).thenAccept(replaced -> {
             final Component format = new MineDown(replaced).toComponent();
             final TextComponent.Builder builder = Component.text().append(format);
@@ -99,10 +99,11 @@ public class Locales {
         });
     }
 
-    public void sendOutboundPrivateMessage(@NotNull Player sender, @NotNull List<Player> recipients, @NotNull String message) {
+    public void sendOutboundPrivateMessage(@NotNull OnlineUser sender, @NotNull List<OnlineUser> recipients,
+                                           @NotNull String message, @NotNull HuskChat plugin) {
         plugin.replacePlaceholders(recipients.get(0), recipients.size() == 1
-                ? plugin.getSettings().getOutboundMessageFormat()
-                : plugin.getSettings().getGroupOutboundMessageFormat()
+                ? plugin.getSettings().getMessageCommand().getFormat().getOutbound()
+                : plugin.getSettings().getMessageCommand().getFormat().getGroupOutbound()
         ).thenAccept(replaced -> {
             if (recipients.size() > 1) {
                 replaced = replaced.replace("%group_amount_subscript%", superscriptNumber(recipients.size() - 1))
@@ -142,10 +143,11 @@ public class Locales {
         return color;
     }
 
-    public void sendInboundPrivateMessage(List<Player> recipients, Player sender, String message) {
+    public void sendInboundPrivateMessage(@NotNull List<OnlineUser> recipients, @NotNull OnlineUser sender,
+                                          @NotNull String message, @NotNull HuskChat plugin) {
         plugin.replacePlaceholders(sender, recipients.size() == 1
-                ? plugin.getSettings().getInboundMessageFormat()
-                : plugin.getSettings().getGroupInboundMessageFormat()
+                ? plugin.getSettings().getMessageCommand().getFormat().getInbound()
+                : plugin.getSettings().getMessageCommand().getFormat().getGroupInbound()
         ).thenAccept(replaced -> {
             if (recipients.size() > 1) {
                 replaced = replaced.replace("%group_amount_subscript%", superscriptNumber(recipients.size() - 1))
@@ -164,15 +166,15 @@ public class Locales {
                 builder.append(Component.text(message).color(getFormatColor(format)));
             }
 
-            for (final Player recipient : recipients) {
+            for (final OnlineUser recipient : recipients) {
                 recipient.sendMessage(builder.build());
             }
         });
     }
 
-    public void sendLocalSpy(@NotNull Player spy, @NotNull PlayerCache.SpyColor spyColor, @NotNull Player sender,
-                             @NotNull Channel channel, @NotNull String message) {
-        plugin.replacePlaceholders(sender, plugin.getSettings().getLocalSpyFormat())
+    public void sendLocalSpy(@NotNull OnlineUser spy, @NotNull UserCache.SpyColor spyColor, @NotNull OnlineUser sender,
+                             @NotNull Channel channel, @NotNull String message, @NotNull HuskChat plugin) {
+        plugin.replacePlaceholders(sender, plugin.getSettings().getLocalSpy().getFormat())
                 .thenAccept(replaced -> {
                     final TextComponent.Builder componentBuilder = Component.text()
                             .append(new MineDown(replaced.replace("%spy_color%", spyColor.colorCode)
@@ -182,10 +184,11 @@ public class Locales {
                 });
     }
 
-    public void sendSocialSpy(@NotNull Player spy, @NotNull PlayerCache.SpyColor spyColor, @NotNull Player sender,
-                              @NotNull List<Player> receivers, @NotNull String message) {
+    public void sendSocialSpy(@NotNull OnlineUser spy, @NotNull UserCache.SpyColor spyColor, @NotNull OnlineUser sender,
+                              @NotNull List<OnlineUser> receivers, @NotNull String message, @NotNull HuskChat plugin) {
         plugin.replacePlaceholders(sender, receivers.size() == 1
-                ? plugin.getSettings().getSocialSpyFormat() : plugin.getSettings().getSocialSpyGroupFormat()
+                ? plugin.getSettings().getSocialSpy().getFormat()
+                : plugin.getSettings().getSocialSpy().getGroupFormat()
                 .replace("%sender_", "%")
         ).thenAccept(senderReplaced -> plugin.replacePlaceholders(receivers.get(0), senderReplaced
                 .replace("%receiver_", "%")
@@ -202,38 +205,32 @@ public class Locales {
         }));
     }
 
-    public void sendFormattedBroadcastMessage(@NotNull Player player, @NotNull String message) {
-        final TextComponent.Builder componentBuilder = Component.text();
-        componentBuilder.append(new MineDown(plugin.getSettings().getBroadcastMessageFormat()).toComponent());
-        componentBuilder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING).toComponent());
-        player.sendMessage(componentBuilder.build());
-    }
-
-    public void sendJoinMessage(@NotNull Player player) {
+    public void sendJoinMessage(@NotNull OnlineUser player, @NotNull HuskChat plugin) {
         if (player.hasPermission(SILENT_JOIN_PERMISSION)) {
             return;
         }
         plugin.replacePlaceholders(player,
                         plugin.getDataGetter().getTextFromNode(player, "huskchat.join_message")
-                                .orElse(plugin.getSettings().getJoinMessageFormat()))
-                .thenAccept(replaced -> sendJoinQuitMessage(player, new MineDown(replaced).toComponent()));
+                                .orElse(plugin.getSettings().getJoinAndQuitMessages().getJoin().getFormat()))
+                .thenAccept(replaced -> sendJoinQuitMessage(player, new MineDown(replaced).toComponent(), plugin));
     }
 
-    public void sendQuitMessage(@NotNull Player player) {
+    public void sendQuitMessage(@NotNull OnlineUser player, @NotNull HuskChat plugin) {
         if (player.hasPermission(SILENT_QUIT_PERMISSION)) {
             return;
         }
         plugin.replacePlaceholders(player,
                         plugin.getDataGetter().getTextFromNode(player, "huskchat.quit_message")
-                                .orElse(plugin.getSettings().getQuitMessageFormat()))
-                .thenAccept(replaced -> sendJoinQuitMessage(player, new MineDown(replaced).toComponent()));
+                                .orElse(plugin.getSettings().getJoinAndQuitMessages().getQuit().getFormat()))
+                .thenAccept(replaced -> sendJoinQuitMessage(player, new MineDown(replaced).toComponent(), plugin));
     }
 
     // Dispatch a join/quit message to the correct server
-    private void sendJoinQuitMessage(@NotNull Player player, @NotNull Component component) {
+    private void sendJoinQuitMessage(@NotNull OnlineUser player, @NotNull Component component,
+                                     @NotNull HuskChat plugin) {
         boolean local = List.of(Channel.BroadcastScope.LOCAL, Channel.BroadcastScope.LOCAL_PASSTHROUGH)
-                .contains(plugin.getSettings().getJoinQuitBroadcastScope());
-        for (Player online : plugin.getOnlinePlayers()) {
+                .contains(plugin.getSettings().getJoinAndQuitMessages().getBroadcastScope());
+        for (OnlineUser online : plugin.getOnlinePlayers()) {
             if (local && !online.getServerName().equals(player.getServerName())) {
                 continue;
             }
@@ -243,9 +240,9 @@ public class Locales {
 
     // Returns a newline-separated list of player names
     @NotNull
-    public final String getGroupMemberList(@NotNull List<Player> players, @NotNull String delimiter) {
+    public final String getGroupMemberList(@NotNull List<OnlineUser> players, @NotNull String delimiter) {
         final StringJoiner memberList = new StringJoiner(delimiter);
-        for (Player player : players) {
+        for (OnlineUser player : players) {
             memberList.add(player.getName());
         }
         return memberList.toString();

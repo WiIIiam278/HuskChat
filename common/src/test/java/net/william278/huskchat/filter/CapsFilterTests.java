@@ -19,59 +19,59 @@
 
 package net.william278.huskchat.filter;
 
-import net.william278.huskchat.player.TestPlayer;
+import net.william278.huskchat.user.TestOnlineUser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class CapsFilterTests {
 
-    CapsFilter capsFilter50Percent = new CapsFilter(0.5);
-    CapsFilter capsFilter25Percent = new CapsFilter(0.25);
-    CapsFilter capsFilter100Percent = new CapsFilter(1D);
+    CapsFilter capsFilter50Percent = new CapsFilter(new CapsFilter.CapsFilterSettings(0.5));
+    CapsFilter capsFilter25Percent = new CapsFilter(new CapsFilter.CapsFilterSettings(0.25));
+    CapsFilter capsFilter100Percent = new CapsFilter(new CapsFilter.CapsFilterSettings(1.0));
 
     @Test
     public void testCapsFilter_50PercentCaps_FullCaps() {
-        Assertions.assertFalse(capsFilter50Percent.isAllowed(new TestPlayer(), "THIS IS A TEST MESSAGE"));
+        Assertions.assertFalse(capsFilter50Percent.isAllowed(new TestOnlineUser(), "THIS IS A TEST MESSAGE"));
     }
 
     @Test
     public void testCapsFilter_50PercentCaps_LowerCase() {
-        Assertions.assertTrue(capsFilter50Percent.isAllowed(new TestPlayer(), "this is a test message"));
+        Assertions.assertTrue(capsFilter50Percent.isAllowed(new TestOnlineUser(), "this is a test message"));
     }
 
     @Test
     public void testCapsFilter_50PercentCaps_HalfCaps() {
-        Assertions.assertTrue(capsFilter50Percent.isAllowed(new TestPlayer(), "this is a TEST MESSAGE"));
+        Assertions.assertTrue(capsFilter50Percent.isAllowed(new TestOnlineUser(), "this is a TEST MESSAGE"));
     }
 
     @Test
     public void testCapsFilter_25PercentCaps_FullCaps() {
-        Assertions.assertFalse(capsFilter25Percent.isAllowed(new TestPlayer(), "THIS IS A TEST MESSAGE"));
+        Assertions.assertFalse(capsFilter25Percent.isAllowed(new TestOnlineUser(), "THIS IS A TEST MESSAGE"));
     }
 
     @Test
     public void testCapsFilter_25PercentCaps_LowerCase() {
-        Assertions.assertTrue(capsFilter25Percent.isAllowed(new TestPlayer(), "this is a test message"));
+        Assertions.assertTrue(capsFilter25Percent.isAllowed(new TestOnlineUser(), "this is a test message"));
     }
 
     @Test
     public void testCapsFilter_25PercentCaps_HalfCaps() {
-        Assertions.assertFalse(capsFilter25Percent.isAllowed(new TestPlayer(), "this is a TEST MESSAGE"));
+        Assertions.assertFalse(capsFilter25Percent.isAllowed(new TestOnlineUser(), "this is a TEST MESSAGE"));
     }
 
     @Test
     public void testCapsFilter_100PercentCaps_FullCaps() {
-        Assertions.assertTrue(capsFilter100Percent.isAllowed(new TestPlayer(), "THIS IS A TEST MESSAGE"));
+        Assertions.assertTrue(capsFilter100Percent.isAllowed(new TestOnlineUser(), "THIS IS A TEST MESSAGE"));
     }
 
     @Test
     public void testCapsFilter_100PercentCaps_LowerCase() {
-        Assertions.assertTrue(capsFilter100Percent.isAllowed(new TestPlayer(), "this is a test message"));
+        Assertions.assertTrue(capsFilter100Percent.isAllowed(new TestOnlineUser(), "this is a test message"));
     }
 
     @Test
     public void testCapsFilter_100PercentCaps_HalfCaps() {
-        Assertions.assertTrue(capsFilter100Percent.isAllowed(new TestPlayer(), "this is a TEST MESSAGE"));
+        Assertions.assertTrue(capsFilter100Percent.isAllowed(new TestOnlineUser(), "this is a TEST MESSAGE"));
     }
 
 }

@@ -19,13 +19,13 @@
 
 package net.william278.huskchat.placeholders;
 
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
 public interface PlaceholderReplacer {
 
-    CompletableFuture<String> formatPlaceholders(@NotNull String message, @NotNull Player player);
+    CompletableFuture<String> formatPlaceholders(@NotNull String message, @NotNull OnlineUser player);
 
 }

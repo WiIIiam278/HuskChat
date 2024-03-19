@@ -20,11 +20,10 @@
 package net.william278.huskchat.message;
 
 import net.william278.huskchat.HuskChat;
-import net.william278.huskchat.filter.ChatFilter;
-import net.william278.huskchat.player.ConsolePlayer;
-import net.william278.huskchat.player.Player;
-import net.william278.huskchat.player.PlayerCache;
-import net.william278.huskchat.replacer.ReplacerFilter;
+import net.william278.huskchat.config.Settings;
+import net.william278.huskchat.user.ConsoleUser;
+import net.william278.huskchat.user.OnlineUser;
+import net.william278.huskchat.user.UserCache;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -37,16 +36,18 @@ import java.util.logging.Level;
  */
 public class PrivateMessage {
     private final HuskChat plugin;
+    private final Settings.MessageSettings settings;
     private final List<String> targetUsernames;
     private final String message;
-    private Player sender;
+    private OnlineUser sender;
 
-    public PrivateMessage(@NotNull Player sender, @NotNull List<String> targetUsernames, @NotNull String message,
+    public PrivateMessage(@NotNull OnlineUser sender, @NotNull List<String> targetUsernames, @NotNull String message,
                           @NotNull HuskChat plugin) {
         this.sender = sender;
         this.targetUsernames = targetUsernames;
         this.message = message;
         this.plugin = plugin;
+        this.settings = plugin.getSettings().getMessageCommand();
     }
 
     /**
@@ -54,7 +55,7 @@ public class PrivateMessage {
      */
     public void dispatch() {
         // Verify that the player is not sending a message from a server where channel access is restricted
-        for (String restrictedServer : plugin.getSettings().getMessageCommandRestrictedServers()) {
+        for (String restrictedServer : settings.getRestrictedServers()) {
             if (restrictedServer.equalsIgnoreCase(sender.getServerName())) {
                 plugin.getLocales().sendMessage(sender, "error_message_restricted_server");
                 return;
@@ -62,18 +63,18 @@ public class PrivateMessage {
         }
 
         // Verify that the player is not sending a group message when they are turned off
-        if (targetUsernames.size() > 1 && !plugin.getSettings().doGroupMessages()) {
+        if (targetUsernames.size() > 1 && !settings.getGroupMessages().isEnabled()) {
             plugin.getLocales().sendMessage(sender, "error_group_messages_disabled");
             return;
         }
 
         // Validate message targets
-        final ArrayList<Player> targetPlayers = new ArrayList<>();
+        final ArrayList<OnlineUser> targetPlayers = new ArrayList<>();
         final HashSet<UUID> targetUUIDs = new HashSet<>();
         for (String targetUsername : targetUsernames) {
-            Optional<Player> targetPlayer;
-            if (ConsolePlayer.isConsolePlayer(targetUsername)) {
-                targetPlayer = Optional.of(ConsolePlayer.create(plugin));
+            Optional<OnlineUser> targetPlayer;
+            if (ConsoleUser.isConsolePlayer(targetUsername)) {
+                targetPlayer = Optional.of(ConsoleUser.wrap(plugin));
             } else {
                 targetPlayer = plugin.findPlayer(targetUsername);
             }
@@ -96,7 +97,7 @@ public class PrivateMessage {
         }
 
         // Validate that there aren't too many users
-        final int maxGroupMembers = plugin.getSettings().getMaxGroupMessageSize();
+        final int maxGroupMembers = settings.getGroupMessages().getMaxSize();
         if (targetPlayers.size() > maxGroupMembers) {
             plugin.getLocales().sendMessage(sender, "error_group_messages_max", Integer.toString(maxGroupMembers));
             return;
@@ -112,79 +113,68 @@ public class PrivateMessage {
             return;
         }
 
-        AtomicReference<String> finalMessage = new AtomicReference<>(message);
-
         // If the message is to be filtered, then perform filter checks (unless they have the bypass permission)
-        if (!sender.hasPermission("huskchat.bypass_filters")) {
-            for (ChatFilter filter : plugin.getSettings().getChatFilters().get("private_messages")) {
-                if (sender.hasPermission(filter.getFilterIgnorePermission())) {
-                    continue;
-                }
-                if (plugin.getSettings().isCensorPrivateMessages() && !filter.isAllowed(sender, finalMessage.get())) {
-                    plugin.getLocales().sendMessage(sender, filter.getFailureErrorMessageId());
-                    return;
-                }
-                if (filter instanceof ReplacerFilter replacer) {
-                    finalMessage.set(replacer.replace(finalMessage.get()));
-                }
-            }
+        final Optional<String> filtered = plugin.filter(sender, message, plugin.getMessageFilters());
+        if (filtered.isEmpty()) {
+            return;
         }
+        final AtomicReference<String> finalMessage = new AtomicReference<>(filtered.get());
 
-        plugin.getEventDispatcher().dispatchPrivateMessageEvent(sender, targetPlayers, finalMessage.get()).thenAccept(event -> {
+        plugin.firePrivateMessageEvent(sender, targetPlayers, finalMessage.get()).thenAccept(event -> {
             if (event.isCancelled()) return;
 
             sender = event.getSender();
-            final List<Player> receivers = event.getRecipients();
+            final List<OnlineUser> receivers = event.getRecipients();
             finalMessage.set(event.getMessage());
 
             // Show that the message has been sent
-            PlayerCache.setLastMessenger(sender.getUuid(), receivers);
-            plugin.getLocales().sendOutboundPrivateMessage(sender, receivers, finalMessage.get());
+            UserCache.setLastMessenger(sender.getUuid(), receivers);
+            plugin.getLocales().sendOutboundPrivateMessage(sender, receivers, finalMessage.get(), plugin);
 
             // Show the received message
-            for (Player target : receivers) {
-                final ArrayList<Player> receivedMessageFrom = new ArrayList<>(receivers);
+            for (OnlineUser target : receivers) {
+                final ArrayList<OnlineUser> receivedMessageFrom = new ArrayList<>(receivers);
                 receivedMessageFrom.removeIf(player -> player.getUuid().equals(target.getUuid()));
                 receivedMessageFrom.add(0, sender);
 
-                PlayerCache.setLastMessenger(target.getUuid(), receivedMessageFrom);
+                UserCache.setLastMessenger(target.getUuid(), receivedMessageFrom);
             }
-            plugin.getLocales().sendInboundPrivateMessage(receivers, sender, finalMessage.get());
+            plugin.getLocales().sendInboundPrivateMessage(receivers, sender, finalMessage.get(), plugin);
 
             // Show a message to social spies
-            if (plugin.getSettings().doSocialSpyCommand()) {
+            if (plugin.getSettings().getSocialSpy().isEnabled()) {
                 if (!(sender.hasPermission("huskchat.command.socialspy.bypass") || receivers.stream()
                         .findFirst().orElseThrow(() -> new IllegalStateException("No receivers available for message"))
                         .hasPermission("huskchat.command.socialspy.bypass"))) {
-                    final Map<Player, PlayerCache.SpyColor> spies = plugin.getPlayerCache().getSocialSpyMessageReceivers(receivers);
-                    for (Player spy : spies.keySet()) {
+                    final Map<OnlineUser, UserCache.SpyColor> spies = plugin.getUserCache().getSocialSpies(receivers, plugin);
+                    for (OnlineUser spy : spies.keySet()) {
                         if (spy.getUuid().equals(sender.getUuid())) {
                             continue;
                         }
                         if (!spy.hasPermission("huskchat.command.socialspy")) {
                             try {
-                                plugin.getPlayerCache().removeSocialSpy(spy);
+                                plugin.getUserCache().removeSocialSpy(spy);
                             } catch (IOException e) {
                                 plugin.log(Level.SEVERE, "Failed to remove social spy after failed permission check", e);
                             }
                             continue;
                         }
-                        final PlayerCache.SpyColor color = spies.get(spy);
-                        plugin.getLocales().sendSocialSpy(spy, color, sender, receivers, finalMessage.get());
+                        final UserCache.SpyColor color = spies.get(spy);
+                        plugin.getLocales().sendSocialSpy(spy, color, sender, receivers, finalMessage.get(), plugin);
                     }
                 }
 
             }
 
             // Log the private message to console if that is enabled
-            if (plugin.getSettings().doLogPrivateMessages()) {
+            if (settings.isLogToConsole()) {
                 // Log all recipients of the message
                 final StringJoiner formattedPlayers = new StringJoiner(", ");
-                for (Player player : receivers) {
+                for (OnlineUser player : receivers) {
                     formattedPlayers.add(player.getName());
                 }
 
-                final String logFormat = plugin.getSettings().getMessageLogFormat()
+                final String logFormat = settings.getLogFormat()
                         .replaceAll("%sender%", sender.getName())
                         .replaceAll("%receiver%", formattedPlayers.toString());
                 plugin.log(Level.INFO, logFormat + finalMessage);

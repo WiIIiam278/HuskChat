@@ -20,7 +20,7 @@
 package net.william278.huskchat.placeholders;
 
 import net.william278.huskchat.HuskChat;
-import net.william278.huskchat.player.Player;
+import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
@@ -40,7 +40,7 @@ public class DefaultReplacer implements PlaceholderReplacer {
     }
 
     @Override
-    public CompletableFuture<String> formatPlaceholders(@NotNull String message, @NotNull Player player) {
+    public CompletableFuture<String> formatPlaceholders(@NotNull String message, @NotNull OnlineUser player) {
         return Placeholder.replace(message, plugin, player);
     }
 
@@ -127,10 +127,10 @@ public class DefaultReplacer implements PlaceholderReplacer {
         /**
          * Function to replace placeholders with a real value
          */
-        private final BiFunction<HuskChat, Player, String> replacer;
+        private final BiFunction<HuskChat, OnlineUser, String> replacer;
         private final Set<String> aliases = new HashSet<>();
 
-        Placeholder(@NotNull BiFunction<HuskChat, Player, String> replacer, @NotNull String... aliases) {
+        Placeholder(@NotNull BiFunction<HuskChat, OnlineUser, String> replacer, @NotNull String... aliases) {
             this.replacer = replacer;
             this.aliases.add(this.name().toLowerCase(Locale.ENGLISH));
             this.aliases.addAll(Set.of(aliases));
@@ -144,7 +144,7 @@ public class DefaultReplacer implements PlaceholderReplacer {
          * @param player The player to replace placeholders for
          * @return The string with placeholders replaced
          */
-        private static CompletableFuture<String> replace(@NotNull String format, @NotNull HuskChat plugin, @NotNull Player player) {
+        private static CompletableFuture<String> replace(@NotNull String format, @NotNull HuskChat plugin, @NotNull OnlineUser player) {
             for (Placeholder placeholder : values()) {
                 for (String alias : placeholder.aliases) {
                     format = format.replace("%" + alias + "%", placeholder.replacer.apply(plugin, player));
