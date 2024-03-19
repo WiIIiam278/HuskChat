@@ -21,18 +21,17 @@ dependencies {
 }
 
 shadowJar {
-    relocate 'dev.dejvokep.boostedyaml', 'net.william278.huskchat.libraries.boostedyaml'
     relocate 'net.william278.profanitycheckerapi', 'net.william278.huskchat.libraries.profanitycheckerapi'
     relocate 'net.william278.desertwell', 'net.william278.huskchat.libraries.desertwell'
     relocate 'de.themoep', 'net.william278.huskchat.libraries'
     relocate 'dev.vankka', 'net.william278.huskchat.libraries'
+    relocate 'de.exlll', 'net.william278.huskchat.libraries'
+    relocate 'org.json', 'net.william278.husksync.libraries.json'
 
     relocate 'org.apache', 'net.william278.huskchat.libraries'
     relocate 'org.jetbrains', 'net.william278.huskchat.libraries'
     relocate 'org.intellij', 'net.william278.huskchat.libraries'
     relocate 'org.bstats', 'net.william278.huskchat.libraries.bstats'
-    relocate 'com.github.retrooper', 'net.william278.huskchat.libraries'
-    relocate 'io.github.retrooper', 'net.william278.huskchat.libraries'
 
     dependencies {
         //noinspection GroovyAssignabilityCheck
