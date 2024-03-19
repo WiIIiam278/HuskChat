@@ -86,8 +86,7 @@ jobs:
             1.20.3
             1.20.4
           modrinth-dependencies: |
-            unsignedvelocity | suggests | *
-            signedvelocity | suggests | *
+            luckperms | suggests | *
             papiproxybridge | suggests | *
             placeholderapi | suggests | *
           loaders: |

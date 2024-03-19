@@ -80,8 +80,7 @@ jobs:
             paper
             folia
           modrinth-dependencies: |
-            unsignedvelocity | suggests | *
-            signedvelocity | suggests | *
+            luckperms | suggests | *
             papiproxybridge | suggests | *
             placeholderapi | suggests | *
           java: 17
