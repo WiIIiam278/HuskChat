@@ -22,6 +22,7 @@ package net.william278.huskchat.user;
 import net.william278.huskchat.HuskChat;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BukkitUser extends OnlineUser {
     private final Player player;
@@ -53,8 +54,12 @@ public class BukkitUser extends OnlineUser {
     }
 
     @Override
-    public boolean hasPermission(@NotNull String node) {
-        return player.hasPermission(node);
+    public boolean hasPermission(@Nullable String node, boolean allowByDefault) {
+        if (node != null && player.isPermissionSet(node)) {
+            return player.hasPermission(node);
+        } else {
+            return allowByDefault;
+        }
     }
 
     @NotNull

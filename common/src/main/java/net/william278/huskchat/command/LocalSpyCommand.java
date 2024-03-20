@@ -34,6 +34,7 @@ public class LocalSpyCommand extends CommandBase {
 
     public LocalSpyCommand(@NotNull HuskChat plugin) {
         super(plugin.getSettings().getLocalSpy().getLocalspyAliases(), "[color]", plugin);
+        this.operatorOnly = true;
     }
 
     @Override
@@ -42,39 +43,35 @@ public class LocalSpyCommand extends CommandBase {
             plugin.getLocales().sendMessage(player, "error_in_game_only");
             return;
         }
-        if (player.hasPermission(getPermission())) {
-            if (args.length == 1) {
-                UserCache.SpyColor color;
-                Optional<UserCache.SpyColor> selectedColor = UserCache.SpyColor.getColor(args[0]);
-                if (selectedColor.isPresent()) {
-                    try {
-                        color = selectedColor.get();
-                        plugin.getUserCache().setLocalSpy(player, color);
-                        plugin.getLocales().sendMessage(player, "local_spy_toggled_on_color",
-                                color.colorCode, color.name().toLowerCase().replaceAll("_", " "));
-                    } catch (IOException e) {
-                        plugin.log(Level.SEVERE, "Failed to save local spy state to spies file");
-                    }
-                    return;
+        if (args.length == 1) {
+            UserCache.SpyColor color;
+            Optional<UserCache.SpyColor> selectedColor = UserCache.SpyColor.getColor(args[0]);
+            if (selectedColor.isPresent()) {
+                try {
+                    color = selectedColor.get();
+                    plugin.getUserCache().setLocalSpy(player, color);
+                    plugin.getLocales().sendMessage(player, "local_spy_toggled_on_color",
+                            color.colorCode, color.name().toLowerCase().replaceAll("_", " "));
+                } catch (IOException e) {
+                    plugin.log(Level.SEVERE, "Failed to save local spy state to spies file");
                 }
+                return;
             }
-            if (!plugin.getUserCache().isLocalSpying(player)) {
-                try {
-                    plugin.getUserCache().setLocalSpy(player);
-                    plugin.getLocales().sendMessage(player, "local_spy_toggled_on");
-                } catch (IOException e) {
-                    plugin.log(Level.SEVERE, "Failed to save local spy state to spies file");
-                }
-            } else {
-                try {
-                    plugin.getUserCache().removeLocalSpy(player);
-                    plugin.getLocales().sendMessage(player, "local_spy_toggled_off");
-                } catch (IOException e) {
-                    plugin.log(Level.SEVERE, "Failed to save local spy state to spies file");
-                }
+        }
+        if (!plugin.getUserCache().isLocalSpying(player)) {
+            try {
+                plugin.getUserCache().setLocalSpy(player);
+                plugin.getLocales().sendMessage(player, "local_spy_toggled_on");
+            } catch (IOException e) {
+                plugin.log(Level.SEVERE, "Failed to save local spy state to spies file");
             }
         } else {
-            plugin.getLocales().sendMessage(player, "error_no_permission");
+            try {
+                plugin.getUserCache().removeLocalSpy(player);
+                plugin.getLocales().sendMessage(player, "local_spy_toggled_off");
+            } catch (IOException e) {
+                plugin.log(Level.SEVERE, "Failed to save local spy state to spies file");
+            }
         }
     }
 

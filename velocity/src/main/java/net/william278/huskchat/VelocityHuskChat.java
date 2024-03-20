@@ -139,6 +139,9 @@ public class VelocityHuskChat implements HuskChat, VelocityEventProvider {
                 .forEach(command -> new VelocityCommand(
                         new ShortcutCommand(command, channel.getId(), this), this
                 )));
+        getPlugin().log(Level.INFO, String.format("Loaded %s channels with %s associated shortcut commands",
+                getChannels().getChannels().size(), getChannels().getChannels().stream()
+                        .mapToInt(channel -> channel.getShortcutCommands().size()).sum()));
 
         VelocityHuskChatAPI.register(this);
 

@@ -31,22 +31,19 @@ public class BroadcastCommand extends CommandBase {
 
     public BroadcastCommand(@NotNull HuskChat plugin) {
         super(plugin.getSettings().getBroadcastCommand().getBroadcastAliases(), "<message>", plugin);
+        this.operatorOnly = true;
     }
 
     @Override
     public void onExecute(@NotNull OnlineUser player, @NotNull String[] args) {
-        if (player.hasPermission(getPermission())) {
-            if (args.length >= 1) {
-                StringJoiner message = new StringJoiner(" ");
-                for (String argument : args) {
-                    message.add(argument);
-                }
-                new BroadcastMessage(player, message.toString(), plugin).dispatch();
-            } else {
-                plugin.getLocales().sendMessage(player, "error_invalid_syntax", getUsage());
+        if (args.length >= 1) {
+            StringJoiner message = new StringJoiner(" ");
+            for (String argument : args) {
+                message.add(argument);
             }
+            new BroadcastMessage(player, message.toString(), plugin).dispatch();
         } else {
-            plugin.getLocales().sendMessage(player, "error_no_permission");
+            plugin.getLocales().sendMessage(player, "error_invalid_syntax", getUsage());
         }
     }
 

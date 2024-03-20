@@ -34,6 +34,7 @@ public class SocialSpyCommand extends CommandBase {
 
     public SocialSpyCommand(@NotNull HuskChat plugin) {
         super(plugin.getSettings().getSocialSpy().getSocialspyAliases(), "[color]", plugin);
+        this.operatorOnly = true;
     }
 
     @Override
@@ -42,39 +43,35 @@ public class SocialSpyCommand extends CommandBase {
             plugin.getLocales().sendMessage(player, "error_in_game_only");
             return;
         }
-        if (player.hasPermission(getPermission())) {
-            if (args.length == 1) {
-                UserCache.SpyColor color;
-                Optional<UserCache.SpyColor> selectedColor = UserCache.SpyColor.getColor(args[0]);
-                if (selectedColor.isPresent()) {
-                    try {
-                        color = selectedColor.get();
-                        plugin.getUserCache().setSocialSpy(player, color);
-                        plugin.getLocales().sendMessage(player, "social_spy_toggled_on_color",
-                                color.colorCode, color.name().toLowerCase().replaceAll("_", " "));
-                    } catch (IOException e) {
-                        plugin.log(Level.SEVERE, "Failed to save social spy state to spies file");
-                    }
-                    return;
+        if (args.length == 1) {
+            UserCache.SpyColor color;
+            Optional<UserCache.SpyColor> selectedColor = UserCache.SpyColor.getColor(args[0]);
+            if (selectedColor.isPresent()) {
+                try {
+                    color = selectedColor.get();
+                    plugin.getUserCache().setSocialSpy(player, color);
+                    plugin.getLocales().sendMessage(player, "social_spy_toggled_on_color",
+                            color.colorCode, color.name().toLowerCase().replaceAll("_", " "));
+                } catch (IOException e) {
+                    plugin.log(Level.SEVERE, "Failed to save social spy state to spies file");
                 }
+                return;
             }
-            if (!plugin.getUserCache().isSocialSpying(player)) {
-                try {
-                    plugin.getUserCache().setSocialSpy(player);
-                    plugin.getLocales().sendMessage(player, "social_spy_toggled_on");
-                } catch (IOException e) {
-                    plugin.log(Level.SEVERE, "Failed to save social spy state to spies file");
-                }
-            } else {
-                try {
-                    plugin.getUserCache().removeSocialSpy(player);
-                    plugin.getLocales().sendMessage(player, "social_spy_toggled_off");
-                } catch (IOException e) {
-                    plugin.log(Level.SEVERE, "Failed to save social spy state to spies file");
-                }
+        }
+        if (!plugin.getUserCache().isSocialSpying(player)) {
+            try {
+                plugin.getUserCache().setSocialSpy(player);
+                plugin.getLocales().sendMessage(player, "social_spy_toggled_on");
+            } catch (IOException e) {
+                plugin.log(Level.SEVERE, "Failed to save social spy state to spies file");
             }
         } else {
-            plugin.getLocales().sendMessage(player, "error_no_permission");
+            try {
+                plugin.getUserCache().removeSocialSpy(player);
+                plugin.getLocales().sendMessage(player, "social_spy_toggled_off");
+            } catch (IOException e) {
+                plugin.log(Level.SEVERE, "Failed to save social spy state to spies file");
+            }
         }
     }
 

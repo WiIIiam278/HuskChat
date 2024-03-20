@@ -39,24 +39,20 @@ public class MessageCommand extends CommandBase {
 
     @Override
     public void onExecute(@NotNull OnlineUser player, @NotNull String[] args) {
-        if (player.hasPermission(getPermission())) {
-            if (args.length >= 2) {
-                StringJoiner message = new StringJoiner(" ");
-                int messageWordCount = 0;
-                for (String arg : args) {
-                    if (messageWordCount >= 1) {
-                        message.add(arg);
-                    }
-                    messageWordCount++;
+        if (args.length >= 2) {
+            StringJoiner message = new StringJoiner(" ");
+            int messageWordCount = 0;
+            for (String arg : args) {
+                if (messageWordCount >= 1) {
+                    message.add(arg);
                 }
-                final List<String> targetPlayers = getTargetPlayers(args[0]);
-                final String messageToSend = message.toString();
-                new PrivateMessage(player, targetPlayers, messageToSend, plugin).dispatch();
-            } else {
-                plugin.getLocales().sendMessage(player, "error_invalid_syntax", getUsage());
+                messageWordCount++;
             }
+            final List<String> targetPlayers = getTargetPlayers(args[0]);
+            final String messageToSend = message.toString();
+            new PrivateMessage(player, targetPlayers, messageToSend, plugin).dispatch();
         } else {
-            plugin.getLocales().sendMessage(player, "error_no_permission");
+            plugin.getLocales().sendMessage(player, "error_invalid_syntax", getUsage());
         }
     }
 

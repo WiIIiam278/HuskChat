@@ -143,15 +143,15 @@ public class PrivateMessage {
 
             // Show a message to social spies
             if (plugin.getSettings().getSocialSpy().isEnabled()) {
-                if (!(sender.hasPermission("huskchat.command.socialspy.bypass") || receivers.stream()
+                if (!(sender.hasPermission("huskchat.command.socialspy.bypass", false) || receivers.stream()
                         .findFirst().orElseThrow(() -> new IllegalStateException("No receivers available for message"))
-                        .hasPermission("huskchat.command.socialspy.bypass"))) {
+                        .hasPermission("huskchat.command.socialspy.bypass", false))) {
                     final Map<OnlineUser, UserCache.SpyColor> spies = plugin.getUserCache().getSocialSpies(receivers, plugin);
                     for (OnlineUser spy : spies.keySet()) {
                         if (spy.getUuid().equals(sender.getUuid())) {
                             continue;
                         }
-                        if (!spy.hasPermission("huskchat.command.socialspy")) {
+                        if (!spy.hasPermission("huskchat.command.socialspy", false)) {
                             try {
                                 plugin.getUserCache().removeSocialSpy(spy);
                             } catch (IOException e) {

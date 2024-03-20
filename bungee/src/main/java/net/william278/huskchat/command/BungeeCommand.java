@@ -50,7 +50,12 @@ public class BungeeCommand extends Command implements TabExecutor {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer player) {
-            command.onExecute(BungeeUser.adapt(player, plugin), args);
+            final BungeeUser user = BungeeUser.adapt(player, plugin);
+            if (!user.hasPermission(command.getPermission(), !command.isOperatorOnly())) {
+                plugin.getLocales().sendMessage(user, "error_no_permission");
+                return;
+            }
+            command.onExecute(user, args);
         } else {
             command.onExecute(ConsoleUser.wrap(plugin), args);
         }
@@ -58,10 +63,14 @@ public class BungeeCommand extends Command implements TabExecutor {
 
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-        if (sender instanceof ProxiedPlayer player && player.hasPermission(command.getPermission())) {
-            return command.onTabComplete(BungeeUser.adapt(player, plugin), args);
+        if (!(sender instanceof ProxiedPlayer player)) {
+            return command.onTabComplete(plugin.getConsoleUser(), args);
         }
-        return List.of();
+        final BungeeUser user = BungeeUser.adapt(player, plugin);
+        if (!user.hasPermission(command.getPermission(), !command.isOperatorOnly())) {
+            return List.of();
+        }
+        return command.onTabComplete(user, args);
     }
 
     public enum Type {

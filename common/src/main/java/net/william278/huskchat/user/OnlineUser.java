@@ -24,6 +24,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.william278.huskchat.HuskChat;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
 
 import java.util.UUID;
@@ -68,12 +69,13 @@ public abstract class OnlineUser extends User {
     public abstract int getPlayersOnServer();
 
     /**
-     * Returns if the player has the permission node
+     * Check if the player has a permission
      *
-     * @param node The permission node string
-     * @return {@code true} if the player has the node; {@code false} otherwise
+     * @param permission     the permission to check
+     * @param allowByDefault whether to allow the permission by default if it is not set
+     * @return whether the player has the permission
      */
-    public abstract boolean hasPermission(String node);
+    public abstract boolean hasPermission(@Nullable String permission, boolean allowByDefault);
 
     @NotNull
     public Audience getAudience() {

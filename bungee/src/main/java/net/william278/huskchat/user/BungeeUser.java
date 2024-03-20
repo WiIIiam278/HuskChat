@@ -22,6 +22,7 @@ package net.william278.huskchat.user;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.william278.huskchat.HuskChat;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Bungee implementation of a cross-platform {@link OnlineUser}
@@ -63,8 +64,12 @@ public class BungeeUser extends OnlineUser {
     }
 
     @Override
-    public boolean hasPermission(String s) {
-        return player.hasPermission(s);
+    public boolean hasPermission(@Nullable String node, boolean allowByDefault) {
+        if (node != null && player.getPermissions().contains(node)) {
+            return player.hasPermission(node);
+        } else {
+            return allowByDefault;
+        }
     }
 
     @NotNull

@@ -36,6 +36,7 @@ import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.message.ChatMessage;
 import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.spicord.Spicord;
 import org.spicord.api.addon.SimpleAddon;
 import org.spicord.bot.DiscordBot;
@@ -123,7 +124,7 @@ public class SpicordHook implements DiscordHook {
         }
 
         @Override
-        public boolean hasPermission(@NotNull String node) {
+        public boolean hasPermission(@Nullable String node, boolean allowByDefault) {
             return true;
         }
 

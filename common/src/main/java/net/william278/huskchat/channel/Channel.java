@@ -140,11 +140,11 @@ public class Channel {
     }
 
     public boolean canUserSend(@NotNull OnlineUser user) {
-        return permissions.getSend().isEmpty() || user.hasPermission(permissions.getSend().get());
+        return permissions.getSend().map(node -> user.hasPermission(node, false)).orElse(true);
     }
 
     public boolean canUserReceive(@NotNull OnlineUser user) {
-        return permissions.getReceive().isEmpty() || user.hasPermission(permissions.getReceive().get());
+        return permissions.getReceive().map(node -> user.hasPermission(node, false)).orElse(true);
     }
 
 }

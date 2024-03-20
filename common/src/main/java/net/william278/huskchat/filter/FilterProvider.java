@@ -47,10 +47,10 @@ public interface FilterProvider {
 
     default Optional<String> filter(@NotNull OnlineUser sender, @NotNull String message,
                                     @NotNull List<ChatFilter> filters) {
-        boolean bypass = sender.hasPermission("huskchat.bypass_filters");
+        boolean bypass = sender.hasPermission("huskchat.bypass_filters", false);
         final StringBuilder filtered = new StringBuilder(message);
         for (ChatFilter filter : filters) {
-            if (sender.hasPermission(filter.getIgnorePermission())) {
+            if (sender.hasPermission(filter.getIgnorePermission(), false)) {
                 continue;
             }
             if (filter instanceof ChatFilter.ReplacerFilter replacer) {

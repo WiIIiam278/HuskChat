@@ -59,15 +59,22 @@ public class VelocityCommand implements SimpleCommand {
 
     @Override
     public List<String> suggest(@NotNull Invocation invocation) {
-        if (invocation.source() instanceof Player player) {
-            return command.onTabComplete(VelocityUser.adapt(player, plugin), invocation.arguments());
+        if (!(invocation.source() instanceof Player player)) {
+            return command.onTabComplete(plugin.getConsoleUser(), invocation.arguments());
         }
-        return List.of();
+        final VelocityUser user = VelocityUser.adapt(player, plugin);
+        if (!user.hasPermission(command.getPermission(), !command.isOperatorOnly())) {
+            return List.of();
+        }
+        return command.onTabComplete(user, invocation.arguments());
     }
 
     @Override
     public boolean hasPermission(@NotNull Invocation invocation) {
-        return invocation.source().hasPermission(command.getPermission());
+        if (invocation.source() instanceof Player player) {
+            return VelocityUser.adapt(player, plugin).hasPermission(command.getPermission(), !command.isOperatorOnly());
+        }
+        return true;
     }
 
     public enum Type {

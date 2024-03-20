@@ -19,9 +19,11 @@
 
 package net.william278.huskchat.command;
 
+import lombok.Getter;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Locale;
@@ -31,9 +33,11 @@ import java.util.Locale;
  */
 public abstract class CommandBase {
 
+    protected final HuskChat plugin;
     protected final List<String> aliases;
     protected final String usage;
-    protected final HuskChat plugin;
+    @Getter
+    protected boolean operatorOnly = false;
 
     public CommandBase(@NotNull List<String> aliases, @NotNull String usage, @NotNull HuskChat plugin) {
         if (aliases.isEmpty()) {
@@ -85,9 +89,12 @@ public abstract class CommandBase {
     /**
      * Command permission node
      */
-    @NotNull
-    public String getPermission() {
-        return "huskchat.command." + getName();
+    @Nullable
+    public String getPermission(@NotNull String... children) {
+        return String.join(".",
+                "huskchat", "command", getName(),
+                String.join(".", children)
+        );
     }
 
 }

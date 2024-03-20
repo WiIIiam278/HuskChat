@@ -25,6 +25,7 @@ import net.william278.huskchat.user.ConsoleUser;
 import net.william278.huskchat.user.OnlineUser;
 import net.william278.huskchat.user.UserCache;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -36,51 +37,50 @@ public class ReplyCommand extends CommandBase {
 
     @Override
     public void onExecute(@NotNull OnlineUser player, @NotNull String[] args) {
-        if (player.hasPermission(getPermission())) {
-            if (args.length >= 1) {
-                final Optional<Set<UUID>> lastMessengers = UserCache.getLastMessengers(player.getUuid());
-                if (lastMessengers.isEmpty()) {
-                    plugin.getLocales().sendMessage(player, "error_reply_no_messages");
-                    return;
-                }
-
-                final ArrayList<String> lastPlayers = new ArrayList<>();
-                for (UUID lastMessenger : lastMessengers.get()) {
-                    if (ConsoleUser.isConsolePlayer(lastMessenger)) {
-                        lastPlayers.add(ConsoleUser.wrap(plugin).getName());
-                    } else {
-                        plugin.getPlayer(lastMessenger).ifPresent(onlineMessenger -> lastPlayers.add(onlineMessenger.getName()));
-                    }
-                }
-
-                if (lastPlayers.isEmpty()) {
-                    if (lastMessengers.get().size() > 1) {
-                        plugin.getLocales().sendMessage(player, "error_reply_none_online");
-                    } else {
-                        plugin.getLocales().sendMessage(player, "error_reply_not_online");
-                    }
-                    return;
-                }
-
-                final StringJoiner message = new StringJoiner(" ");
-                for (String arg : args) {
-                    message.add(arg);
-                }
-
-                final String messageToSend = message.toString();
-                new PrivateMessage(player, lastPlayers, messageToSend, plugin).dispatch();
-            } else {
-                plugin.getLocales().sendMessage(player, "error_invalid_syntax", getUsage());
+        if (args.length >= 1) {
+            final Optional<Set<UUID>> lastMessengers = UserCache.getLastMessengers(player.getUuid());
+            if (lastMessengers.isEmpty()) {
+                plugin.getLocales().sendMessage(player, "error_reply_no_messages");
+                return;
             }
+
+            final ArrayList<String> lastPlayers = new ArrayList<>();
+            for (UUID lastMessenger : lastMessengers.get()) {
+                if (ConsoleUser.isConsolePlayer(lastMessenger)) {
+                    lastPlayers.add(ConsoleUser.wrap(plugin).getName());
+                } else {
+                    plugin.getPlayer(lastMessenger).ifPresent(onlineMessenger -> lastPlayers.add(onlineMessenger.getName()));
+                }
+            }
+
+            if (lastPlayers.isEmpty()) {
+                if (lastMessengers.get().size() > 1) {
+                    plugin.getLocales().sendMessage(player, "error_reply_none_online");
+                } else {
+                    plugin.getLocales().sendMessage(player, "error_reply_not_online");
+                }
+                return;
+            }
+
+            final StringJoiner message = new StringJoiner(" ");
+            for (String arg : args) {
+                message.add(arg);
+            }
+
+            final String messageToSend = message.toString();
+            new PrivateMessage(player, lastPlayers, messageToSend, plugin).dispatch();
         } else {
-            plugin.getLocales().sendMessage(player, "error_no_permission");
+            plugin.getLocales().sendMessage(player, "error_invalid_syntax", getUsage());
         }
     }
 
     @Override
-    @NotNull
-    public String getPermission() {
-        return "huskchat.command.msg.reply";
+    @Nullable
+    public String getPermission(@NotNull String... args) {
+        return String.join(".",
+                "huskchat", "command", "msg", "reply",
+                String.join(".", args)
+        );
     }
 
     @Override

@@ -25,6 +25,7 @@ import net.william278.huskchat.user.ConsoleUser;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -39,11 +40,17 @@ public class BukkitCommand extends Command {
 
     public BukkitCommand(@NotNull CommandBase command, @NotNull BukkitHuskChat plugin) {
         super(command.getName(), command.getUsage(), command.getUsage(), command.getAliases());
+        this.setPermission(command.getPermission());
         this.command = command;
         this.plugin = plugin;
 
-        // Register with bukkit
+        // Register command & permission with Bukkit
         plugin.getCommandMap().register("huskchat", this);
+        if (getPermission() != null) {
+            plugin.getServer().getPluginManager().addPermission(new Permission(
+                    getPermission(), getUsage(), Permission.DEFAULT_PERMISSION)
+            );
+        }
     }
 
     @Override
@@ -60,12 +67,23 @@ public class BukkitCommand extends Command {
     @Override
     public List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias,
                                     @NotNull String[] args) throws IllegalArgumentException {
-        if (sender instanceof Player player && player.hasPermission(command.getPermission())) {
-            return command.onTabComplete(BukkitUser.adapt(player, plugin), args);
+        if (!(sender instanceof Player player)) {
+            return command.onTabComplete(plugin.getConsoleUser(), args);
         }
-        return List.of();
+        final BukkitUser user = BukkitUser.adapt(player, plugin);
+        if (!user.hasPermission(command.getPermission(), !command.isOperatorOnly())) {
+            return List.of();
+        }
+        return command.onTabComplete(user, args);
     }
 
+    @Override
+    public boolean testPermissionSilent(@NotNull CommandSender target) {
+        if (target instanceof Player player) {
+            return BukkitUser.adapt(player, plugin).hasPermission(command.getPermission(), !command.isOperatorOnly());
+        }
+        return true;
+    }
 
     public enum Type {
         HUSKCHAT((plugin) -> Optional.of(new BukkitCommand(new HuskChatCommand(plugin), plugin))),

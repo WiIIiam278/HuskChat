@@ -53,6 +53,7 @@ public abstract class PlayerListener {
 
     // Handle player joins
     public final void handlePlayerJoin(@NotNull OnlineUser player) {
+        handlePlayerSwitchServer(player, player.getServerName());
         if (plugin.getSettings().getJoinAndQuitMessages().getBroadcastScope() == Channel.BroadcastScope.PASSTHROUGH) {
             return;
         }

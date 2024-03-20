@@ -88,7 +88,7 @@ public class Locales {
         plugin.replacePlaceholders(sender, channel.getFormat()).thenAccept(replaced -> {
             final Component format = new MineDown(replaced).toComponent();
             final TextComponent.Builder builder = Component.text().append(format);
-            if (sender.hasPermission("huskchat.formatted_chat")) {
+            if (sender.hasPermission("huskchat.formatted_chat", false)) {
                 builder.append(new MineDown(message)
                         .disable(MineDownParser.Option.ADVANCED_FORMATTING)
                         .toComponent().color(getFormatColor(format)));
@@ -115,7 +115,7 @@ public class Locales {
             final TextComponent.Builder builder = Component.text();
             final Component format = new MineDown(replaced).toComponent();
             builder.append(format);
-            if (sender.hasPermission("huskchat.formatted_chat")) {
+            if (sender.hasPermission("huskchat.formatted_chat", false)) {
                 builder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING)
                         .toComponent().color(getFormatColor(format)));
             } else {
@@ -159,7 +159,7 @@ public class Locales {
             final TextComponent.Builder builder = Component.text();
             final Component format = new MineDown(replaced).toComponent();
             builder.append(format);
-            if (sender.hasPermission("huskchat.formatted_chat")) {
+            if (sender.hasPermission("huskchat.formatted_chat", false)) {
                 builder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING)
                         .toComponent().color(getFormatColor(format)));
             } else {
@@ -206,7 +206,7 @@ public class Locales {
     }
 
     public void sendJoinMessage(@NotNull OnlineUser player, @NotNull HuskChat plugin) {
-        if (player.hasPermission(SILENT_JOIN_PERMISSION)) {
+        if (player.hasPermission(SILENT_JOIN_PERMISSION, false)) {
             return;
         }
         plugin.replacePlaceholders(player,
@@ -216,7 +216,7 @@ public class Locales {
     }
 
     public void sendQuitMessage(@NotNull OnlineUser player, @NotNull HuskChat plugin) {
-        if (player.hasPermission(SILENT_QUIT_PERMISSION)) {
+        if (player.hasPermission(SILENT_QUIT_PERMISSION, false)) {
             return;
         }
         plugin.replacePlaceholders(player,

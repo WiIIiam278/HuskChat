@@ -22,8 +22,10 @@ package net.william278.huskchat.user;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ServerConnection;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.util.TriState;
 import net.william278.huskchat.HuskChat;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -65,8 +67,12 @@ public class VelocityUser extends OnlineUser {
     }
 
     @Override
-    public boolean hasPermission(String permission) {
-        return player.hasPermission(permission);
+    public boolean hasPermission(@Nullable String permission, boolean allowByDefault) {
+        final TriState state = player.getPermissionValue(permission).toAdventureTriState();
+        if (permission == null || state == TriState.NOT_SET) {
+            return allowByDefault;
+        }
+        return state == TriState.TRUE;
     }
 
     @NotNull

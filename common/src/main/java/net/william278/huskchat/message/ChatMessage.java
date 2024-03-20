@@ -64,8 +64,7 @@ public class ChatMessage {
      */
     public boolean dispatch() {
         final AtomicReference<Channel> channel = new AtomicReference<>(this.getChannel());
-        final Optional<String> sendPermission = channel.get().getPermissions().getSend();
-        if (sendPermission.isPresent() && !getSender().hasPermission(sendPermission.get())) {
+        if (!getChannel().canUserSend(getSender())) {
             getPlugin().getLocales().sendMessage(getSender(), "error_no_permission_send", channel.get().getId());
             return true;
         }
@@ -121,9 +120,8 @@ public class ChatMessage {
 
             // Dispatch message to all applicable users in the scope with permission who are not on a restricted server
             messageRecipients.forEach(recipient -> {
-                final Optional<String> receivePermission = channel.get().getPermissions().getReceive();
                 boolean isSender = recipient.getUuid().equals(getSender().getUuid());
-                if (!isSender && receivePermission.isPresent() && !recipient.hasPermission(receivePermission.get())) {
+                if (!isSender && !getChannel().canUserReceive(recipient)) {
                     return;
                 }
 

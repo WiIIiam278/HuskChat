@@ -42,22 +42,15 @@ public class ChannelCommand extends CommandBase {
             plugin.getLocales().sendMessage(player, "error_in_game_only");
             return;
         }
-        if (player.hasPermission(getPermission())) {
-            if (args.length == 1) {
-                plugin.getUserCache().switchPlayerChannel(player, args[0], plugin);
-            } else {
-                plugin.getLocales().sendMessage(player, "error_invalid_syntax", getUsage());
-            }
+        if (args.length == 1) {
+            plugin.getUserCache().switchPlayerChannel(player, args[0], plugin);
         } else {
-            plugin.getLocales().sendMessage(player, "error_no_permission");
+            plugin.getLocales().sendMessage(player, "error_invalid_syntax", getUsage());
         }
     }
 
     @Override
     public List<String> onTabComplete(@NotNull OnlineUser player, @NotNull String[] args) {
-        if (!player.hasPermission(getPermission())) {
-            return List.of();
-        }
         if (args.length <= 1) {
             return getUsableChannels(player).stream()
                     .filter(val -> val.toLowerCase().startsWith((args.length == 1) ? args[0].toLowerCase() : ""))
@@ -70,7 +63,7 @@ public class ChannelCommand extends CommandBase {
     @Unmodifiable
     public Set<String> getUsableChannels(@NotNull OnlineUser player) {
         return plugin.getChannels().getChannels().stream()
-                .filter(c -> c.getPermissions().getSend().map(player::hasPermission).orElse(true))
+                .filter(c -> c.canUserSend(player))
                 .map(Channel::getId)
                 .collect(Collectors.toSet());
     }
