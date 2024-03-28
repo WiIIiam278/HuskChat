@@ -21,6 +21,7 @@ package net.william278.huskchat.user;
 
 import net.kyori.adventure.audience.Audience;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -51,7 +52,7 @@ public class TestOnlineUser extends OnlineUser {
     }
 
     @Override
-    public boolean hasPermission(String node) {
+    public boolean hasPermission(@Nullable String permission, boolean allowByDefault) {
         return true;
     }
 
