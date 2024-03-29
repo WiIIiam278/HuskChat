@@ -26,6 +26,7 @@ import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.Optional;
 
 @AllArgsConstructor
 public abstract class PlayerListener {
@@ -41,10 +42,16 @@ public abstract class PlayerListener {
             return;
         }
 
-        // Switch channels to the default one if their current channel is now restricted
-        final String currentChannel = plugin.getUserCache().getPlayerChannel(player.getUuid());
+        // Switch channels to the default one if they don't have one
+        final Optional<String> currentChannel = plugin.getUserCache().getPlayerChannel(player.getUuid());
+        if (currentChannel.isEmpty()) {
+            plugin.editUserCache(c -> c.switchPlayerChannel(player, plugin.getChannels().getDefaultChannel(), plugin));
+            return;
+        }
+
+        // Switch the player's channel away if their current channel is now restricted
         plugin.getChannels().getChannels().stream()
-                .filter(channel -> channel.getId().equalsIgnoreCase(currentChannel))
+                .filter(channel -> channel.getId().equalsIgnoreCase(currentChannel.get()))
                 .findFirst().flatMap(channel -> channel.getRestrictedServers().stream()
                         .filter(restrictedServer -> restrictedServer.equalsIgnoreCase(newServer)).findFirst())
                 .ifPresent(restricted -> plugin.editUserCache(c -> c

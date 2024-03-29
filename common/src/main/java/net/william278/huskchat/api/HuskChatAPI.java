@@ -28,6 +28,7 @@ import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The HuskChat API
@@ -49,13 +50,14 @@ public class HuskChatAPI {
     }
 
     /**
-     * Returns the player's current channel
+     * Returns the player's current channel if they are in one
      *
      * @param player The player to get the channel for
+     * @return The player's current channel, optionally, if they are in one
      * @since 3.0
      */
     @NotNull
-    public String getPlayerChannel(@NotNull OnlineUser player) {
+    public Optional<String> getPlayerChannel(@NotNull OnlineUser player) {
         return plugin.getUserCache().getPlayerChannel(player.getUuid());
     }
 

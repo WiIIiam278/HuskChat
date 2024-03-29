@@ -32,9 +32,8 @@ public interface VelocityChatListener {
 
     default boolean handlePlayerChat(PlayerChatEvent e) {
         final VelocityUser player = VelocityUser.adapt(e.getPlayer(), plugin());
-        final Optional<Channel> channel = plugin().getChannels().getChannel(
-                plugin().getUserCache().getPlayerChannel(player.getUuid())
-        );
+        final Optional<Channel> channel = plugin().getUserCache().getPlayerChannel(player.getUuid())
+                .flatMap(channelId -> plugin().getChannels().getChannel(channelId));
         if (channel.isEmpty()) {
             plugin().getLocales().sendMessage(player, "error_no_channel");
             return false;

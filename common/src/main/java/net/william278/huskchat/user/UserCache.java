@@ -43,8 +43,8 @@ public class UserCache {
     protected LinkedHashMap<UUID, SpyColor> socialSpies = new LinkedHashMap<>();
 
     @NotNull
-    public String getPlayerChannel(@NotNull UUID uuid) {
-        return playerChannels.get(uuid);
+    public Optional<String> getPlayerChannel(@NotNull UUID uuid) {
+        return Optional.ofNullable(playerChannels.get(uuid));
     }
 
     public Optional<Set<UUID>> getLastMessengers(@NotNull UUID uuid) {
