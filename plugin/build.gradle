@@ -1,25 +1,5 @@
-//file:noinspection GroovyAssignabilityCheck
-plugins {
-    id 'maven-publish'
-}
-
 dependencies {
     implementation project(path: ':bungee', configuration: 'shadow')
     implementation project(path: ':velocity', configuration: 'shadow')
     implementation project(path: ':bukkit', configuration: 'shadow')
-}
-
-shadowJar {
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            groupId = 'net.william278'
-            artifactId = 'huskchat-plugin'
-            version = "$rootProject.version"
-
-            artifact shadowJar
-        }
-    }
 }
