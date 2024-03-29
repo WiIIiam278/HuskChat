@@ -21,7 +21,7 @@ shadowJar {
     relocate 'dev.vankka', 'net.william278.huskchat.libraries'
     relocate 'de.exlll', 'net.william278.huskchat.libraries'
     relocate 'org.snakeyaml.engine', 'net.william278.huskchat.libraries.snakeyaml.engine'
-    relocate 'org.json', 'net.william278.husksync.libraries.json'
+    relocate 'org.json', 'net.william278.huskchat.libraries.json'
 
     relocate 'org.apache', 'net.william278.huskchat.libraries'
     relocate 'org.jetbrains', 'net.william278.huskchat.libraries'
