@@ -1,6 +1,6 @@
 HuskChat supports displaying messages on Discord, either through webhooks for one-way communication or by using Spicord for two-way communication (some setup required).
 
-To enable Discord support, set `enabled` to `true` in the `discord:` section of the config. You can then configure the bot and channel webhooks.
+To enable Discord support, set `enabled` to `true` in the `discord:` section of [`config.yml`](config-files). You can then configure the bot and channel webhooks.
 
 ## Webhooks
 Webhooks are a simple way to send messages to a Discord channel. You can create a webhook for a channel by going to the channel settings, then Integrations, then Webhooks. You can then create a webhook and copy the URL. In the HuskChat config, you can then add the webhook URL to the `channel_webhooks` section of the config.

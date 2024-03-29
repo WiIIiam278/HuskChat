@@ -295,7 +295,9 @@ public class Settings {
     }
 
     @Comment("Custom names to display wherever you use the \"%server%\" placeholder instead of their default name")
-    private Map<String, String> serverNameReplacement = new HashMap<>();
+    private Map<String, String> serverNameReplacement = new HashMap<>(
+            Map.of("very-long-server-name", "VLSN")
+    );
 
     @NotNull
     public static List<String> formatCommands(@NotNull List<String> rawCommands) {

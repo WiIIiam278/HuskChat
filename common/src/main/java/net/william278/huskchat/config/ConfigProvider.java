@@ -201,6 +201,7 @@ public interface ConfigProvider {
                 : new UserCache.Editor());
     }
 
+    // Old config migration (v2.x)
     private void updateOldCache(@NotNull Path newFile) {
         final Path oldCache = getConfigDirectory().resolve("spies.yml");
         if (oldCache.toFile().exists()) {

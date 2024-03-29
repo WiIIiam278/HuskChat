@@ -1,4 +1,4 @@
-The `filtered:` property of a channel lets you specify whether a message sent to a channel should be filtered first by the enabled filters and message replacers defined in the `chat_filters` and `message_replacers` section of the `config.yml` file. To use a filter, ensure the channel you want to be filtered has `filtered` enabled and that the chat filters are correctly enabled and configured.
+The `filtered:` property of a channel lets you specify whether a message sent to a channel should be filtered first by the enabled filters and message replacers defined in the `chat_filters` and `message_replacers` section in the dedicated [`filters.yml`](config-files) file. To use a filter, ensure the channel you want to be filtered has `filtered` enabled and that the chat filters are correctly enabled and configured.
 
 ## Replacer
 Message replacers will alter the contents of the message, such as by replacing certain character combinations with emoji.
@@ -25,6 +25,7 @@ In addition, you can use the `huskchat.ignore_filters.<filter_name>` node to let
 * `huskchat.ignore_filters.profanity` - Profanity filter
 * `huskchat.ignore_filters.repeat` - Repeat messages filter
 * `huskchat.ignore_filters.ascii` - ASCII filter
+* `huskchat.ignore_filters.regex` - Regex filter
 
 You can also disable individual types of replacers with the following permissions:
 * `huskchat.ignore_filters.emoji_replacer` - Emoji replacer

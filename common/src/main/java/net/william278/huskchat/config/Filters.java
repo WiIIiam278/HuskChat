@@ -40,11 +40,11 @@ public class Filters {
 
     static final String CONFIG_HEADER = """
             ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-            ┃      HuskChat - Channels     ┃
+            ┃      HuskChat - Filters      ┃
             ┃    Developed by William278   ┃
             ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
             ┣╸ Information: https://william278.net/project/huskchat/
-            ┗╸ Channels Help: https://william278.net/docs/huskchat/channels/""";
+            ┗╸ Channels Help: https://william278.net/docs/huskchat/filters-and-replacers/""";
 
     private Map<ChatFilter.Type, ChatFilter.FilterSettings> filters = new HashMap<>(Map.of(
             ChatFilter.Type.ADVERTISING, ChatFilter.Type.ADVERTISING.getDefaultSettings(),
