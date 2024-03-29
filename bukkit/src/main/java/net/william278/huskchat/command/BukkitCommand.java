@@ -25,7 +25,6 @@ import net.william278.huskchat.user.ConsoleUser;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.Permission;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -46,11 +45,6 @@ public class BukkitCommand extends Command {
 
         // Register command & permission with Bukkit
         plugin.getCommandMap().register("huskchat", this);
-        if (getPermission() != null) {
-            plugin.getServer().getPluginManager().addPermission(new Permission(
-                    getPermission(), getUsage(), Permission.DEFAULT_PERMISSION)
-            );
-        }
     }
 
     @Override
