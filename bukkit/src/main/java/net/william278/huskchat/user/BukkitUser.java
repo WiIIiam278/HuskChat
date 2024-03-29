@@ -58,7 +58,7 @@ public class BukkitUser extends OnlineUser {
         if (node != null && player.isPermissionSet(node)) {
             return player.hasPermission(node);
         } else {
-            return allowByDefault;
+            return allowByDefault || player.isOp();
         }
     }
 
