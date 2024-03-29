@@ -78,14 +78,8 @@ public class PrivateMessage {
                 targetPlayer = plugin.findPlayer(targetUsername);
             }
 
+            // Remove duplicate users from the array
             if (targetPlayer.isPresent()) {
-                // Prevent sending messages to yourself
-                if (targetPlayer.get().getUuid().equals(sender.getUuid())) {
-                    plugin.getLocales().sendMessage(sender, "error_cannot_message_self");
-                    return;
-                }
-
-                // Remove duplicate users from the array
                 if (targetUUIDs.contains(targetPlayer.get().getUuid())) {
                     continue;
                 }
@@ -93,6 +87,13 @@ public class PrivateMessage {
                 targetPlayers.add(targetPlayer.get());
                 targetUUIDs.add(targetPlayer.get().getUuid());
             }
+        }
+
+        // Ensure no self-messages
+        targetUUIDs.remove(sender.getUuid());
+        if (targetUUIDs.isEmpty()) {
+            plugin.getLocales().sendMessage(sender, "error_message_self");
+            return;
         }
 
         // Validate that there aren't too many users
