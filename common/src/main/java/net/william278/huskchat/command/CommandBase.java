@@ -63,7 +63,10 @@ public abstract class CommandBase {
      * @param args   Current command arguments
      * @return List of String arguments to offer TAB suggestions
      */
-    public abstract List<String> onTabComplete(@NotNull OnlineUser player, @NotNull String[] args);
+    @NotNull
+    public List<String> onTabComplete(@NotNull OnlineUser player, @NotNull String[] args) {
+        return List.of();
+    }
 
     /**
      * Get the primary command alias

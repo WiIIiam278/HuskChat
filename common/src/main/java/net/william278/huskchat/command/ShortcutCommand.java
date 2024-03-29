@@ -48,7 +48,7 @@ public class ShortcutCommand extends CommandBase {
                 plugin.getLocales().sendMessage(player, "error_console_switch_channels");
                 return;
             }
-            plugin.getUserCache().switchPlayerChannel(player, channelId, plugin);
+            plugin.editUserCache(c -> c.switchPlayerChannel(player, channelId, plugin));
         } else {
             StringJoiner message = new StringJoiner(" ");
             for (String arg : args) {
@@ -77,11 +77,6 @@ public class ShortcutCommand extends CommandBase {
                 .map(Channel::getPermissions)
                 .flatMap(Channel.ChannelPermissions::getSend)
                 .orElse(null);
-    }
-
-    @Override
-    public List<String> onTabComplete(@NotNull OnlineUser player, @NotNull String[] args) {
-        return List.of();
     }
 
 }

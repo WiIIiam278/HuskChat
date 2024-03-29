@@ -60,7 +60,6 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat, BukkitEventP
     private MorePaperLib morePaperLib;
     private BukkitAudiences audiences;
     private final List<ChatFilter> filtersAndReplacers = new ArrayList<>();
-    private final UserCache userCache = new UserCache();
     private final List<PlaceholderReplacer> placeholderReplacers = new ArrayList<>();
 
     @Setter
@@ -71,6 +70,8 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat, BukkitEventP
     private Channels channels;
     @Setter
     private Filters filterSettings;
+    @Setter
+    private UserCache.Editor userCache;
     @Setter
     @Getter(AccessLevel.NONE)
     private DiscordHook discordHook;

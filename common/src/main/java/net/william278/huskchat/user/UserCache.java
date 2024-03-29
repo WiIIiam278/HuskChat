@@ -25,7 +25,6 @@ import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -35,79 +34,26 @@ import java.util.*;
 @NoArgsConstructor
 public class UserCache {
 
-    private Map<UUID, String> playerChannels = new HashMap<>();
-    private HashMap<UUID, SpyColor> localSpies = new HashMap<>();
-    private HashMap<UUID, SpyColor> socialSpies = new HashMap<>();
+    // Non-persisted data
+    protected transient final Map<UUID, Set<UUID>> lastMessagePlayers = new HashMap<>();
+
+    // Persisted data
+    protected LinkedHashMap<UUID, String> playerChannels = new LinkedHashMap<>();
+    protected LinkedHashMap<UUID, SpyColor> localSpies = new LinkedHashMap<>();
+    protected LinkedHashMap<UUID, SpyColor> socialSpies = new LinkedHashMap<>();
 
     @NotNull
     public String getPlayerChannel(@NotNull UUID uuid) {
         return playerChannels.get(uuid);
     }
 
-    public void setPlayerChannel(@NotNull UUID uuid, @NotNull String channelId) {
-        playerChannels.put(uuid, channelId);
-    }
-
-
-    /**
-     * Switch the {@link OnlineUser}'s channel
-     *
-     * @param player    {@link OnlineUser} to switch the channel of
-     * @param channelId ID of the channel to switch to
-     */
-    public void switchPlayerChannel(@NotNull OnlineUser player, @NotNull String channelId, @NotNull HuskChat plugin) {
-        final Optional<Channel> optionalChannel = plugin.getChannels().getChannel(channelId);
-        if (optionalChannel.isEmpty()) {
-            plugin.getLocales().sendMessage(player, "error_invalid_channel");
-            return;
-        }
-
-        final Channel channel = optionalChannel.get();
-        if (!channel.canUserSend(player)) {
-            plugin.getLocales().sendMessage(player, "error_no_permission_send", channel.getId());
-            return;
-        }
-        setPlayerChannel(player.getUuid(), channel.getId());
-        plugin.getLocales().sendMessage(player, "channel_switched", channel.getId());
-    }
-
-
-    // Map of users last private message target for /reply command
-    @NotNull
-    private static final Map<UUID, Set<UUID>> lastMessagePlayers = new HashMap<>();
-
-    public static Optional<Set<UUID>> getLastMessengers(@NotNull UUID uuid) {
+    public Optional<Set<UUID>> getLastMessengers(@NotNull UUID uuid) {
         if (lastMessagePlayers.containsKey(uuid)) {
             return Optional.of(lastMessagePlayers.get(uuid));
         }
         return Optional.empty();
     }
 
-    public static void setLastMessenger(@NotNull UUID playerToSet, @NotNull List<OnlineUser> lastMessengers) {
-        final HashSet<UUID> uuidPlayers = new HashSet<>();
-        for (OnlineUser player : lastMessengers) {
-            uuidPlayers.add(player.getUuid());
-        }
-        lastMessagePlayers.put(playerToSet, uuidPlayers);
-    }
-
-    public boolean isSocialSpying(@NotNull OnlineUser player) {
-        return socialSpies.containsKey(player.getUuid());
-    }
-
-    public void setSocialSpy(@NotNull OnlineUser player) throws IOException {
-        socialSpies.put(player.getUuid(), SpyColor.DEFAULT_SPY_COLOR);
-    }
-
-    public void setSocialSpy(@NotNull OnlineUser player, @NotNull SpyColor spyColor) throws IOException {
-        socialSpies.put(player.getUuid(), spyColor);
-    }
-
-    public void removeSocialSpy(@NotNull OnlineUser player) throws IOException {
-        socialSpies.remove(player.getUuid());
-    }
-
-    // Determines who is going to receive a spy message
     @NotNull
     public Map<OnlineUser, SpyColor> getSocialSpies(@NotNull List<OnlineUser> recipients, @NotNull HuskChat plugin) {
         final Map<OnlineUser, SpyColor> receivers = new LinkedHashMap<>();
@@ -129,20 +75,8 @@ public class UserCache {
         return receivers;
     }
 
-    public boolean isLocalSpying(OnlineUser player) {
-        return localSpies.containsKey(player.getUuid());
-    }
-
-    public void setLocalSpy(OnlineUser player) throws IOException {
-        localSpies.put(player.getUuid(), SpyColor.DEFAULT_SPY_COLOR);
-    }
-
-    public void setLocalSpy(OnlineUser player, SpyColor spyColor) throws IOException {
-        localSpies.put(player.getUuid(), spyColor);
-    }
-
-    public void removeLocalSpy(OnlineUser player) throws IOException {
-        localSpies.remove(player.getUuid());
+    public boolean isSocialSpying(@NotNull OnlineUser player) {
+        return socialSpies.containsKey(player.getUuid());
     }
 
     @NotNull
@@ -162,6 +96,73 @@ public class UserCache {
         return receivers;
     }
 
+    public boolean isLocalSpying(OnlineUser player) {
+        return localSpies.containsKey(player.getUuid());
+    }
+
+    /**
+     * Editor wrapper for the {@link UserCache}
+     */
+    public static class Editor extends UserCache {
+
+        public void setLastMessenger(@NotNull UUID playerToSet, @NotNull List<OnlineUser> lastMessengers) {
+            final HashSet<UUID> uuidPlayers = new HashSet<>();
+            for (OnlineUser player : lastMessengers) {
+                uuidPlayers.add(player.getUuid());
+            }
+            lastMessagePlayers.put(playerToSet, uuidPlayers);
+        }
+
+        public void setPlayerChannel(@NotNull UUID uuid, @NotNull String channelId) {
+            playerChannels.put(uuid, channelId);
+        }
+
+        /**
+         * Switch the {@link OnlineUser}'s channel
+         *
+         * @param user    {@link OnlineUser} to switch the channel of
+         * @param channelId ID of the channel to switch to
+         */
+        public void switchPlayerChannel(@NotNull OnlineUser user, @NotNull String channelId, @NotNull HuskChat plugin) {
+            final Optional<Channel> optionalChannel = plugin.getChannels().getChannel(channelId);
+            if (optionalChannel.isEmpty()) {
+                plugin.getLocales().sendMessage(user, "error_invalid_channel");
+                return;
+            }
+
+            final Channel channel = optionalChannel.get();
+            if (!channel.canUserSend(user)) {
+                plugin.getLocales().sendMessage(user, "error_no_permission_send", channel.getId());
+                return;
+            }
+            setPlayerChannel(user.getUuid(), channel.getId());
+            plugin.getLocales().sendMessage(user, "channel_switched", channel.getId());
+        }
+
+        public void setSocialSpy(@NotNull User user) {
+            socialSpies.put(user.getUuid(), SpyColor.DEFAULT_SPY_COLOR);
+        }
+
+        public void setSocialSpy(@NotNull User user, @NotNull SpyColor spyColor) {
+            socialSpies.put(user.getUuid(), spyColor);
+        }
+
+        public void removeSocialSpy(@NotNull User user) {
+            socialSpies.remove(user.getUuid());
+        }
+
+        public void setLocalSpy(@NotNull User user) {
+            localSpies.put(user.getUuid(), SpyColor.DEFAULT_SPY_COLOR);
+        }
+
+        public void setLocalSpy(@NotNull User user, @NotNull SpyColor spyColor) {
+            localSpies.put(user.getUuid(), spyColor);
+        }
+
+        public void removeLocalSpy(@NotNull User user) {
+            localSpies.remove(user.getUuid());
+        }
+    }
 
     /**
      * Color used for displaying chat

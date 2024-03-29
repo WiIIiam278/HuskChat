@@ -30,7 +30,6 @@ import net.william278.huskchat.filter.FilterProvider;
 import net.william278.huskchat.getter.DataGetter;
 import net.william278.huskchat.placeholders.PlaceholderReplacer;
 import net.william278.huskchat.user.OnlineUser;
-import net.william278.huskchat.user.UserCache;
 import net.william278.huskchat.util.AudiencesProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,9 +51,6 @@ public interface HuskChat extends AudiencesProvider, ConfigProvider, FilterProvi
                     ? new SpicordHook(this) : new WebHook(this));
         }
     }
-
-    @NotNull
-    UserCache getUserCache();
 
     @NotNull
     List<PlaceholderReplacer> getPlaceholderReplacers();

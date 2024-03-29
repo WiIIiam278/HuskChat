@@ -64,7 +64,6 @@ public final class BungeeHuskChat extends Plugin implements HuskChat, BungeeEven
     private static final int METRICS_ID = 11882;
 
     private final List<ChatFilter> filtersAndReplacers = new ArrayList<>();
-    private final UserCache userCache = new UserCache();
     private final List<PlaceholderReplacer> placeholderReplacers = new ArrayList<>();
 
     @Getter(AccessLevel.NONE)
@@ -77,6 +76,8 @@ public final class BungeeHuskChat extends Plugin implements HuskChat, BungeeEven
     private Channels channels;
     @Setter
     private Filters filterSettings;
+    @Setter
+    private UserCache.Editor userCache;
     @Setter
     @Getter(AccessLevel.NONE)
     private DiscordHook discordHook;

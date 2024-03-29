@@ -37,7 +37,7 @@ public abstract class PlayerListener {
         // Switch to the default channel for the server if there is one
         final Map<String, String> defaultChannels = plugin.getChannels().getServerDefaultChannels();
         if (defaultChannels.containsKey(newServer)) {
-            plugin.getUserCache().switchPlayerChannel(player, defaultChannels.get(newServer), plugin);
+            plugin.editUserCache(c -> c.switchPlayerChannel(player, defaultChannels.get(newServer), plugin));
             return;
         }
 
@@ -46,9 +46,9 @@ public abstract class PlayerListener {
         plugin.getChannels().getChannels().stream()
                 .filter(channel -> channel.getId().equalsIgnoreCase(currentChannel))
                 .findFirst().flatMap(channel -> channel.getRestrictedServers().stream()
-                        .filter(restrictedServer -> restrictedServer.equalsIgnoreCase(newServer))
-                        .findFirst()).ifPresent(restricted -> plugin.getUserCache()
-                        .switchPlayerChannel(player, plugin.getChannels().getDefaultChannel(), plugin));
+                        .filter(restrictedServer -> restrictedServer.equalsIgnoreCase(newServer)).findFirst())
+                .ifPresent(restricted -> plugin.editUserCache(c -> c
+                        .switchPlayerChannel(player, plugin.getChannels().getDefaultChannel(), plugin)));
     }
 
     // Handle player joins

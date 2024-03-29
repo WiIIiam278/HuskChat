@@ -26,9 +26,11 @@ import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.channel.Channel;
 import net.william278.huskchat.user.ConsoleUser;
 import net.william278.huskchat.user.OnlineUser;
+import net.william278.huskchat.user.UserCache;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
@@ -135,23 +137,19 @@ public class ChatMessage {
                 if (getPlugin().getSettings().getLocalSpy().isEnabled()
                         && !getPlugin().getSettings().getLocalSpy().getExcludedLocalChannels().contains(channel.get().getId())
                         && scope.isOneOf(Channel.BroadcastScope.LOCAL, Channel.BroadcastScope.LOCAL_PASSTHROUGH)) {
-                    /*final Map<OnlineUser, UserCache.SpyColor> spies = getPlugin().getPlayerCache()
-                            .getLocalSpyMessageReceivers(getSender().getServerName(), getPlugin());
+                    final Map<OnlineUser, UserCache.SpyColor> spies = getPlugin().getUserCache()
+                            .getLocalSpies(getSender().getServerName(), getPlugin());
                     for (OnlineUser spy : spies.keySet()) {
                         if (spy.getUuid().equals(getSender().getUuid())) {
                             continue;
                         }
-                        if (!spy.hasPermission("huskchat.command.localspy")) {
-                            try {
-                                getPlugin().getPlayerCache().removeLocalSpy(spy);
-                            } catch (IOException e) {
-                                getPlugin().log(Level.SEVERE, "Failed to remove local spy after failed permission check", e);
-                            }
+                        if (!spy.hasPermission("huskchat.command.localspy", false)) {
+                            plugin.editUserCache(c -> c.removeLocalSpy(spy));
                             continue;
                         }
                         final UserCache.SpyColor color = spies.get(spy);
                         getPlugin().getLocales().sendLocalSpy(spy, color, getSender(), channel.get(), getMessage(), getPlugin());
-                    }*/
+                    }
                 }
 
                 // Log a message to console if enabled on the channel

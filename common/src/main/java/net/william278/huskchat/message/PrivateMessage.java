@@ -26,7 +26,6 @@ import net.william278.huskchat.user.OnlineUser;
 import net.william278.huskchat.user.UserCache;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
@@ -86,7 +85,7 @@ public class PrivateMessage {
                     return;
                 }
 
-                // Remove duplicate users from array
+                // Remove duplicate users from the array
                 if (targetUUIDs.contains(targetPlayer.get().getUuid())) {
                     continue;
                 }
@@ -128,7 +127,7 @@ public class PrivateMessage {
             finalMessage.set(event.getMessage());
 
             // Show that the message has been sent
-            UserCache.setLastMessenger(sender.getUuid(), receivers);
+            plugin.editUserCache(c -> c.setLastMessenger(sender.getUuid(), receivers));
             plugin.getLocales().sendOutboundPrivateMessage(sender, receivers, finalMessage.get(), plugin);
 
             // Show the received message
@@ -137,7 +136,7 @@ public class PrivateMessage {
                 receivedMessageFrom.removeIf(player -> player.getUuid().equals(target.getUuid()));
                 receivedMessageFrom.add(0, sender);
 
-                UserCache.setLastMessenger(target.getUuid(), receivedMessageFrom);
+                plugin.editUserCache(c -> c.setLastMessenger(target.getUuid(), receivedMessageFrom));
             }
             plugin.getLocales().sendInboundPrivateMessage(receivers, sender, finalMessage.get(), plugin);
 
@@ -152,11 +151,7 @@ public class PrivateMessage {
                             continue;
                         }
                         if (!spy.hasPermission("huskchat.command.socialspy", false)) {
-                            try {
-                                plugin.getUserCache().removeSocialSpy(spy);
-                            } catch (IOException e) {
-                                plugin.log(Level.SEVERE, "Failed to remove social spy after failed permission check", e);
-                            }
+                            plugin.editUserCache(c -> c.removeSocialSpy(spy));
                             continue;
                         }
                         final UserCache.SpyColor color = spies.get(spy);

@@ -23,7 +23,6 @@ import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.message.PrivateMessage;
 import net.william278.huskchat.user.ConsoleUser;
 import net.william278.huskchat.user.OnlineUser;
-import net.william278.huskchat.user.UserCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +37,7 @@ public class ReplyCommand extends CommandBase {
     @Override
     public void onExecute(@NotNull OnlineUser player, @NotNull String[] args) {
         if (args.length >= 1) {
-            final Optional<Set<UUID>> lastMessengers = UserCache.getLastMessengers(player.getUuid());
+            final Optional<Set<UUID>> lastMessengers = plugin.getUserCache().getLastMessengers(player.getUuid());
             if (lastMessengers.isEmpty()) {
                 plugin.getLocales().sendMessage(player, "error_reply_no_messages");
                 return;
@@ -49,7 +48,7 @@ public class ReplyCommand extends CommandBase {
                 if (ConsoleUser.isConsolePlayer(lastMessenger)) {
                     lastPlayers.add(ConsoleUser.wrap(plugin).getName());
                 } else {
-                    plugin.getPlayer(lastMessenger).ifPresent(onlineMessenger -> lastPlayers.add(onlineMessenger.getName()));
+                    plugin.getPlayer(lastMessenger).ifPresent(online -> lastPlayers.add(online.getName()));
                 }
             }
 
@@ -81,11 +80,6 @@ public class ReplyCommand extends CommandBase {
                 "huskchat", "command", "msg", "reply",
                 String.join(".", args)
         );
-    }
-
-    @Override
-    public List<String> onTabComplete(@NotNull OnlineUser player, @NotNull String[] args) {
-        return List.of();
     }
 
 }

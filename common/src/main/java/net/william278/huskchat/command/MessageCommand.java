@@ -65,6 +65,7 @@ public class MessageCommand extends CommandBase {
     }
 
     @Override
+    @NotNull
     public List<String> onTabComplete(@NotNull OnlineUser player, @NotNull String[] args) {
         if (args.length <= 1) {
             final ArrayList<String> userNames = new ArrayList<>();
@@ -95,9 +96,8 @@ public class MessageCommand extends CommandBase {
                 prependedUsernames.add(precursoryText + username);
             }
             return prependedUsernames;
-        } else {
-            return List.of();
         }
+        return List.of();
     }
 
 }

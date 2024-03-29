@@ -25,10 +25,9 @@ import net.william278.huskchat.user.OnlineUser;
 import net.william278.huskchat.user.UserCache;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
 
 public class SocialSpyCommand extends CommandBase {
 
@@ -43,41 +42,38 @@ public class SocialSpyCommand extends CommandBase {
             plugin.getLocales().sendMessage(player, "error_in_game_only");
             return;
         }
+
+        // Set with color
         if (args.length == 1) {
-            UserCache.SpyColor color;
-            Optional<UserCache.SpyColor> selectedColor = UserCache.SpyColor.getColor(args[0]);
-            if (selectedColor.isPresent()) {
-                try {
-                    color = selectedColor.get();
-                    plugin.getUserCache().setSocialSpy(player, color);
-                    plugin.getLocales().sendMessage(player, "social_spy_toggled_on_color",
-                            color.colorCode, color.name().toLowerCase().replaceAll("_", " "));
-                } catch (IOException e) {
-                    plugin.log(Level.SEVERE, "Failed to save social spy state to spies file");
-                }
+            final Optional<UserCache.SpyColor> selectedColor = UserCache.SpyColor.getColor(args[0]);
+            if (selectedColor.isEmpty()) {
+                plugin.getLocales().sendMessage(player, "error_invalid_syntax", getUsage());
                 return;
             }
+
+            final UserCache.SpyColor color = selectedColor.get();
+            plugin.editUserCache(c -> c.setSocialSpy(player, color));
+            plugin.getLocales().sendMessage(player, "social_spy_toggled_on_color",
+                    color.colorCode, color.name().toLowerCase().replaceAll("_", " "));
+            return;
         }
+
+        // Toggle without specifying color
         if (!plugin.getUserCache().isSocialSpying(player)) {
-            try {
-                plugin.getUserCache().setSocialSpy(player);
-                plugin.getLocales().sendMessage(player, "social_spy_toggled_on");
-            } catch (IOException e) {
-                plugin.log(Level.SEVERE, "Failed to save social spy state to spies file");
-            }
-        } else {
-            try {
-                plugin.getUserCache().removeSocialSpy(player);
-                plugin.getLocales().sendMessage(player, "social_spy_toggled_off");
-            } catch (IOException e) {
-                plugin.log(Level.SEVERE, "Failed to save social spy state to spies file");
-            }
+            plugin.editUserCache(c -> c.setSocialSpy(player));
+            plugin.getLocales().sendMessage(player, "social_spy_toggled_on");
+            return;
         }
+        plugin.editUserCache(c -> c.removeSocialSpy(player));
+        plugin.getLocales().sendMessage(player, "social_spy_toggled_off");
     }
 
     @Override
+    @NotNull
     public List<String> onTabComplete(@NotNull OnlineUser player, @NotNull String[] args) {
-        return List.of();
+        return Arrays.stream(UserCache.SpyColor.values())
+                .map(UserCache.SpyColor::name).map(String::toLowerCase)
+                .toList();
     }
 
 }

@@ -92,6 +92,7 @@ public class HuskChatCommand extends CommandBase {
     }
 
     @Override
+    @NotNull
     public List<String> onTabComplete(@NotNull OnlineUser player, @NotNull String[] args) {
         if (args.length <= 1) {
             return Arrays.stream(COMMAND_TAB_ARGUMENTS)

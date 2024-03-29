@@ -21,7 +21,6 @@ package net.william278.huskchat.command;
 
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.user.OnlineUser;
-import net.william278.huskchat.user.UserCache;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -36,14 +35,14 @@ public class OptOutMessageCommand extends CommandBase {
 
     @Override
     public void onExecute(@NotNull OnlineUser player, @NotNull String[] args) {
-        UserCache.getLastMessengers(player.getUuid()).ifPresentOrElse(lastMessengers -> {
+        plugin.getUserCache().getLastMessengers(player.getUuid()).ifPresentOrElse(lastMessengers -> {
             if (lastMessengers.size() <= 1) {
                 plugin.getLocales().sendMessage(player, "error_last_message_not_group");
                 return;
             }
 
             for (UUID uuid : lastMessengers) {
-                UserCache.getLastMessengers(uuid).ifPresent(last -> last.remove(player.getUuid()));
+                plugin.getUserCache().getLastMessengers(uuid).ifPresent(last -> last.remove(player.getUuid()));
             }
 
             String playerList = lastMessengers.stream().flatMap(u -> plugin.getPlayer(u).stream())
@@ -57,11 +56,6 @@ public class OptOutMessageCommand extends CommandBase {
             plugin.getLocales().sendMessage(player, "removed_from_group_message", builder.toString());
             lastMessengers.clear();
         }, () -> plugin.getLocales().sendMessage(player, "error_no_messages_opt_out"));
-    }
-
-    @Override
-    public List<String> onTabComplete(@NotNull OnlineUser player, @NotNull String[] args) {
-        return List.of();
     }
 
 }

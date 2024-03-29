@@ -43,13 +43,14 @@ public class ChannelCommand extends CommandBase {
             return;
         }
         if (args.length == 1) {
-            plugin.getUserCache().switchPlayerChannel(player, args[0], plugin);
+            plugin.editUserCache(c -> c.switchPlayerChannel(player, args[0], plugin));
         } else {
             plugin.getLocales().sendMessage(player, "error_invalid_syntax", getUsage());
         }
     }
 
     @Override
+    @NotNull
     public List<String> onTabComplete(@NotNull OnlineUser player, @NotNull String[] args) {
         if (args.length <= 1) {
             return getUsableChannels(player).stream()

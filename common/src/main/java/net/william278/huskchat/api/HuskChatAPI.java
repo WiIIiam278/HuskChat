@@ -67,7 +67,7 @@ public class HuskChatAPI {
      * @since 3.0
      */
     public void setPlayerChannel(@NotNull OnlineUser player, @NotNull String channel) {
-        plugin.getUserCache().setPlayerChannel(player.getUuid(), channel);
+        plugin.editUserCache(c -> c.setPlayerChannel(player.getUuid(), channel));
     }
 
     /**

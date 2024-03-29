@@ -77,7 +77,6 @@ public class VelocityHuskChat implements HuskChat, VelocityEventProvider {
     private final Path configDirectory;
     private final ProxyServer server;
     private final List<ChatFilter> filtersAndReplacers = new ArrayList<>();
-    private final UserCache userCache = new UserCache();
     private final List<PlaceholderReplacer> placeholderReplacers = new ArrayList<>();
 
     @Setter
@@ -88,6 +87,8 @@ public class VelocityHuskChat implements HuskChat, VelocityEventProvider {
     private Channels channels;
     @Setter
     private Filters filterSettings;
+    @Setter
+    private UserCache.Editor userCache;
     @Setter
     @Getter(AccessLevel.NONE)
     private DiscordHook discordHook;

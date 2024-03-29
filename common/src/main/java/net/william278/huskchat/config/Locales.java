@@ -35,7 +35,10 @@ import net.william278.huskchat.user.UserCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
+import java.util.TreeMap;
 
 @SuppressWarnings("FieldMayBeFinal")
 @Getter

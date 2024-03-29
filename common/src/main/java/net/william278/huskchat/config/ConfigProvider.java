@@ -24,12 +24,14 @@ import de.exlll.configlib.YamlConfigurationProperties;
 import de.exlll.configlib.YamlConfigurationStore;
 import de.exlll.configlib.YamlConfigurations;
 import net.william278.huskchat.HuskChat;
+import net.william278.huskchat.user.UserCache;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 /**
@@ -49,6 +51,7 @@ public interface ConfigProvider {
         loadChannels();
         loadFilterSettings();
         loadLocales();
+        loadUserCache();
     }
 
     /**
@@ -141,7 +144,7 @@ public interface ConfigProvider {
                 YAML_CONFIGURATION_PROPERTIES.header(Filters.CONFIG_HEADER).build()
         ));
     }
-    
+
     /**
      * Get the locales for the plugin
      *
@@ -174,7 +177,7 @@ public interface ConfigProvider {
             setLocales(store.load(path));
             return;
         }
-String a = String.format("locales/%s.yml", getSettings().getLanguage());
+
         // Otherwise, save and read the default locales
         try (InputStream input = getResource(String.format("locales/%s.yml", getSettings().getLanguage()))) {
             final Locales locales = store.read(input);
@@ -183,6 +186,38 @@ String a = String.format("locales/%s.yml", getSettings().getLanguage());
         } catch (Throwable e) {
             getPlugin().log(Level.SEVERE, "An error occurred loading the locales (invalid lang code?)", e);
         }
+    }
+
+    @NotNull
+    UserCache getUserCache();
+
+    void setUserCache(@NotNull UserCache.Editor userCache);
+
+    default void loadUserCache() {
+        final Path cacheFile = getConfigDirectory().resolve("user_cache.yml");
+        updateOldCache(cacheFile);
+        setUserCache(cacheFile.toFile().exists()
+                ? YamlConfigurations.load(cacheFile, UserCache.Editor.class)
+                : new UserCache.Editor());
+    }
+
+    private void updateOldCache(@NotNull Path newFile) {
+        final Path oldCache = getConfigDirectory().resolve("spies.yml");
+        if (oldCache.toFile().exists()) {
+            try {
+                Files.move(oldCache, newFile);
+            } catch (Throwable e) {
+                getPlugin().log(Level.SEVERE, "An error occurred moving the old cache file", e);
+            }
+        }
+    }
+
+    default void editUserCache(@NotNull Consumer<UserCache.Editor> userCache) {
+        userCache.accept((UserCache.Editor) getUserCache());
+        YamlConfigurations.save(
+                getConfigDirectory().resolve("user_cache.yml"),
+                UserCache.class, getUserCache()
+        );
     }
 
     /**
