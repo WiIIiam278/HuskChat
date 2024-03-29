@@ -92,7 +92,7 @@ public class PrivateMessage {
         // Ensure no self-messages
         targetUUIDs.remove(sender.getUuid());
         if (targetUUIDs.isEmpty()) {
-            plugin.getLocales().sendMessage(sender, "error_message_self");
+            plugin.getLocales().sendMessage(sender, "error_cannot_message_self");
             return;
         }
 
