@@ -75,4 +75,4 @@ Translations of the plugin locales are welcome to help make the plugin more acce
 - [bStats](https://bstats.org/plugin/bungeecord/HuskChat/11882) &mdash; View plugin metrics (Also: [Velocity](https://bstats.org/plugin/velocity/HuskChat%20-%20Velocity/14187))
 
 ---
-&copy; [William278](https://william278.net/), 2023. Licensed under the Apache-2.0 License.
+&copy; [William278](https://william278.net/), 2024. Licensed under the Apache-2.0 License.
