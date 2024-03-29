@@ -21,7 +21,6 @@ package net.william278.huskchat.listener;
 
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
-import com.velocitypowered.api.event.connection.PostLoginEvent;
 import com.velocitypowered.api.event.player.ServerConnectedEvent;
 import net.william278.huskchat.HuskChat;
 import net.william278.huskchat.user.VelocityUser;
@@ -35,19 +34,19 @@ public class VelocityPlayerListener extends PlayerListener {
 
     @Subscribe
     public void onPlayerChangeServer(ServerConnectedEvent e) {
+        if (e.getPreviousServer().isEmpty()) {
+            handlePlayerJoin(VelocityUser.adapt(e.getPlayer(), plugin));
+        }
         final String server = e.getServer().getServerInfo().getName();
         final VelocityUser player = VelocityUser.adapt(e.getPlayer(), plugin);
         handlePlayerSwitchServer(player, server);
     }
 
     @Subscribe
-    public void onPlayerJoinNetwork(PostLoginEvent e) {
-        handlePlayerJoin(VelocityUser.adapt(e.getPlayer(), plugin));
-    }
-
-    @Subscribe
     public void onPlayerQuitNetwork(DisconnectEvent e) {
-        handlePlayerQuit(VelocityUser.adapt(e.getPlayer(), plugin));
+        if (e.getLoginStatus() == DisconnectEvent.LoginStatus.SUCCESSFUL_LOGIN) {
+            handlePlayerQuit(VelocityUser.adapt(e.getPlayer(), plugin));
+        }
     }
 
 }
