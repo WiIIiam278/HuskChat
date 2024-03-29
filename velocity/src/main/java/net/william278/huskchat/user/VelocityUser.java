@@ -68,11 +68,11 @@ public class VelocityUser extends OnlineUser {
 
     @Override
     public boolean hasPermission(@Nullable String permission, boolean allowByDefault) {
-        if (!player.hasPermission(permission)) {
+        if (permission == null) {
             return allowByDefault;
         }
         final TriState state = player.getPermissionValue(permission).toAdventureTriState();
-        if (permission == null || state == TriState.NOT_SET) {
+        if (state == TriState.NOT_SET) {
             return allowByDefault;
         }
         return state == TriState.TRUE;
