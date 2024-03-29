@@ -73,12 +73,14 @@ jobs:
             1.20.2
             1.20.3
             1.20.4
-          loaders: |
+          modrinth-loaders: |
             bungeecord
             velocity
             spigot
             paper
             folia
+          hangar-loaders: |
+            velocity
           modrinth-dependencies: |
             luckperms | suggests | *
             papiproxybridge | suggests | *

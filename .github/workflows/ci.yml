@@ -89,12 +89,14 @@ jobs:
             luckperms | suggests | *
             papiproxybridge | suggests | *
             placeholderapi | suggests | *
-          loaders: |
+          modrinth-loaders: |
             bungeecord
             velocity
             spigot
             paper
             folia
+          hangar-loaders: |
+            velocity
           java: 17
       - name: Upload GitHub Artifact
         if: success() || failure()
