@@ -6,8 +6,10 @@ pluginManagement {
 
 rootProject.name = 'HuskChat'
 
-include 'common'
-include 'bungee'
-include 'velocity'
-include 'bukkit'
-include 'plugin'
+include(
+        'common',
+        'bungee',
+        'velocity',
+        'bukkit',
+        'plugin'
+)
