@@ -151,20 +151,20 @@ public class ChatMessage {
                         getPlugin().getLocales().sendLocalSpy(spy, color, getSender(), channel.get(), getMessage(), getPlugin());
                     }
                 }
-
-                // Log a message to console if enabled on the channel
-                if (channel.get().isLogToConsole()) {
-                    final String logFormat = getPlugin().getChannels().getChannelLogFormat()
-                            .replaceAll("%channel%", channel.get().getId().toUpperCase())
-                            .replaceAll("%sender%", getSender().getName());
-                    getPlugin().log(Level.INFO, logFormat + getMessage());
-                }
-
-                // Dispatch message to a Discord webhook if enabled
-                if (getPlugin().getSettings().getDiscord().isEnabled()) {
-                    getPlugin().getDiscordHook().ifPresent(hook -> hook.postMessage(this));
-                }
             });
+
+            // Log a message to console if enabled on the channel
+            if (channel.get().isLogToConsole()) {
+                final String logFormat = getPlugin().getChannels().getChannelLogFormat()
+                        .replaceAll("%channel%", channel.get().getId().toUpperCase())
+                        .replaceAll("%sender%", getSender().getName());
+                getPlugin().log(Level.INFO, logFormat + getMessage());
+            }
+
+            // Dispatch message to a Discord webhook if enabled
+            if (getPlugin().getSettings().getDiscord().isEnabled()) {
+                getPlugin().getDiscordHook().ifPresent(hook -> hook.postMessage(this));
+            }
         });
 
         // Non-passthrough messages should always be canceled in the proxy-specific code

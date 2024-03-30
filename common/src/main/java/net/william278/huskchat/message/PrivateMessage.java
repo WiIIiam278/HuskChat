@@ -132,13 +132,12 @@ public class PrivateMessage {
             plugin.getLocales().sendOutboundPrivateMessage(sender, receivers, finalMessage.get(), plugin);
 
             // Show the received message
-            for (OnlineUser target : receivers) {
+            plugin.editUserCache(c -> receivers.forEach(target -> {
                 final ArrayList<OnlineUser> receivedMessageFrom = new ArrayList<>(receivers);
                 receivedMessageFrom.removeIf(player -> player.getUuid().equals(target.getUuid()));
                 receivedMessageFrom.add(0, sender);
-
-                plugin.editUserCache(c -> c.setLastMessenger(target.getUuid(), receivedMessageFrom));
-            }
+                c.setLastMessenger(target.getUuid(), receivedMessageFrom);
+            }));
             plugin.getLocales().sendInboundPrivateMessage(receivers, sender, finalMessage.get(), plugin);
 
             // Show a message to social spies

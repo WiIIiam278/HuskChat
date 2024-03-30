@@ -67,6 +67,8 @@ public class BroadcastMessage {
 
             // Send the broadcast
             plugin.getOnlinePlayers().forEach(this::sendMessage);
+
+            // Log to console
             if (settings.isLogToConsole()) {
                 plugin.log(Level.INFO, settings.getLogFormat() + message);
             }
