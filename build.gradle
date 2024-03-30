@@ -9,7 +9,7 @@ plugins {
 }
 
 group 'net.william278'
-version "$ext.plugin_version${versionMetadata()}"
+version "$ext.plugin_version"
 description "$ext.plugin_description"
 defaultTasks 'licenseFormat', 'build'
 
@@ -200,7 +200,7 @@ def versionMetadata() {
     // If grgit DOES exist, get tag for this commit
     def tag = grgit.tag.list().find { it.commit.id == grgit.head().id }
     if (tag != null) {
-        return '-' + tag.name
+        return '';
     }
     return '-' + grgit.head().abbreviatedId + (grgit.status().clean ? '' : '-indev')
 }
