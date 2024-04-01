@@ -14,7 +14,7 @@ dependencies {
     compileOnly 'net.kyori:adventure-platform-api:4.3.2'
     compileOnly 'net.william278:papiproxybridge:1.5'
     compileOnly 'net.luckperms:api:5.4'
-    compileOnly 'com.github.Spicord.Spicord:spicord-common:v5-SNAPSHOT'
+    compileOnly 'com.github.Spicord.Spicord:spicord-common:5.3.1'
     compileOnly 'net.dv8tion:JDA:5.0.0-beta.4'
     compileOnly 'org.jetbrains:annotations:24.1.0'
     compileOnly 'org.projectlombok:lombok:1.18.32'
