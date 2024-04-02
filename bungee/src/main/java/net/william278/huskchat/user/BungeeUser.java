@@ -20,9 +20,12 @@
 package net.william278.huskchat.user;
 
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.connection.Server;
 import net.william278.huskchat.HuskChat;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /**
  * Bungee implementation of a cross-platform {@link OnlineUser}
@@ -55,12 +58,16 @@ public class BungeeUser extends OnlineUser {
     @Override
     @NotNull
     public String getServerName() {
-        return player.getServer().getInfo().getName();
+        return getConnectedTo().map(s -> s.getInfo().getName()).orElse("unknown");
     }
 
     @Override
     public int getPlayersOnServer() {
-        return player.getServer().getInfo().getPlayers().size();
+        return getConnectedTo().map(s -> s.getInfo().getPlayers().size()).orElse(0);
+    }
+
+    private Optional<Server> getConnectedTo() {
+        return Optional.ofNullable(player.getServer());
     }
 
     @Override

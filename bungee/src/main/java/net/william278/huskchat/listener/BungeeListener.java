@@ -64,9 +64,8 @@ public class BungeeListener extends PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerChangeServer(ServerSwitchEvent e) {
-        final String server = e.getPlayer().getServer().getInfo().getName();
         final BungeeUser player = BungeeUser.adapt(e.getPlayer(), plugin);
-        this.handlePlayerSwitchServer(player, server);
+        this.handlePlayerSwitchServer(player, player.getServerName());
     }
 
     @EventHandler
