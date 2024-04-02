@@ -20,6 +20,8 @@
 package net.william278.huskchat.filter;
 
 import de.exlll.configlib.Configuration;
+import de.exlll.configlib.Polymorphic;
+import de.exlll.configlib.PolymorphicTypes;
 import lombok.*;
 import net.william278.huskchat.user.OnlineUser;
 import org.jetbrains.annotations.NotNull;
@@ -66,6 +68,16 @@ public abstract class ChatFilter {
     @SuppressWarnings("FieldMayBeFinal")
     @Getter
     @Configuration
+    @Polymorphic
+    @PolymorphicTypes({
+            @PolymorphicTypes.Type(type = FilterSettings.class, alias = "filter"),
+            @PolymorphicTypes.Type(type = CapsFilter.CapsFilterSettings.class, alias = "caps"),
+            @PolymorphicTypes.Type(type = ProfanityFilterer.ProfanityFilterSettings.class, alias = "profanity"),
+            @PolymorphicTypes.Type(type = SpamFilter.SpamFilterSettings.class, alias = "spam"),
+            @PolymorphicTypes.Type(type = RepeatFilter.RepeatFilterSettings.class, alias = "repeat"),
+            @PolymorphicTypes.Type(type = RegexFilter.RegexFilterSettings.class, alias = "regex"),
+            @PolymorphicTypes.Type(type = EmojiReplacer.EmojiReplacerSettings.class, alias = "emoji"),
+    })
     @NoArgsConstructor(access = AccessLevel.PACKAGE)
     public static class FilterSettings {
         protected boolean enabled = true;

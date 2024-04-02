@@ -221,55 +221,90 @@ channels:
 # ┗╸ Channels Help: https://william278.net/docs/huskchat/filters-and-replacers/
 
 filters:
-  REPEAT:
-    enabled: true
-    channels:
-    - global
-    - local
-    private_messages: true
-    broadcast_messages: false
-  ADVERTISING:
-    enabled: true
-    channels:
-    - global
-    - local
-    private_messages: true
-    broadcast_messages: false
   CAPS:
+    type: caps
     enabled: true
     channels:
-    - global
-    - local
+      - global
+      - local
     private_messages: true
     broadcast_messages: false
-  SPAM:
+    max_caps_percentage: 0.4
+  ADVERTISING:
+    type: filter
     enabled: true
     channels:
-    - global
-    - local
+      - global
+      - local
     private_messages: true
     broadcast_messages: false
   ASCII:
+    type: filter
     enabled: true
     channels:
-    - global
-    - local
+      - global
+      - local
     private_messages: true
     broadcast_messages: false
   PROFANITY:
+    type: profanity
     enabled: false
     channels:
-    - global
-    - local
+      - global
+      - local
     private_messages: true
     broadcast_messages: false
-replacers:
-  EMOJI:
+    library_path: ''
+    mode: AUTOMATIC
+    tolerance: 0.78
+  REGEX:
+    type: regex
+    enabled: false
+    channels:
+      - global
+      - local
+    private_messages: true
+    broadcast_messages: false
+    patterns: []
+  REPEAT:
+    type: repeat
     enabled: true
     channels:
-    - global
-    - local
+      - global
+      - local
     private_messages: true
     broadcast_messages: false
+    previous_messages_to_check: 5
+  SPAM:
+    type: spam
+    enabled: true
+    channels:
+      - global
+      - local
+    private_messages: true
+    broadcast_messages: false
+    period_seconds: 4
+    messages_per_period: 3
+replacers:
+  EMOJI:
+    type: emoji
+    enabled: true
+    channels:
+      - global
+      - local
+    private_messages: true
+    broadcast_messages: false
+    case_insensitive: false
+    emoji:
+      ':heart:': ❤
+      ':smile:': ☺
+      :-(: ☹
+      :-): ☺
+      <3: ❤
+      ':frown:': ☹
+      ':star:': ⭐
+      ':fire:': 🔥
+      :(: ☹
+      :): ☺
 ```
 </details>

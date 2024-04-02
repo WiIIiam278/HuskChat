@@ -195,22 +195,9 @@ public interface ConfigProvider {
 
     default void loadUserCache() {
         final Path cacheFile = getConfigDirectory().resolve("user_cache.yml");
-        updateOldCache(cacheFile);
         setUserCache(cacheFile.toFile().exists()
                 ? YamlConfigurations.load(cacheFile, UserCache.Editor.class)
                 : new UserCache.Editor());
-    }
-
-    // Old config migration (v2.x)
-    private void updateOldCache(@NotNull Path newFile) {
-        final Path oldCache = getConfigDirectory().resolve("spies.yml");
-        if (oldCache.toFile().exists()) {
-            try {
-                Files.move(oldCache, newFile);
-            } catch (Throwable e) {
-                getPlugin().log(Level.SEVERE, "An error occurred moving the old cache file", e);
-            }
-        }
     }
 
     default void editUserCache(@NotNull Consumer<UserCache.Editor> userCache) {
