@@ -102,6 +102,7 @@ public class VelocityPacketChatListener {
     @RequiredArgsConstructor
     public static class PlayerChannelHandler extends ChannelDuplexHandler implements VelocityChatListener {
 
+        private static final String LEGACY_COMMAND_PREFIX = "/";
         private final VelocityHuskChat plugin;
         private final Player player;
 
@@ -125,6 +126,9 @@ public class VelocityPacketChatListener {
                 return Optional.of(keyed.getMessage());
             } else if (msg instanceof final LegacyChatPacket legacy) {
                 // Handle legacy chat (pre-1.19.1)
+                if (legacy.getMessage().startsWith(LEGACY_COMMAND_PREFIX)) {
+                    return Optional.empty();
+                }
                 return Optional.of(legacy.getMessage());
             }
             return Optional.empty();
