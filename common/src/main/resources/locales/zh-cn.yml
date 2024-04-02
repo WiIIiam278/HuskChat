@@ -25,7 +25,7 @@ locales:
   error_chat_filter_spam: '[请稍等！你发送消息的速度太快了。](#ff7e5e)'
   error_chat_filter_ascii: '[你不能再聊天中使用特殊字符。](#ff7e5e)'
   error_chat_filter_repeat: '[你刚刚才发过这条信息](#ff7e5e)'
-  error_chat_filter_regex: '[Your message contains blocked text.](#ff7e5e)'
+  error_chat_filter_regex: '[你的消息包含被屏蔽的文字。](#ff7e5e)'
   error_in_game_only: '错误： 该命令只能在游戏中使用.'
   error_console_local_scope: '错误： 不支持从控制台发送消息到本地频道。'
   error_console_switch_channels: '错误： 你不能在控制台切换到另一个频道，请改用快捷命令'
