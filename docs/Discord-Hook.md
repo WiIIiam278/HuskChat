@@ -6,7 +6,9 @@ To enable Discord support, set `enabled` to `true` in the `discord:` section of 
 Webhooks are a simple way to send messages to a Discord channel. You can create a webhook for a channel by going to the channel settings, then Integrations, then Webhooks. You can then create a webhook and copy the URL. In the HuskChat config, you can then add the webhook URL to the `channel_webhooks` section of the config.
 
 ## Spicord
-Spicord is a plugin that allows for two-way communication between Discord and Minecraft. You can find more information about Spicord [here](https://www.spigotmc.org/resources/spicord.64918/).
+Spicord is a plugin that allows for two-way communication between Discord and Minecraft. You can find more information about Spicord [here](https://www.spigotmc.org/resources/spicord.64918/). Spicord can be installed on BungeeCord, Velocity, or Paper.
+
+> **Why not support DiscordSRV?** DiscordSRV does not support Velocity/Bungee, and Spicord does :-)
 
 ### Installing Spicord
 1. Download the Spicord plugin and place it in the plugins folder of your server alongside HuskChat.
