@@ -177,9 +177,9 @@ public class Settings {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class LocalSpySettings {
         private boolean enabled = true;
-        private String format = "&e[Spy] &7%name% &8→ &7%receiver_name%:%spy_color% ";
+        private String format = "&e[Spy] &7[%channel%] %name%&8:%spy_color% ";
         @Getter(AccessLevel.NONE)
-        private List<String> localspyAliases = List.of("/socialspy", "/ss");
+        private List<String> localspyAliases = List.of("/localspy", "/ls");
         @Comment("List of channels to exclude from local spy")
         private List<String> excludedLocalChannels = List.of();
 

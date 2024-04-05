@@ -57,6 +57,7 @@ public class Locales {
 
     private static final String SILENT_JOIN_PERMISSION = "huskchat.silent_join";
     private static final String SILENT_QUIT_PERMISSION = "huskchat.silent_quit";
+    private static final String FORMATTED_CHAT_PERMISSION = "huskchat.formatted_chat";
     static final String DEFAULT_LOCALE = "en-gb";
 
     // The raw set of locales loaded from yaml
@@ -91,7 +92,7 @@ public class Locales {
         plugin.replacePlaceholders(sender, channel.getFormat()).thenAccept(replaced -> {
             final Component format = new MineDown(replaced).toComponent();
             final TextComponent.Builder builder = Component.text().append(format);
-            if (sender.hasPermission("huskchat.formatted_chat", false)) {
+            if (sender.hasPermission(FORMATTED_CHAT_PERMISSION, false)) {
                 builder.append(new MineDown(message)
                         .disable(MineDownParser.Option.ADVANCED_FORMATTING)
                         .toComponent().color(getFormatColor(format)));
@@ -118,7 +119,7 @@ public class Locales {
             final TextComponent.Builder builder = Component.text();
             final Component format = new MineDown(replaced).toComponent();
             builder.append(format);
-            if (sender.hasPermission("huskchat.formatted_chat", false)) {
+            if (sender.hasPermission(FORMATTED_CHAT_PERMISSION, false)) {
                 builder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING)
                         .toComponent().color(getFormatColor(format)));
             } else {
@@ -162,7 +163,7 @@ public class Locales {
             final TextComponent.Builder builder = Component.text();
             final Component format = new MineDown(replaced).toComponent();
             builder.append(format);
-            if (sender.hasPermission("huskchat.formatted_chat", false)) {
+            if (sender.hasPermission(FORMATTED_CHAT_PERMISSION, false)) {
                 builder.append(new MineDown(message).disable(MineDownParser.Option.ADVANCED_FORMATTING)
                         .toComponent().color(getFormatColor(format)));
             } else {
