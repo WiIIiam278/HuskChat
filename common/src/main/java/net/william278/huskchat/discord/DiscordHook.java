@@ -62,12 +62,17 @@ public interface DiscordHook {
         EMBEDDED,
         INLINE;
 
+        private String format;
+
         @NotNull
         private String getPostMessageFormat(@NotNull HuskChat plugin) {
+            if (this.format != null) {
+                return this.format;
+            }
             try {
-                return new String(plugin.getResource(
-                        String.format("discord/%s_message.json", name().toLowerCase(Locale.ENGLISH))
-                ).readAllBytes(), StandardCharsets.UTF_8);
+                return this.format = new String(plugin.getResource(String.format(
+                        "discord/%s_message.json", name().toLowerCase(Locale.ENGLISH)
+                )).readAllBytes(), StandardCharsets.UTF_8);
             } catch (IOException e) {
                 throw new IllegalStateException("Unable to load \"" + name() + "\" Discord message format", e);
             }
