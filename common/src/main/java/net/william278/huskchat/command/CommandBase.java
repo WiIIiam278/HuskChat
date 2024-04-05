@@ -95,8 +95,9 @@ public abstract class CommandBase {
     @Nullable
     public String getPermission(@NotNull String... children) {
         return String.join(".",
-                "huskchat", "command", getName(),
-                String.join(".", children)
+                "huskchat", "command",
+                children.length == 0 ? getName() : getName() +
+                        "." + String.join(".", children)
         );
     }
 
