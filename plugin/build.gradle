@@ -2,4 +2,5 @@ dependencies {
     implementation project(path: ':bungee', configuration: 'shadow')
     implementation project(path: ':velocity', configuration: 'shadow')
     implementation project(path: ':bukkit', configuration: 'shadow')
+    implementation project(path: ':paper', configuration: 'shadow')
 }

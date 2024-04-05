@@ -1,0 +1,22 @@
+name: 'HuskChat'
+description: '${description}'
+author: 'William278'
+website: 'https://william278.net/'
+main: 'net.william278.huskchat.PaperHuskChat'
+version: '${version}'
+api-version: '1.19'
+folia-supported: true
+dependencies:
+  server:
+    LuckPerms:
+      load: BEFORE
+      join-classpath: true
+      required: false
+    PlaceholderAPI:
+      load: BEFORE
+      join-classpath: true
+      required: false
+    Spicord:
+      load: BEFORE
+      join-classpath: true
+      required: false
