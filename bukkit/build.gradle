@@ -6,7 +6,7 @@ dependencies {
     implementation 'space.arim.morepaperlib:morepaperlib:0.4.4'
 
     compileOnly 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
-    compileOnly 'commons-io:commons-io:2.16.0'
+    compileOnly 'commons-io:commons-io:2.16.1'
     compileOnly 'de.themoep:minedown-adventure:1.7.2-SNAPSHOT'
     compileOnly 'me.clip:placeholderapi:2.11.5'
     compileOnly 'org.jetbrains:annotations:24.1.0'
