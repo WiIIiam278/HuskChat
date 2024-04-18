@@ -17,7 +17,7 @@ This will walk you through installing HuskChat on your Velocity or BungeeCord/Wa
 ### Velocity Installation
 1. Turn off your Velocity proxy
 2. Download the [latest version of HuskChat](https://github.com/WiIIiam278/HuskChat/releases/latest). 
-3. Add both jar files to your Velocity proxy server's `~/plugins` folder. 
+3. Add the jar file to your Velocity proxy server's `~/plugins` folder. 
 4. Start your Velocity proxy. Let HuskChat generate its [[config files]], then stop the proxy again.
 5. Modify your HuskChat config files as needed, then start your Velocity proxy again.
 
