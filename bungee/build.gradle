@@ -5,7 +5,7 @@ dependencies {
     implementation 'net.kyori:adventure-platform-bungeecord:4.3.2'
 
     compileOnly 'net.md-5:bungeecord-api:1.20-R0.1-SNAPSHOT'
-    compileOnly 'commons-io:commons-io:2.16.0'
+    compileOnly 'commons-io:commons-io:2.16.1'
     compileOnly 'net.alpenblock:BungeePerms:4.0-dev-143'
     compileOnly 'de.themoep:minedown-adventure:1.7.2-SNAPSHOT'
     compileOnly 'org.jetbrains:annotations:24.1.0'
