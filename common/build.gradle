@@ -6,7 +6,7 @@ dependencies {
     api 'commons-io:commons-io:2.16.1'
     api 'de.themoep:minedown-adventure:1.7.2-SNAPSHOT'
     api 'net.william278:profanitycheckerapi:3.0'
-    api 'net.william278:desertwell:2.0.4'
+    api 'net.william278:desertwell:2.0.5'
     api 'dev.vankka:mcdiscordreserializer:4.3.0'
     api 'de.exlll:configlib-yaml:4.5.0'
 
