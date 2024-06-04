@@ -72,11 +72,9 @@ public class ChatMessage {
         }
 
         // Verify that the player is not sending a message from a server where channel access is restricted
-        for (String restrictedServer : channel.get().getRestrictedServers()) {
-            if (restrictedServer.equalsIgnoreCase(getSender().getServerName())) {
-                getPlugin().getLocales().sendMessage(getSender(), "error_channel_restricted_server", channel.get().getId());
-                return true;
-            }
+        if (channel.get().isServerRestricted(getSender().getServerName())) {
+            getPlugin().getLocales().sendMessage(getSender(), "error_channel_restricted_server", channel.get().getId());
+            return true;
         }
 
         // Determine the players who will receive the message;

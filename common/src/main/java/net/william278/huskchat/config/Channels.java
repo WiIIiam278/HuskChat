@@ -21,6 +21,8 @@ package net.william278.huskchat.config;
 
 import de.exlll.configlib.Comment;
 import de.exlll.configlib.Configuration;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -111,6 +113,18 @@ public class Channels {
             return Optional.empty();
         }
         return channels.stream().filter(channel -> channel.getId().equalsIgnoreCase(channelId)).findFirst();
+    }
+
+    /**
+     * Gets the default channel for the given server. Falls back to the global default is a server-specific default does not exist.
+     * @param server The server name
+     * @return The default channel for the given server, if any
+     */
+    public Optional<String> getServerDefaultChannel(String server) {
+        return getServerDefaultChannels().entrySet().stream().filter(
+                defaultChannelEntry -> Pattern.compile(defaultChannelEntry.getKey(),
+                    Pattern.CASE_INSENSITIVE).matcher(server).matches()).map(Entry::getValue)
+            .findFirst();
     }
 
     @NotNull
