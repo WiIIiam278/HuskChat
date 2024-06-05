@@ -52,9 +52,9 @@ public class ChannelTests {
 
   @Test
   public void testRegexUnrestrictedServer() {
-    Assertions.assertFalse(plainTextChannel.isServerRestricted("does"));
-    Assertions.assertFalse(plainTextChannel.isServerRestricted("not"));
-    Assertions.assertFalse(plainTextChannel.isServerRestricted("matcher"));
+    Assertions.assertFalse(regexTextChannel.isServerRestricted("does"));
+    Assertions.assertFalse(regexTextChannel.isServerRestricted("not"));
+    Assertions.assertFalse(regexTextChannel.isServerRestricted("match"));
   }
 
   @Test
