@@ -36,9 +36,9 @@ public abstract class PlayerListener {
     // Handle server switches
     public final void handlePlayerSwitchServer(@NotNull OnlineUser player, @NotNull String newServer) {
         // Switch to the default channel for the server if there is one
-        final Map<String, String> defaultChannels = plugin.getChannels().getServerDefaultChannels();
-        if (defaultChannels.containsKey(newServer)) {
-            plugin.editUserCache(c -> c.switchPlayerChannel(player, defaultChannels.get(newServer), plugin));
+        final Optional<String> defaultChannel = plugin.getChannels().getServerDefaultChannel(newServer);
+        if (defaultChannel.isPresent()) {
+            plugin.editUserCache(c -> c.switchPlayerChannel(player, defaultChannel.get(), plugin));
             return;
         }
 
@@ -52,8 +52,7 @@ public abstract class PlayerListener {
         // Switch the player's channel away if their current channel is now restricted
         plugin.getChannels().getChannels().stream()
                 .filter(channel -> channel.getId().equalsIgnoreCase(currentChannel.get()))
-                .findFirst().flatMap(channel -> channel.getRestrictedServers().stream()
-                        .filter(restrictedServer -> restrictedServer.equalsIgnoreCase(newServer)).findFirst())
+                .findFirst().filter(channel -> channel.isServerRestricted(newServer))
                 .ifPresent(restricted -> plugin.editUserCache(c -> c
                         .switchPlayerChannel(player, plugin.getChannels().getDefaultChannel(), plugin)));
     }

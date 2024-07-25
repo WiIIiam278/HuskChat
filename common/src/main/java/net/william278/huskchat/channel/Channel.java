@@ -20,6 +20,7 @@
 package net.william278.huskchat.channel;
 
 import de.exlll.configlib.Configuration;
+import java.util.regex.Pattern;
 import lombok.*;
 import net.william278.huskchat.config.Settings;
 import net.william278.huskchat.user.OnlineUser;
@@ -136,7 +137,9 @@ public class Channel {
     }
 
     public boolean isServerRestricted(@NotNull String server) {
-        return restrictedServers.stream().anyMatch(server::equalsIgnoreCase);
+        return restrictedServers.stream().anyMatch(
+            restrictedServer -> Pattern.compile(restrictedServer, Pattern.CASE_INSENSITIVE)
+                .matcher(server).matches());
     }
 
     public boolean canUserSend(@NotNull OnlineUser user) {
