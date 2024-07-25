@@ -49,6 +49,13 @@ jobs:
         if: success() || failure() # always run even if the previous step fails
         with:
           report_paths: '**/build/test-results/test/TEST-*.xml'
+      - name: 'Fetch Version Name 📝'
+        run: |
+          echo "::set-output name=VERSION_NAME::$(${{github.workspace}}/gradlew properties --no-daemon --console=plain -q | grep "^version:" | awk '{printf $2}')"
+        id: fetch-version
+      - name: Get Version
+        run: |
+          echo "version_name=${{steps.fetch-version.outputs.VERSION_NAME}}" >> $GITHUB_ENV
       - name: 'Publish to William278.net 🚀'
         uses: WiIIiam278/bones-publish-action@v1
         with:
@@ -65,13 +72,6 @@ jobs:
             Bungee, Velocity & Paper
           files: |
             target/HuskChat-Plugin-${{ env.version_name }}.jar
-      - name: 'Fetch Version Name 📝'
-        run: |
-          echo "::set-output name=VERSION_NAME::$(${{github.workspace}}/gradlew properties --no-daemon --console=plain -q | grep "^version:" | awk '{printf $2}')"
-        id: fetch-version
-      - name: Get Version
-        run: |
-          echo "version_name=${{steps.fetch-version.outputs.VERSION_NAME}}" >> $GITHUB_ENV
       - name: 'Publish to Modrinth & Hangar 🚰'
         uses: WiIIiam278/mc-publish@hangar
         with:
