@@ -49,6 +49,22 @@ jobs:
         if: success() || failure() # always run even if the previous step fails
         with:
           report_paths: '**/build/test-results/test/TEST-*.xml'
+      - name: 'Publish to William278.net 🚀'
+        uses: WiIIiam278/bones-publish-action@v1
+        with:
+          api-key: ${{ secrets.BONES_API_KEY }}
+          project: 'huskchat'
+          channel: 'alpha'
+          version: ${{ env.version_name }}
+          changelog: ${{ github.event.head_commit.message }}
+          distro-names: |
+            bungee-velocity-paper
+          distro-groups: |
+            bungee-velocity-paper
+          distro-descriptions: |
+            Bungee, Velocity & Paper
+          files: |
+            target/HuskChat-Plugin-${{ env.version_name }}.jar
       - name: 'Fetch Version Name 📝'
         run: |
           echo "::set-output name=VERSION_NAME::$(${{github.workspace}}/gradlew properties --no-daemon --console=plain -q | grep "^version:" | awk '{printf $2}')"
@@ -98,9 +114,3 @@ jobs:
           hangar-loaders: |
             velocity
           java: 17
-      - name: 'Upload GitHub Artifact 📦'
-        if: success() || failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: HuskChat Plugin
-          path: target/HuskChat-Plugin-*.jar
