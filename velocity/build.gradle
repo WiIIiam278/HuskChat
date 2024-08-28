@@ -14,10 +14,10 @@ dependencies {
     compileOnly 'commons-io:commons-io:2.16.1'
     compileOnly 'de.themoep:minedown-adventure:1.7.3-SNAPSHOT'
     compileOnly 'org.jetbrains:annotations:24.1.0'
-    compileOnly 'org.projectlombok:lombok:1.18.32'
+    compileOnly 'org.projectlombok:lombok:1.18.34'
     compileOnly 'net.kyori:adventure-nbt:4.17.0'
 
-    annotationProcessor 'org.projectlombok:lombok:1.18.32'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
 }
 
 shadowJar {
