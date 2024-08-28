@@ -10,7 +10,7 @@ dependencies {
     compileOnly "com.velocitypowered:velocity-proxy:${velocity_api_version}-SNAPSHOT"
 
     compileOnly 'io.netty:netty-codec-http:4.1.112.Final'
-    compileOnly 'it.unimi.dsi:fastutil:8.5.13'
+    compileOnly 'it.unimi.dsi:fastutil:8.5.14'
     compileOnly 'commons-io:commons-io:2.16.1'
     compileOnly 'de.themoep:minedown-adventure:1.7.3-SNAPSHOT'
     compileOnly 'org.jetbrains:annotations:24.1.0'
