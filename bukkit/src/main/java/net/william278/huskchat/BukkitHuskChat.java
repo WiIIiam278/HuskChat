@@ -88,6 +88,9 @@ public class BukkitHuskChat extends JavaPlugin implements HuskChat, BukkitEventP
         // Load config and locale files
         this.loadConfig();
 
+        //load filters
+        this.loadFilters();
+
         // Load discord hook
         this.loadDiscordHook();
 

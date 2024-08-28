@@ -109,6 +109,9 @@ public class VelocityHuskChat implements HuskChat, VelocityEventProvider {
     public void onProxyInitialization(@NotNull ProxyInitializeEvent event) {
         // Load config and locale files
         this.loadConfig();
+        
+        //load filters
+        this.loadFilters();
 
         // Load discord hook
         this.loadDiscordHook();

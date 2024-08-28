@@ -90,6 +90,8 @@ public final class BungeeHuskChat extends Plugin implements HuskChat, BungeeEven
 
         // Load config files
         this.loadConfig();
+
+        //load filters
         this.loadFilters();
 
         // Load API
