@@ -12,7 +12,7 @@ dependencies {
 
     compileOnly 'net.kyori:adventure-api:4.17.0'
     compileOnly 'net.kyori:adventure-platform-api:4.3.2'
-    compileOnly 'net.william278:papiproxybridge:1.5'
+    compileOnly 'net.william278:papiproxybridge:1.6.2-879780e'
     compileOnly 'net.luckperms:api:5.4'
     compileOnly 'com.github.Spicord.Spicord:spicord-common:v5-SNAPSHOT'
     compileOnly 'net.dv8tion:JDA:5.0.0-beta.4'
